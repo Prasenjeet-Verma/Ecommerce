@@ -1,0 +1,28 @@
+.heart {
+  color: white; /* default */
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+  background-color: transparent;
+}
+
+.heart.active {
+  color: red; /* on click */
+  transform: scale(1.2);
+}
+
+
+
+/* Pulse animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+

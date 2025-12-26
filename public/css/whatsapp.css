@@ -1,0 +1,46 @@
+.whatsapp1 {
+  height: 3rem;
+  width: 3rem;
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+
+  background-image: url(https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilHEfVgH0VZjfhpXbekUjn_SITBdF5HQhMDuz6tKsvVSYpTzfIoHrfw25pHPiB_QaGyCpZRICY_mpII6OLgC1KB-vKZKxOwlxVnQYFVJYAhePLSR1U95BANHBQlWtO6K92H3Uw8B_Q_lpptlZdJE1UeTbw2XpbcsJVs85_J3myJT4jFVba8qmoo1gfdWGD/s1200/%E2%80%94Pngtree%E2%80%94white%20whatsapp%20icon%20png_3562063.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+
+  border-radius: 50%;
+  background-color: #25d366; /* WhatsApp green */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+
+  animation: pulse 2s infinite;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.whatsapp1:hover {
+  transform: scale(1.15);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.8);
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 20px rgba(37, 211, 102, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}

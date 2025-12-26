@@ -1,0 +1,255 @@
+:root {
+  --sidebar-width: 260px;
+  --color-brand-dark: #6b21a8;
+  --color-brand-accent: #a855f7;
+  --color-bg: #f8fafc;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  background: var(--color-bg);
+  color: #1e293b;
+  overflow-x: hidden;
+}
+
+/* --- Sidebar & Mobile Nav --- */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--color-brand-dark);
+  color: white;
+  padding: 2rem 1rem;
+  position: fixed;
+  height: 100vh;
+  transition: transform 0.3s ease;
+  z-index: 2000;
+}
+
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  background: var(--color-brand-dark);
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  z-index: 1500;
+}
+
+.main-content {
+  margin-left: var(--sidebar-width);
+  padding: 2rem;
+  transition: 0.3s;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+.nav-link.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* --- Profile Header Card --- */
+.profile-card {
+  background: white;
+  border-radius: 2rem;
+  padding: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.profile-img-big {
+  width: 120px;
+  height: 120px;
+  border-radius: 2rem;
+  background: linear-gradient(
+    135deg,
+    var(--color-brand-accent),
+    var(--color-brand-dark)
+  );
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.profile-details h1 {
+  font-size: 2rem;
+  color: var(--color-brand-dark);
+}
+.profile-details p {
+  color: #64748b;
+  margin-top: 5px;
+}
+
+.status-pill {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px 15px;
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* --- Stats Grid --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.mini-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+.mini-card i {
+  font-size: 1.5rem;
+  color: var(--color-brand-accent);
+  margin-bottom: 10px;
+}
+.mini-card h3 {
+  font-size: 1.5rem;
+  color: #1e293b;
+}
+.mini-card span {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+/* --- Information Sections --- */
+.info-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+.info-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+.info-box h2 {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.info-item {
+  margin-bottom: 1rem;
+}
+.info-item label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.info-item p {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 3px;
+  word-break: break-word;
+}
+
+/* --- Responsive Table --- */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  min-width: 400px;
+}
+th {
+  text-align: left;
+  padding: 12px;
+  color: #64748b;
+  font-size: 0.8rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+}
+
+/* --- Sidebar Overlay --- */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1900;
+}
+
+/* --- RESPONSIVE QUERIES --- */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.active {
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-left: 0;
+    padding-top: 80px;
+  }
+  .mobile-header {
+    display: flex;
+  }
+  .sidebar-overlay.active {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .info-container {
+    grid-template-columns: 1fr;
+  }
+  .profile-details div {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,94 @@
+/* --- Core Visibility CSS --- */
+/* This class will initially hide the verification screen */
+.hidden-screen {
+  display: none;
+}
+
+/* You may need additional styling in your external CSS for the base card setup 
+           (e.g., body centering and background gradients). 
+           For this example, I'll include the standard card styling here for completeness 
+           in case your external files don't cover it. */
+
+/* Assuming the base styles are mostly correct, we only need the visibility classes. */
+
+/* --- Standard Styling (for self-contained demo) --- */
+:root {
+  --color-white: #ffffff;
+  --color-brand-light: #f3e8ff;
+  --color-brand-default: #c084fc;
+  --color-brand-dark: #6b21a8;
+  --color-brand-accent: #a855f7;
+  --color-gray-600: #4b5563;
+}
+
+body {
+  background: linear-gradient(
+    135deg,
+    var(--color-white) 0%,
+    var(--color-brand-light) 50%,
+    #e9d5ff 100%
+  );
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 1rem;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  position: relative; /* Container for absolute/fixed elements if needed */
+}
+
+/* Container to manage the stacked screen layout */
+.screen-container {
+  display: flex; /* Helps manage the screens */
+  align-items: center;
+  justify-content: center;
+  position: relative; /* Important */
+  width: 100%;
+  max-width: 420px;
+  min-height: 400px; /* Give it a base height */
+}
+
+/* Each screen should be positioned within the container */
+.screen {
+  position: absolute;
+  width: 100%;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  z-index: 10;
+}
+/* ... (Include all other structural CSS from your previous examples if not in the external files) ... */
+
+/* Make sure the blur elements are outside the screen-container or positioned absolutely/fixed */
+.blur-element {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: var(--color-brand-default);
+  opacity: 0.3;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  animation: float 10s ease-in-out infinite;
+}
+
+.blur-element.top-left {
+  top: 10%;
+  left: 5%;
+}
+.blur-element.bottom-right {
+  bottom: 10%;
+  right: 5%;
+  background: var(--color-brand-accent);
+  animation-delay: 2s;
+}

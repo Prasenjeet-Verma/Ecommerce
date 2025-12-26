@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel | Rider Shoe</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/css/adminDashbord.css" />
+  </head>
+  <body>
+    <!--  ================== Sidebar  ============ -->
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <header class="mobile-nav">
+      <div class="logo"><%- admin.username %></div>
+      <i
+        class="fa-solid fa-bars"
+        style="font-size: 1.5rem; cursor: pointer"
+        onclick="toggleSidebar()"
+      ></i>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <h2 style="margin-bottom: 2rem">
+        <i class="fa-solid fa-bolt"></i><%- admin.username %>
+      </h2>
+      <nav>
+        <a href="/admin-home" class="nav-link" style="background-color: black;"
+          ><i class="fa-solid fa-chart-line"></i> Dashboard</a
+        >
+        <a href="/admin-userlist" class="nav-link"
+          ><i class="fa-solid fa-users"></i> My Users</a
+        >
+        <a href="/admin-howmanyshoesuploaded" class="nav-link active"
+          ><i class="fa-solid fa-shoe-prints"></i> Add Shoes</a
+        >
+        <a href="/admin-howmanyglassesuploaded" class="nav-link active"
+          ><i class="fa-solid fa-glasses"></i></i> Add Glasses</a
+        >
+        <a href="/admin-howmanywatchesuploaded" class="nav-link active"
+          ><i class="fa-solid fa-stopwatch"></i> Add Watches</a
+        >
+        <a href="/admin-howmanyclothesuploaded" class="nav-link active"
+          ><i class="fa-solid fa-shirt"></i> Add Clothes</a
+        >
+        <a href="admin-newoder.html" class="nav-link"
+          ><i class="fa-solid fa-cart-shopping"></i> New Orders</a
+        >
+        <a href="admin.order-history.html" class="nav-link"
+          ><i class="fa-solid fa-cart-shopping"></i> Orders History</a
+        >
+
+        <a href="/logout" class="nav-link"
+          ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
+        >
+
+      </nav>
+    </aside>
+
+    <!--  ================== Contant Area Start ============ -->
+
+    <main class="main-content">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
+        "
+        class="header"
+      >
+        <div>
+          <h1>Dashboard</h1>
+          <p style="color: #64748b">Managing Rider Shoe Store</p>
+        </div>
+      </div>
+
+      <!--  ================== Sales ============ -->
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Today's Sales</h3>
+          <div class="value">₹1,24,500</div>
+        </div>
+
+        <div class="stat-card">
+          <h3>Yesterday Sales</h3>
+          <div class="value">₹1,24,500</div>
+        </div>
+
+        <div class="stat-card">
+          <h3>Total Sales</h3>
+          <div class="value">₹1,24,500</div>
+        </div>
+
+        <!--  ================== Orders ============ -->
+
+        <div class="stat-card" style="background-color: #fca5a5">
+          <h3>Total Cancil Orders</h3>
+          <div class="value">42</div>
+        </div>
+
+        <div
+          class="stat-card"
+          style="background-color: rgba(149, 149, 17, 0.512)"
+        >
+          <h3>Total Pending Orders</h3>
+          <div class="value">42</div>
+        </div>
+
+        <div class="stat-card" style="background-color: #0667187b">
+          <h3>Total Complited Orders</h3>
+          <div class="value">42</div>
+        </div>
+
+        <div class="stat-card">
+          <h3>Today's Orders</h3>
+          <div class="value">158</div>
+        </div>
+
+        <div class="stat-card">
+          <h3>Yesterday Orders</h3>
+          <div class="value">158</div>
+        </div>
+
+        <div class="stat-card">
+          <h3>Total Orders</h3>
+          <div class="value">158</div>
+        </div>
+
+        <!--  ================== Products ============ -->
+
+        <a href="admin-shoe-product.html" style="text-decoration: none">
+          <div
+            class="stat-card"
+            style="background-color: #096d9f7b; color: black"
+          >
+            <h3>Your Total Products</h3>
+            <div class="value">1158</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- <div class="table-container">
+        <h2 style="margin-bottom: 1rem; font-size: 1.2rem">Recent Activity</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#RS-101</td>
+              <td>Aman S.</td>
+              <td>₹2,499</td>
+              <td><span class="status status-paid">Completed</span></td>
+            </tr>
+            <tr>
+              <td>#RS-102</td>
+              <td>Rahul V.</td>
+              <td>₹3,199</td>
+              <td><span class="status status-paid">Completed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+    </main>
+    <script src="/js/adminDashbord.js"></script>
+  </body>
+</html>
