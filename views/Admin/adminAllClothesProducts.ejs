@@ -33,10 +33,12 @@
       <a href="/admin-home" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
       <a href="/admin-userlist" class="nav-link"><i class="fa-solid fa-users"></i> My Users</a>
       <a href="/admin-howmanyclothesuploaded" class="nav-link active"><i class="fa-solid fa-shirt"></i> Add Clothes</a>
-      <a href="/admin-howmanyshoesuploaded" class="nav-link active"><i class="fa-solid fa-shoe-prints"></i> Add Shoes</a>
+      <a href="/admin-howmanyshoesuploaded" class="nav-link active"><i class="fa-solid fa-shoe-prints"></i> Add
+        Shoes</a>
       <a href="/admin-howmanyglassesuploaded" class="nav-link active"><i class="fa-solid fa-glasses"></i></i> Add
         Glasses</a>
-      <a href="/admin-howmanywatchesuploaded" class="nav-link active"><i class="fa-solid fa-stopwatch"></i> Add Watches</a>
+      <a href="/admin-howmanywatchesuploaded" class="nav-link active"><i class="fa-solid fa-stopwatch"></i> Add
+        Watches</a>
       <a href="/admin-howmanyclothesuploaded" class="nav-link active" style="background-color: black;"><i
           class="fa-solid fa-shirt"></i> Add Clothes</a>
       <a href="admin-newoder.html" class="nav-link"><i class="fa-solid fa-cart-shopping"></i> New Orders</a>
@@ -58,19 +60,19 @@
 
       <h1>Products</h1>
 
-    <div class="select-wrapper">
-  <select id="Display" onchange="filterClothes(this.value)">
-    <option value="all" <%= selectedFilter === 'all' ? 'selected' : '' %>>
-      All
-    </option>
-    <option value="show" <%= selectedFilter === 'show' ? 'selected' : '' %>>
-      Show
-    </option>
-    <option value="hide" <%= selectedFilter === 'hide' ? 'selected' : '' %>>
-      Hide
-    </option>
-  </select>
-</div>
+      <div class="select-wrapper">
+        <select id="Display" onchange="filterClothes(this.value)">
+          <option value="all" <%=selectedFilter==='all' ? 'selected' : '' %>>
+            All
+          </option>
+          <option value="show" <%=selectedFilter==='show' ? 'selected' : '' %>>
+            Show
+          </option>
+          <option value="hide" <%=selectedFilter==='hide' ? 'selected' : '' %>>
+            Hide
+          </option>
+        </select>
+      </div>
 
 
 
@@ -221,43 +223,6 @@
             <span>3XL</span>
           </label>
 
-
-          <label>
-            <input type="checkbox" name="sizes" value="4XL" />
-            <span>4XL</span>
-          </label>
-            <span>L</span>
-          </label>
-
-          <label>
-            <input type="checkbox" name="sizes" value="XL" />
-            <span>XL</span>
-          </label>
-
-          <label>
-            <input type="checkbox" name="sizes" value="XXL" />
-            <span>XXL</span>
-          </label>
-
-          <label>
-            <input type="checkbox" name="sizes" value="3XL" />
-            <span>3XL</span>
-          </label>
-
-
-          <label>
-            <input type="checkbox" name="sizes" value="4XL" />
-            <span>4XL</span>
-          </label>
-            <span>XXL</span>
-          </label>
-
-          <label>
-            <input type="checkbox" name="sizes" value="3XL" />
-            <span>3XL</span>
-          </label>
-
-
           <label>
             <input type="checkbox" name="sizes" value="4XL" />
             <span>4XL</span>
@@ -281,7 +246,7 @@
   </form>
   <!-- ============================== Edit Modal ===================== -->
 
-    <form action="/admin-editclothesproducts" method="POST" enctype="multipart/form-data">
+  <form action="/admin-editclothesproducts" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="productId" id="editProductId" />
 
     <div class="modal-overlay" id="editModal">
@@ -345,7 +310,7 @@
         </div>
 
         <!-- Sizes -->
- <div class="category-box">
+        <div class="category-box">
           <div for="size">Select Size ✔</div>
           <label>
             <input type="checkbox" name="sizes" value="XS" />
@@ -388,7 +353,7 @@
             <input type="checkbox" name="sizes" value="4XL" />
             <span>4XL</span>
           </label>
-            <span>L</span>
+          <span>L</span>
           </label>
 
           <label>
@@ -411,7 +376,7 @@
             <input type="checkbox" name="sizes" value="4XL" />
             <span>4XL</span>
           </label>
-            <span>XXL</span>
+          <span>XXL</span>
           </label>
 
           <label>
@@ -438,7 +403,7 @@
       </div>
     </div>
   </form>
-    <script src="/js/clothesProduct.js"></script>
+  <script src="/js/clothesProduct.js"></script>
 </body>
 
 </html>

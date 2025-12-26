@@ -6,11 +6,11 @@ const uploadToPhpServer = async (filePath) => {
   const form = new FormData();
 
   form.append("image", fs.createReadStream(filePath));
-  form.append("api_key", "SECRET123"); // 🔥 VERY IMPORTANT
+  form.append("api_key", process.env.PHP_UPLOAD_API_KEY);
 
   try {
     const res = await axios.post(
-      "https://24carret.in/upload.php",
+      process.env.PHP_UPLOAD_URL,
       form,
       {
         headers: form.getHeaders(),
@@ -18,16 +18,18 @@ const uploadToPhpServer = async (filePath) => {
       }
     );
 
-    // 🔍 DEBUG
     console.log("PHP upload response:", res.data);
 
-    if (!res.data || !res.data.url) {
-      throw new Error("Image upload failed");
+    if (!res.data || res.data.status !== true || !res.data.url) {
+      throw new Error(res.data?.message || "Image upload failed");
     }
 
     return res.data.url;
   } catch (err) {
-    console.error("PHP upload error:", err.response?.data || err.message);
+    console.error(
+      "PHP upload error:",
+      err.response?.data || err.message
+    );
     throw new Error("Image upload failed");
   }
 };
