@@ -168,8 +168,13 @@
 
       <div style="position: relative;">
         <div style="height:30px; width:30px; position:absolute; top:2%; right:2%; z-index:50000;">
-          <i class="fa-solid fa-heart heart"
-   onclick="toggleFav(this, '<%= watch._id %>')"></i>
+     <button 
+  class="remove-wish heart <%= wishlistIds.includes(watch._id.toString()) ? 'active' : '' %>"
+  onclick="toggleFav(this, '<%= watch._id %>')"
+>
+  <i class="fa-solid fa-heart"></i>
+</button>
+
         </div>
 
         <img src="<%= watch.images[0] %>" class="product-img" alt="<%= watch.title %>">

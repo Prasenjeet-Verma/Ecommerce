@@ -61,3 +61,43 @@ async function toggleFav(icon, productId) {
     showToast("Something went wrong 😢", false);
   }
 }
+
+
+// Add to cart code
+ // Add to cart code
+async function addToCart(btn, productId) {
+  try {
+    const res = await fetch("/add-to-cart", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ productId }),
+    });
+
+    // 🔐 not logged in
+    if (res.status === 401) {
+      showToast("Please login to add items to cart 🛒", false);
+      return;
+    }
+
+    const data = await res.json();
+
+    if (data.success) {
+      showToast("Added to cart 🛍️", true);
+
+      // ✅ UI update
+      btn.disabled = true;
+      btn.innerHTML = "✔ Added";
+      btn.style.opacity = "0.7";
+      btn.style.cursor = "not-allowed";
+
+    } else {
+      showToast(data.message || "Unable to add to cart 😢", false);
+    }
+
+  } catch (err) {
+    console.error("Add to cart error:", err);
+    showToast("Something went wrong 😢", false);
+  }
+}

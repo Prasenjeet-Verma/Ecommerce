@@ -36,8 +36,10 @@
           class="fa-solid fa-shoe-prints"></i> Add Shoes</a>
       <a href="/admin-howmanyglassesuploaded" class="nav-link active"><i class="fa-solid fa-glasses"></i></i> Add
         Glasses</a>
-      <a href="/admin-howmanywatchesuploaded" class="nav-link active"><i class="fa-solid fa-stopwatch"></i> Add Watches</a>
+      <a href="/admin-howmanywatchesuploaded" class="nav-link active"><i class="fa-solid fa-stopwatch"></i> Add
+        Watches</a>
       <a href="/admin-howmanyclothesuploaded" class="nav-link active"><i class="fa-solid fa-shirt"></i> Add Clothes</a>
+      <a href="/admin-howmanybagsuploaded" class="nav-link active"><i class="fa-solid fa-bag-shopping"></i> Add Bags</a>
       <a href="admin-newoder.html" class="nav-link"><i class="fa-solid fa-cart-shopping"></i> New Orders</a>
       <a href="admin.order-history.html" class="nav-link"><i class="fa-solid fa-cart-shopping"></i> Orders History</a>
 
@@ -88,7 +90,7 @@
             <h3 class="shoe-name">
               <%= product.title %>
             </h3>
-     <p style="color:gray; font-size:13px;">
+            <p style="color:gray; font-size:13px;">
               <%= product.description %>
             </p>
             <p class="shoe-price">₹<%= product.price %>
@@ -147,7 +149,7 @@
           <input type="number" name="price" required />
         </div>
 
-     <div class="form-group">
+        <div class="form-group">
           <label>Description</label>
           <textarea name="description" rows="3" placeholder="Enter product description" required></textarea>
         </div>

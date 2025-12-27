@@ -10,7 +10,7 @@ const rootDir = require("./utils/pathUtils");
 const userRouter = require("./routes/userRouter");
 const adminRouter = require("./routes/adminRouter");
 const loginSignupRouter = require("./routes/loginSignupRouter");
-
+const User = require("./model/userSchema"); // 🔥 MUST
 // ---------------- EXPRESS APP ----------------
 const app = express();
 app.set("view engine", "ejs");
@@ -40,6 +40,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   req.isLoggedIn = req.session.isLoggedIn;
   next();
+});
+app.use(async (req, res, next) => {
+  try {
+    res.locals.isLoggedIn = req.session.isLoggedIn || false;
+    res.locals.user = req.session.user || null;
+    res.locals.wishlistIds = [];
+
+    if (req.session.isLoggedIn && req.session.user) {
+      const user = await User.findById(req.session.user._id)
+        .select("wishlist");
+
+      if (user?.wishlist?.length) {
+        res.locals.wishlistIds = user.wishlist.map(id =>
+          id.toString()
+        );
+      }
+    }
+
+    next();
+  } catch (err) {
+    console.error("Wishlist middleware error:", err);
+    next();
+  }
 });
 
 // ---------------- STATIC ----------------

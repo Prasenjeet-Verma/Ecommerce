@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Cart</title>
+
+  <link rel="stylesheet" href="/css/cart.css" />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
+</head>
+
+<body>
+  <%- include('../partials/userHeader') %>
+
+  <div class="cart-container">
+
+    <!-- ================= CART ITEMS ================= -->
+    <main>
+      <section class="glass-panel">
+        <h2>
+          <i class="fa-solid fa-cart-shopping"></i>
+          Your Cart (<%= cartItems.length %> Items)
+        </h2>
+
+        <% if(cartItems.length === 0){ %>
+          <p style="text-align:center;margin-top:20px;">
+            Your cart is empty 🛒
+          </p>
+        <% } %>
+
+        <% cartItems.forEach(item => { %>
+          <div class="cart-item">
+
+            <img src="<%= item.image %>" class="product-img" />
+
+            <div class="item-details">
+              <h3><%= item.title %></h3>
+
+              <% if(item.sizes && item.sizes.length > 0){ %>
+                <p class="item-meta">
+                  Size: <%= item.sizes[0] %>
+                </p>
+              <% } %>
+
+              <div class="qty-selector">
+                <button class="qty-btn">−</button>
+                <span style="font-weight:bold"><%= item.quantity %></span>
+                <button class="qty-btn">+</button>
+              </div>
+
+              <p class="item-price">₹<%= item.total %></p>
+            </div>
+
+            <i class="fa-solid fa-trash-can remove-item"></i>
+          </div>
+        <% }) %>
+
+      </section>
+    </main>
+
+    <!-- ================= SUMMARY ================= -->
+    <aside>
+      <div class="glass-panel">
+        <h2>Order Summary</h2>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>₹<%= subtotal %></span>
+        </div>
+
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span style="color:green;font-weight:bold">FREE</span>
+        </div>
+
+        <div class="summary-row summary-total">
+          <span>Order Total</span>
+          <span>₹<%= orderTotal %></span>
+        </div>
+
+        <button class="checkout-btn">
+          Proceed to Checkout
+        </button>
+
+        <p class="cod-notice">
+          <i class="fa-solid fa-shield-check"></i>
+          Secure Payment
+        </p>
+      </div>
+    </aside>
+
+  </div>
+</body>
+</html>

@@ -56,9 +56,9 @@ window.onclick = function (event) {
 
 function filterbags(value) {
   if (value === "all") {
-    window.location.href = "/admin-howmanyglassesuploaded";
+    window.location.href = "/admin-howmanybagsuploaded";
   } else {
     window.location.href =
-      "/admin-howmanyglassesuploaded?filter=" + value;
+      "/admin-howmanybagsuploaded?filter=" + value;
   }
 }

@@ -163,122 +163,126 @@
 
         <div style=" margin-top: 1rem;">
             <form method="GET" action="/allgoogles" style="margin-bottom:1rem;">
-  <select name="gender" onchange="this.form.submit()"
-    style="padding:8px 12px; border-radius:6px;">
+                <select name="gender" onchange="this.form.submit()" style="padding:8px 12px; border-radius:6px;">
 
-    <option value="all" <%= selectedGender === 'all' ? 'selected' : '' %>>
-      All
-    </option>
+                    <option value="all" <%=selectedGender==='all' ? 'selected' : '' %>>
+                        All
+                    </option>
 
-    <option value="male" <%= selectedGender === 'male' ? 'selected' : '' %>>
-      Boys
-    </option>
+                    <option value="male" <%=selectedGender==='male' ? 'selected' : '' %>>
+                        Boys
+                    </option>
 
-    <option value="female" <%= selectedGender === 'female' ? 'selected' : '' %>>
-      Girls
-    </option>
+                    <option value="female" <%=selectedGender==='female' ? 'selected' : '' %>>
+                        Girls
+                    </option>
 
-  </select>
-</form>
+                </select>
+            </form>
             <div class="max-w-7xl mx-auto px-4">
-            <div class="product-grid">
+                <div class="product-grid">
 
-                <% if (Googles.length===0) { %>
-                    <p style="text-align:center; font-size:1.2rem;">
-                        No luxury watches available
-                    </p>
-                    <% } %>
+                    <% if (Googles.length===0) { %>
+                        <p style="text-align:center; font-size:1.2rem;">
+                            No luxury watches available
+                        </p>
+                        <% } %>
 
-                        <% Googles.forEach(Gogles=> { %>
-                            <div class="product-card">
+                            <% Googles.forEach(Gogles=> { %>
+                                <div class="product-card">
 
-                                <div style="position: relative;">
-                                    <div
-                                        style="height:30px; width:30px; position:absolute; top:2%; right:2%; z-index:50000;">
-                                        <i class="fa-solid fa-heart heart" onclick="toggleFav(this,'<%= Gogles._id %>')"></i>
-                                    </div>
-
-                                    <img src="<%= Gogles.images[0] %>" class="product-img" alt="<%= Gogles.title %>">
-                                </div>
-
-                                <div class="product-content">
-                                    <div class="product-title">
-                                        <%= Gogles.title %>
-                                    </div>
-                                    <p style="color:blue; font-size:0.9rem; text-transform:capitalize;">
-                                        <%= Gogles.gender %>
-                                    </p>
-
-                                    <div class="rating">★ 4.7</div>
-
-                                    <div style="display:flex; gap:10px;">
-                                        <div class="product-price">₹<%= Gogles.price %>
+                                    <div style="position: relative;">
+                                        <div
+                                            style="height:30px; width:30px; position:absolute; top:2%; right:2%; z-index:50000;">
+                                            <button
+                                                class="remove-wish heart <%= wishlistIds.includes(Gogles._id.toString()) ? 'active' : '' %>"
+                                                onclick="toggleFav(this, '<%= Gogles._id %>')">
+                                                <i class="fa-solid fa-heart"></i>
+                                            </button>
                                         </div>
 
-                                        <% if (Gogles.offerPercentage> 0) { %>
-                                            <div class="product-offer">-<%= Gogles.offerPercentage %>%</div>
-                                            <% } %>
+                                        <img src="<%= Gogles.images[0] %>" class="product-img"
+                                            alt="<%= Gogles.title %>">
                                     </div>
 
-                                    <div class="offer-price">
-                                        ₹<%= Gogles.offerPrice || Gogles.price %>
+                                    <div class="product-content">
+                                        <div class="product-title">
+                                            <%= Gogles.title %>
+                                        </div>
+                                        <p style="color:blue; font-size:0.9rem; text-transform:capitalize;">
+                                            <%= Gogles.gender %>
+                                        </p>
+
+                                        <div class="rating">★ 4.7</div>
+
+                                        <div style="display:flex; gap:10px;">
+                                            <div class="product-price">₹<%= Gogles.price %>
+                                            </div>
+
+                                            <% if (Gogles.offerPercentage> 0) { %>
+                                                <div class="product-offer">-<%= Gogles.offerPercentage %>%</div>
+                                                <% } %>
+                                        </div>
+
+                                        <div class="offer-price">
+                                            ₹<%= Gogles.offerPrice || Gogles.price %>
+                                        </div>
+
+                                        <div class="divbtn">
+                                            <a href="/product/<%= Gogles._id %>">
+                                                <button class="buy-btn">Buy Now</button>
+                                            </a>
+                                        </div>
                                     </div>
 
-                                    <div class="divbtn">
-                                        <a href="/product/<%= Gogles._id %>">
-                                            <button class="buy-btn">Buy Now</button>
-                                        </a>
-                                    </div>
                                 </div>
+                                <% }) %>
 
-                            </div>
-                            <% }) %>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================================== Footer Start ===================================== -->
-
-        <footer class="footer">
-            <div class="footer-container">
-
-                <!-- Social icons -->
-                <div class="social-icons">
-                    <a href="https://www.facebook.com/people/Rider-Point/100093645953028/?rdid=fqUg0qUNMZ2bMmLX&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F12Kmn9poGWZ%2F"
-                        class="facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/ridershoespoint171/?igsh=ZnU1cG5jbjN6NmFu#" class="instagram"><i
-                            class="fab fa-instagram"></i></a>
-                    <!-- <a href="https://www.linkedin.com/in/rt-solution-7200a838b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="linkedin"><i class="fab fa-linkedin-in"></i></a> -->
-                    <a href="https://www.youtube.com/@riderpoint171" class="pinterest"><i
-                            class="fab fa-youtube"></i></a>
-                </div>
-
-                <!-- Links -->
-                <div class="infos">
-                    <a href="aboutus.html" class="footer-link">About Us</a>
-                    <a href="contactus.html" class="footer-link">Contact Us</a>
-                    <a href="privacypolicy.html" class="footer-link">Privacy Policy</a>
-                    <a href="termscondition.html" class="footer-link">Terms & Conditions</a>
-                    <a href="dmca.html" class="footer-link">DMCA</a>
-                </div>
-
-                <!-- Copyright -->
-                <div class="copyright">
-                    © 2025 Ridershoes | All Rights Reserved
                 </div>
 
             </div>
-        </footer>
 
 
-        <div class="whatsapp">
-            <a href="https://wa.me/917462844102?text=Hello!%20I%20want%20to%20know%20more%20about%20your%20services."
-                target="_blank">
-                <div class="whatsapp1"></div>
-            </a>
-        </div>
+            <!-- ================================== Footer Start ===================================== -->
+
+            <footer class="footer">
+                <div class="footer-container">
+
+                    <!-- Social icons -->
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/people/Rider-Point/100093645953028/?rdid=fqUg0qUNMZ2bMmLX&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F12Kmn9poGWZ%2F"
+                            class="facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/ridershoespoint171/?igsh=ZnU1cG5jbjN6NmFu#"
+                            class="instagram"><i class="fab fa-instagram"></i></a>
+                        <!-- <a href="https://www.linkedin.com/in/rt-solution-7200a838b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="linkedin"><i class="fab fa-linkedin-in"></i></a> -->
+                        <a href="https://www.youtube.com/@riderpoint171" class="pinterest"><i
+                                class="fab fa-youtube"></i></a>
+                    </div>
+
+                    <!-- Links -->
+                    <div class="infos">
+                        <a href="aboutus.html" class="footer-link">About Us</a>
+                        <a href="contactus.html" class="footer-link">Contact Us</a>
+                        <a href="privacypolicy.html" class="footer-link">Privacy Policy</a>
+                        <a href="termscondition.html" class="footer-link">Terms & Conditions</a>
+                        <a href="dmca.html" class="footer-link">DMCA</a>
+                    </div>
+
+                    <!-- Copyright -->
+                    <div class="copyright">
+                        © 2025 Ridershoes | All Rights Reserved
+                    </div>
+
+                </div>
+            </footer>
+
+
+            <div class="whatsapp">
+                <a href="https://wa.me/917462844102?text=Hello!%20I%20want%20to%20know%20more%20about%20your%20services."
+                    target="_blank">
+                    <div class="whatsapp1"></div>
+                </a>
+            </div>
 
         </div>
 

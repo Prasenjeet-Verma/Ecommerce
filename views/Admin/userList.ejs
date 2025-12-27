@@ -1,152 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Users | Rider Admin</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/adminuser-list.css">
-  </head>
-  <body>
-    <header class="mobile-header">
-      <span style="font-weight: 800"><%- admin.username %></span>
-      <i class="fa-solid fa-bars" onclick="toggleSidebar()"></i>
-    </header>
 
-    <aside class="sidebar" id="sidebar">
-      <h2><i class="fa-solid fa-bolt" style="margin-bottom: 2rem;"></i><%- admin.username %></h2>
-      <nav>
-        <a href="/admin-home" class="nav-link"
-          ><i class="fa-solid fa-chart-line"></i> Dashboard</a
-        >
-        <a href="/admin-userlist" class="nav-link" style="background-color: black;"
-          ><i class="fa-solid fa-users"></i> My Users</a
-        >
-        <a href="/admin-howmanyshoesuploaded" class="nav-link active"
-          ><i class="fa-solid fa-shoe-prints"></i> Add Shoes</a
-        >
-        <a href="/admin-howmanyglassesuploaded" class="nav-link active"
-          ><i class="fa-solid fa-glasses"></i></i> Add Glasses</a
-        >
-        <a href="/admin-howmanywatchesuploaded" class="nav-link active"
-          ><i class="fa-solid fa-stopwatch"></i> Add Watches</a
-        >
-        <a href="/admin-howmanyclothesuploaded" class="nav-link active"
-          ><i class="fa-solid fa-shirt"></i> Add Clothes</a
-        >
-        <a href="admin-newoder.html" class="nav-link"
-          ><i class="fa-solid fa-cart-shopping"></i> New Orders</a
-        >
-        <a href="admin.order-history.html" class="nav-link"
-          ><i class="fa-solid fa-cart-shopping"></i> Orders History</a
-        >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users | Rider Admin</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/adminuser-list.css">
+</head>
 
-        <a href="/logout" class="nav-link"
-          ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
-        >
+<body>
+  <header class="mobile-header">
+    <span style="font-weight: 800"><%- admin.username %></span>
+    <i class="fa-solid fa-bars" onclick="toggleSidebar()"></i>
+  </header>
 
-      </nav>
-    </aside>
+  <aside class="sidebar" id="sidebar">
+    <h2><i class="fa-solid fa-bolt" style="margin-bottom: 2rem;"></i><%- admin.username %></h2>
+    <nav>
+      <a href="/admin-home" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+      <a href="/admin-userlist" class="nav-link" style="background-color: black;"><i class="fa-solid fa-users"></i> My
+        Users</a>
+      <a href="/admin-howmanyshoesuploaded" class="nav-link active"><i class="fa-solid fa-shoe-prints"></i> Add
+        Shoes</a>
+      <a href="/admin-howmanyglassesuploaded" class="nav-link active"><i class="fa-solid fa-glasses"></i></i> Add
+        Glasses</a>
+      <a href="/admin-howmanywatchesuploaded" class="nav-link active"><i class="fa-solid fa-stopwatch"></i> Add
+        Watches</a>
+      <a href="/admin-howmanyclothesuploaded" class="nav-link active"><i class="fa-solid fa-shirt"></i> Add Clothes</a>
 
-    <main class="main-content">
-      <header
-        style="
+      <a href="/admin-howmanybagsuploaded" class="nav-link active"><i class="fa-solid fa-bag-shopping"></i> Add Bags</a>
+
+      <a href="admin-newoder.html" class="nav-link"><i class="fa-solid fa-cart-shopping"></i> New Orders</a>
+      <a href="admin.order-history.html" class="nav-link"><i class="fa-solid fa-cart-shopping"></i> Orders History</a>
+
+      <a href="/logout" class="nav-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header style="
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 2rem;
-        "
-      >
-        <div>
-          <h1>User Management</h1>
-          <p style="color: #64748b">
-            Manage customers and administrative access
-          </p>
-        </div>
-      </header>
+        ">
+      <div>
+        <h1>User Management</h1>
+        <p style="color: #64748b">
+          Manage customers and administrative access
+        </p>
+      </div>
+    </header>
 
-      <div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>User</th>
-        <th>Role</th>
-        <th>Joined Date</th>
-        <th>Total Spend</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Joined Date</th>
+            <th>Total Spend</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
 
-    <tbody id="userList">
-      <% if (users.length === 0) { %>
-        <tr>
-          <td colspan="6" style="text-align:center;">No users found</td>
-        </tr>
-      <% } %>
-
-      <% users.forEach(user => { %>
-        <tr>
-          <!-- USER INFO -->
-          <td>
-            <div class="user-cell">
-              <div class="user-avatar" style="background:#fee2e2">
-                <%= user.username.substring(0,2).toUpperCase() %>
-              </div>
-              <div class="user-info">
-                <span class="name"><%= user.username %></span>
-                <span class="email"><%= user.emailAddress %></span>
-              </div>
-            </div>
-          </td>
-
-          <!-- ROLE -->
-          <td><%= user.role === "user" ? "Customer" : user.role %></td>
-
-          <!-- JOINED DATE -->
-          <td>
-            <%= new Date(user.createdAt).toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            }) %>
-          </td>
-
-          <!-- TOTAL SPEND -->
-          <td style="font-weight:700;">
-            ₹ <%= user.totalSpend.toLocaleString("en-IN") %>
-          </td>
-
-          <!-- STATUS -->
-          <td>
-            <% if (user.userStatus === "active") { %>
-              <span class="badge status-active">Active</span>
-            <% } else { %>
-              <span class="badge status-suspended">Suspended</span>
+        <tbody id="userList">
+          <% if (users.length===0) { %>
+            <tr>
+              <td colspan="6" style="text-align:center;">No users found</td>
+            </tr>
             <% } %>
-          </td>
 
-          <!-- ACTION -->
-          <td>
-            <a href="/admin-seeuseralldetails/<%= user._id %>">
-              <button class="btn-action">View Profile</button>
-            </a>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</div>
+              <% users.forEach(user=> { %>
+                <tr>
+                  <!-- USER INFO -->
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar" style="background:#fee2e2">
+                        <%= user.username.substring(0,2).toUpperCase() %>
+                      </div>
+                      <div class="user-info">
+                        <span class="name">
+                          <%= user.username %>
+                        </span>
+                        <span class="email">
+                          <%= user.emailAddress %>
+                        </span>
+                      </div>
+                    </div>
+                  </td>
 
-    </main>
+                  <!-- ROLE -->
+                  <td>
+                    <%= user.role==="user" ? "Customer" : user.role %>
+                  </td>
 
-    <script>
-      function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("active");
-      }
-    </script>
-  </body>
+                  <!-- JOINED DATE -->
+                  <td>
+                    <%= new Date(user.createdAt).toLocaleDateString("en-IN", { day: "2-digit" , month: "short" ,
+                      year: "numeric" , }) %>
+                  </td>
+
+                  <!-- TOTAL SPEND -->
+                  <td style="font-weight:700;">
+                    ₹ <%= user.totalSpend.toLocaleString("en-IN") %>
+                  </td>
+
+                  <!-- STATUS -->
+                  <td>
+                    <% if (user.userStatus==="active" ) { %>
+                      <span class="badge status-active">Active</span>
+                      <% } else { %>
+                        <span class="badge status-suspended">Suspended</span>
+                        <% } %>
+                  </td>
+
+                  <!-- ACTION -->
+                  <td>
+                    <a href="/admin-seeuseralldetails/<%= user._id %>">
+                      <button class="btn-action">View Profile</button>
+                    </a>
+                  </td>
+                </tr>
+                <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+  </script>
+</body>
+
 </html>

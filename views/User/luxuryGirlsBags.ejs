@@ -44,7 +44,6 @@
 <body class="text-gray-800 font-sans">
 
    <%- include('../partials/userHeader') %>
-
     
 <!-- +++++++++++++++++++++++++++  Slider Banner +++++++++++++++++++++++ -->
  <div class="mbanner" style="display: non;">
@@ -153,50 +152,49 @@
 <!-- =================================== Body Start ===================================== -->
 
 
+    
     <div style=" margin-top: 1rem;">
-      <div class="product-grid">
+   <div class="product-grid">
 
-  <% if (watches.length === 0) { %>
+  <% if (bags.length === 0) { %>
     <p style="text-align:center; font-size:1.2rem;">
-      No luxury watches available
+      No luxury bags available
     </p>
   <% } %>
 
-  <% watches.forEach(watch => { %>
+  <% bags.forEach(bag => { %>
     <div class="product-card">
 
       <div style="position: relative;">
         <div style="height:30px; width:30px; position:absolute; top:2%; right:2%; z-index:50000;">
-                   <button 
-  class="remove-wish heart <%= wishlistIds.includes(watch._id.toString()) ? 'active' : '' %>"
-  onclick="toggleFav(this, '<%= watch._id %>')"
+         <button 
+  class="remove-wish heart <%= wishlistIds.includes(bag._id.toString()) ? 'active' : '' %>"
+  onclick="toggleFav(this, '<%= bag._id %>')"
 >
   <i class="fa-solid fa-heart"></i>
 </button>
         </div>
 
-        <img src="<%= watch.images[0] %>" class="product-img" alt="<%= watch.title %>">
+        <img src="<%= bag.images[0] %>" class="product-img" alt="<%= bag.title %>">
       </div>
 
       <div class="product-content">
-        <div class="product-title"><%= watch.title %></div>
-
+        <div class="product-title"><%= bag.title %></div>
         <div class="rating">★ 4.7</div>
 
         <div style="display:flex; gap:10px;">
-          <div class="product-price">₹<%= watch.price %></div>
-
-          <% if (watch.offerPercentage > 0) { %>
-            <div class="product-offer">-<%= watch.offerPercentage %>%</div>
+          <div class="product-price">₹<%= bag.price %></div>
+          <% if (bag.offerPercentage > 0) { %>
+            <div class="product-offer">-<%= bag.offerPercentage %>%</div>
           <% } %>
         </div>
 
         <div class="offer-price">
-          ₹<%= watch.offerPrice || watch.price %>
+          ₹<%= bag.offerPrice || bag.price %>
         </div>
 
         <div class="divbtn">
-          <a href="/product/<%= watch._id %>">
+          <a href="/product/<%= bag._id %>">
             <button class="buy-btn">Buy Now</button>
           </a>
         </div>
