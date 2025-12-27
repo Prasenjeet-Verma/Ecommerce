@@ -119,7 +119,9 @@
 
       <div class="product-info">
         <h3 class="shoe-name"><%= product.title %></h3>
-
+     <p style="color:gray; font-size:13px;">
+              <%= product.description %>
+            </p>
         <p class="shoe-price">₹<%= product.price %></p>
 
         <% if (product.offerPercentage > 0) { %>
@@ -173,6 +175,11 @@
         <label>Price (₹)</label>
         <input type="number" name="price" required />
       </div>
+
+           <div class="form-group">
+          <label>Description</label>
+          <textarea name="description" rows="3" placeholder="Enter product description" required></textarea>
+        </div>
 
       <div class="form-group">
         <label>Offer (%)</label>
@@ -240,6 +247,11 @@
         <label>Price (₹)</label>
         <input type="number" name="price" id="editPrice" required />
       </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea name="description" id="editDescription" rows="3" required></textarea>
+        </div>
 
       <div class="form-group">
         <label>Offer (%)</label>

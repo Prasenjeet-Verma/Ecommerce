@@ -64,6 +64,11 @@
         <a href="/admin-howmanyclothesuploaded" class="nav-link active"
           ><i class="fa-solid fa-shirt"></i> Add Clothes</a
         >
+
+   <a href="/admin-howmanybagsuploaded" class="nav-link active"
+          ><i class="fa-solid fa-shirt"></i> Add Bags</a
+        >
+
         <a href="admin-newoder.html" class="nav-link"
           ><i class="fa-solid fa-cart-shopping"></i> New Orders</a
         >
@@ -92,7 +97,7 @@
         <h1>Products</h1>
 
     <div class="select-wrapper">
-  <select id="Display" onchange="filterglasses(this.value)">
+  <select id="Display" onchange="filterbags(this.value)">
     <option value="all" <%= selectedFilter === 'all' ? 'selected' : '' %>>
       All
     </option>
@@ -156,10 +161,10 @@
 
     </main>
 
-    <!-- ============================== Add Glasses Modal ===================== -->
+    <!-- ============================== Add Bags Modal ===================== -->
 
    <form
-  action="/admin-howmanyglassesuploaded"
+  action="/admin-howmanybagsuploaded"
   method="POST"
   enctype="multipart/form-data"
 >
@@ -168,7 +173,7 @@
       <h2>Add New Glasses</h2>
 
       <div class="form-group">
-        <label>Glasses Name</label>
+        <label>Bags Name</label>
         <input type="text" name="title" required />
       </div>
 
@@ -212,7 +217,7 @@
       </div>
 
       <!-- Hidden -->
-      <input type="hidden" name="category" value="glasses" />
+      <input type="hidden" name="category" value="bags" />
 
       <div class="modal-btns">
         <button type="button" class="btn-main btn-cancel" onclick="closeModal('addModal')">
@@ -228,7 +233,7 @@
 <!-- ============================== Edit Modal ===================== -->
 
    <form
-  action="/admin-editglassesproducts"
+  action="/admin-editbagsproducts"
   method="POST"
   enctype="multipart/form-data"
 >
@@ -310,6 +315,6 @@
     </div>
   </div>
 </form>
-      <script src="/js/glassesProduct.js"></script>
+      <script src="/js/bagsProduct.js"></script>
   </body>
 </html>

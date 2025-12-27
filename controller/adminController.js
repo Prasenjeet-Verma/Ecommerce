@@ -297,6 +297,7 @@ exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
     const {
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -332,6 +333,7 @@ exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
     const product = new Product({
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage: offer,
       totalStock,
       gender,
@@ -369,6 +371,7 @@ exports.postAdminShoesEditProducts = async (req, res, next) => {
       productId,
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -394,6 +397,7 @@ exports.postAdminShoesEditProducts = async (req, res, next) => {
     // ✏ UPDATE BASIC FIELDS
     product.title = title;
     product.price = price;
+    product.description = description; // 👈 UPDATE
     product.offerPercentage = offerPercentage || 0;
     product.totalStock = totalStock;
     product.gender = gender;
@@ -480,6 +484,7 @@ exports.postAdminHowManyGlassesProductUploaded = async (req, res, next) => {
     const {
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -506,6 +511,7 @@ exports.postAdminHowManyGlassesProductUploaded = async (req, res, next) => {
     const product = new Product({
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage: offer,
       totalStock,
       gender,
@@ -540,6 +546,7 @@ exports.postAdminGlassesEditProducts = async (req, res, next) => {
       productId,
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -556,6 +563,7 @@ exports.postAdminGlassesEditProducts = async (req, res, next) => {
     product.title = title;
     product.price = price;
     product.offerPercentage = offerPercentage || 0;
+    product.description = description; // 👈 UPDATE
     product.totalStock = totalStock;
     product.gender = gender;
     product.status = status;
@@ -638,6 +646,7 @@ exports.postAdminHowManyWatchesUploaded = async (req, res, next) => {
     const {
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -663,6 +672,7 @@ exports.postAdminHowManyWatchesUploaded = async (req, res, next) => {
     const product = new Product({
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage: offer,
       totalStock,
       gender,
@@ -698,6 +708,7 @@ exports.postAdminWatchesEditProducts = async (req, res, next) => {
       productId,
       title,
       price,
+      description,   // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -714,6 +725,7 @@ exports.postAdminWatchesEditProducts = async (req, res, next) => {
     // ✏ UPDATE BASIC FIELDS
     product.title = title;
     product.price = price;
+    product.description = description; // 👈 UPDATE
     product.offerPercentage = offerPercentage || 0;
     product.totalStock = totalStock;
     product.gender = gender;
@@ -800,6 +812,7 @@ exports.postAdminHowManyClothesUploaded = async (req, res, next) => {
 
     const {
       title,
+       description,   // 👈 SAVE
       price,
       offerPercentage,
       totalStock,
@@ -835,6 +848,7 @@ exports.postAdminHowManyClothesUploaded = async (req, res, next) => {
     // 🧠 CREATE PRODUCT
     const product = new Product({
       title,
+      description,   // 👈 ADD
       price,
       offerPercentage: offer,
       totalStock,
@@ -871,6 +885,7 @@ exports.postAdminClothesEditProducts = async (req, res, next) => {
     const {
       productId,
       title,
+       description,   // 👈 ADD
       price,
       offerPercentage,
       totalStock,
@@ -896,6 +911,7 @@ exports.postAdminClothesEditProducts = async (req, res, next) => {
 
     // ✏ UPDATE BASIC FIELDS
     product.title = title;
+    product.description = description; // 👈 UPDATE
     product.price = price;
     product.offerPercentage = offerPercentage || 0;
     product.totalStock = totalStock;
@@ -928,3 +944,168 @@ exports.postAdminClothesEditProducts = async (req, res, next) => {
   }
 };
 
+
+exports.getAdminHowManyBagsUploaded = async (req, res, next) => {
+  try {
+    // 🔐 SESSION + LOGIN CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    const admin = req.session.user;
+
+    // 🔒 ROLE CHECK (important)
+    if (admin.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    // 🔍 FILTER FROM QUERY
+    const filter = req.query.filter || "all";
+
+    let findQuery = { category: "bags" };
+
+    if (filter === "show") {
+      findQuery.status = "active";
+    } else if (filter === "hide") {
+      findQuery.status = "inactive";
+    }
+
+    // 📦 FETCH PRODUCTS
+    const products = await Product.find(findQuery).sort({ createdAt: -1 });
+
+    // 🖥 RENDER
+    res.render("Admin/adminAllBagsProducts", {
+      admin,
+      products,
+      selectedFilter: filter,
+      isLoggedIn: req.session.isLoggedIn,
+    });
+
+  } catch (err) {
+    console.error("❌ Get Bags Error:", err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.postAdminHowManyBagsUploaded = async (req, res, next) => {
+   try {
+    // 🔐 SESSION + ROLE CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    const admin = req.session.user;
+    if (admin.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    const {
+      title,
+      price,
+      description,   // 👈 ADD
+      offerPercentage,
+      totalStock,
+      gender,
+      category,
+    } = req.body;
+
+    // ✅ SAFE OFFER VALUE
+    const offer = Number(offerPercentage) || 0;
+
+    // 🖼 IMAGE VALIDATION
+    if (!req.files || req.files.length < 1) {
+      return res.status(400).send("Minimum 1 image required");
+    }
+
+    // ☁ CLOUDINARY UPLOAD
+     let imageUrls = [];
+
+     for (let file of req.files) {
+      const url = await uploadToPhpServer(file.path);
+      imageUrls.push(url);
+    }
+
+    // 🧠 CREATE PRODUCT
+    const product = new Product({
+      title,
+      price,
+      description,   // 👈 ADD
+      offerPercentage: offer,
+      totalStock,
+      gender,
+      category, // "bags"
+      images: imageUrls,
+      createdBy: admin._id,
+    });
+
+    await product.save();
+
+    console.log("✅ Bags added successfully");
+    res.redirect("/admin-howmanybagsuploaded");
+
+  } catch (err) {
+    console.error("❌ Add Bags Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+}
+
+exports.postAdminBagsEditProducts = async (req, res, next) => {
+   try {
+    // 🔐 LOGIN + ROLE CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    if (req.session.user.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    const {
+      productId,
+      title,
+      price,
+      description,   // 👈 ADD
+      offerPercentage,
+      totalStock,
+      gender,
+      status,
+    } = req.body;
+
+    // 🧠 FIND PRODUCT
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+
+    // ✏ UPDATE BASIC FIELDS
+    product.title = title;
+    product.price = price;
+    product.offerPercentage = offerPercentage || 0;
+    product.description = description; // 👈 UPDATE
+    product.totalStock = totalStock;
+    product.gender = gender;
+    product.status = status;
+
+    // 🖼 IMAGE UPDATE (OPTIONAL PHP UPLOAD)
+    if (req.files && req.files.length > 0) {
+      let imageUrls = [];
+
+      for (let file of req.files) {
+        const url = await uploadToPhpServer(file.path);
+        imageUrls.push(url);
+      }
+
+      product.images = imageUrls; // 🔥 replace old images
+    }
+    // else → keep old images
+
+    await product.save();
+
+    console.log("✅ Bags updated:", product.title);
+
+    return res.redirect("/admin-howmanybagsuploaded");
+  } catch (err) {
+    console.error("❌ Edit Bags Error:", err);
+    res.status(500).send("Update failed");
+  }
+};

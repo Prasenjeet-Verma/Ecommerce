@@ -54,7 +54,7 @@ window.onclick = function (event) {
 
 
 
-function filterglasses(value) {
+function filterbags(value) {
   if (value === "all") {
     window.location.href = "/admin-howmanyglassesuploaded";
   } else {

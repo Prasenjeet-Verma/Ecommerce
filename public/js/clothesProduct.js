@@ -22,23 +22,22 @@ function openEditModal(product) {
   document.getElementById("editPrice").value = product.price;
   document.getElementById("editOffer").value = product.offerPercentage || 0;
   document.getElementById("editStock").value = product.totalStock;
-
+  // 🔥 DESCRIPTION
+  document.getElementById("editDescription").value = product.description || "";
   document.getElementById("editGender").value = product.gender;
   document.getElementById("editBrand").value = product.brand;
   document.getElementById("editStatus").value = product.status;
 
   // sizes
-  document
-    .querySelectorAll('#editModal input[name="sizes"]')
-    .forEach(cb => {
-      cb.checked = product.sizes.includes(Number(cb.value));
-    });
+  document.querySelectorAll('#editModal input[name="sizes"]').forEach((cb) => {
+    cb.checked = product.sizes.includes(Number(cb.value));
+  });
 
   // 🔥 IMAGE PREVIEW
   const preview = document.getElementById("editImagePreview");
   preview.innerHTML = "";
 
-  product.images.forEach(img => {
+  product.images.forEach((img) => {
     const image = document.createElement("img");
     image.src = img;
     image.style.width = "70px";
@@ -51,7 +50,6 @@ function openEditModal(product) {
   openModal("editModal");
 }
 
-
 // Close on outside click
 window.onclick = function (event) {
   if (event.target.classList.contains("modal-overlay")) {
@@ -63,27 +61,26 @@ function filterClothes(value) {
   if (value === "all") {
     window.location.href = "/admin-howmanyclothesuploaded";
   } else {
-    window.location.href =
-      "/admin-howmanyclothesuploaded?filter=" + value;
+    window.location.href = "/admin-howmanyclothesuploaded?filter=" + value;
   }
 }
 
+document
+  .querySelector('input[name="images"]')
+  .addEventListener("change", (e) => {
+    const files = e.target.files;
 
-
-document.querySelector('input[name="images"]').addEventListener("change", e => {
-  const files = e.target.files;
-
-  if (files.length > 4) {
-    alert("Maximum 4 images allowed");
-    e.target.value = "";
-    return;
-  }
-
-  for (let file of files) {
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Each image must be under 2MB");
+    if (files.length > 4) {
+      alert("Maximum 4 images allowed");
       e.target.value = "";
       return;
     }
-  }
-});
+
+    for (let file of files) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Each image must be under 2MB");
+        e.target.value = "";
+        return;
+      }
+    }
+  });

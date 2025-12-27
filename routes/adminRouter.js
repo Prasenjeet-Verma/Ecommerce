@@ -181,6 +181,46 @@ adminRouter.post(
   adminController.postAdminClothesEditProducts
 );
 
+adminRouter.get('/admin-howmanybagsuploaded', adminController.getAdminHowManyBagsUploaded);
+adminRouter.post(
+  "/admin-howmanybagsuploaded",
+  (req, res, next) => {
+    upload.array("images", 4)(req, res, function (err) {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).send("Each image must be under 2MB");
+        }
+        if (err.code === "LIMIT_FILE_COUNT") {
+          return res.status(400).send("Maximum 4 images allowed");
+        }
+        return res.status(400).send(err.message);
+      }
+      next();
+    });
+  },
+  adminController.postAdminHowManyBagsUploaded
+);
+
+adminRouter.post(
+  "/admin-editbagsproducts",
+  (req, res, next) => {
+    upload.array("images", 4)(req, res, function (err) {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).send("Each image must be under 2MB");
+        }
+        if (err.code === "LIMIT_FILE_COUNT") {
+          return res.status(400).send("Maximum 4 images allowed");
+        }
+        return res.status(400).send(err.message);
+      }
+      next();
+    });
+  },
+  adminController.postAdminBagsEditProducts
+);
+
+
 
 module.exports = adminRouter;
  

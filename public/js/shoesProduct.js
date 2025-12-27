@@ -22,7 +22,7 @@ function openEditModal(product) {
   document.getElementById("editPrice").value = product.price;
   document.getElementById("editOffer").value = product.offerPercentage || 0;
   document.getElementById("editStock").value = product.totalStock;
-
+  document.getElementById("editDescription").value = product.description || "";
   document.getElementById("editGender").value = product.gender;
   document.getElementById("editBrand").value = product.brand;
   document.getElementById("editStatus").value = product.status;
