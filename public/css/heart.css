@@ -1,5 +1,5 @@
 .heart {
-  color: white; /* default */
+  color: gray; /* default */
   font-size: 20px;
   cursor: pointer;
   transition: color 0.3s ease, transform 0.2s ease;

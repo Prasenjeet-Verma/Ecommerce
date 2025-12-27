@@ -42,22 +42,31 @@ const userSchema = new mongoose.Schema(
       default: "active",
     },
 
-    // 🆕 TOTAL SPEND (lifetime)
+    // 🆕 TOTAL SPEND
     totalSpend: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    // 🆕 Total orders placed by user (lifetime)
+    // 🆕 TOTAL ORDERS
     totalOrders: {
       type: Number,
       default: 0,
       min: 0,
     },
-  },
 
-  { timestamps: true }
+    // ❤️ WISHLIST (✅ yahin hona chahiye)
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("User", userSchema);

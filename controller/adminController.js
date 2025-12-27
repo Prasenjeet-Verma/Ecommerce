@@ -1,71 +1,3 @@
-const User = require("../model/userSchema");
-const Product = require("../model/productSchema");
-// const cloudinary = require("../utils/cloudinary");
-const uploadToPhpServer = require("../utils/uploadToPhpServer");
-exports.getAdminHome = async (req, res, next) => {
-  try {
-    // 1️⃣ Login check
-    if (!req.session.isLoggedIn || !req.session.user) {
-      return res.redirect("/login");
-    }
-
-    // 2️⃣ Role check (ONLY ADMIN)
-    if (req.session.user.role !== "admin") {
-      return res.redirect("/login");
-    }
-
-    // 3️⃣ Fetch ALL users with role = "user"
-    const users = await User.find({ role: "user" }).sort({
-      createdAt: -1,
-    });
-
-    // 4️⃣ Render admin page OR send data
-    res.render("Admin/adminHome", {
-      isLoggedIn: req.session.isLoggedIn,
-      admin: req.session.user,
-      users: users,
-    });
-
-    // 🔁 OR (agar API banana hai)
-    // res.status(200).json(users);
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.getAdminUsersList = async (req, res, next) => {
-  try {
-    // 1️⃣ Login check
-    if (!req.session.isLoggedIn || !req.session.user) {
-      return res.redirect("/login");
-    }
-
-    // 2️⃣ Role check (ONLY ADMIN)
-    if (req.session.user.role !== "admin") {
-      return res.redirect("/login");
-    }
-
-    // 3️⃣ Fetch ALL users with role = "user"
-    const users = await User.find({ role: "user" }).sort({
-      createdAt: -1,
-    });
-
-    // 4️⃣ Render admin page OR send data
-    res.render("Admin/userList", {
-      isLoggedIn: req.session.isLoggedIn,
-      admin: req.session.user,
-      users: users,
-    });
-
-    // 🔁 OR (agar API banana hai)
-    // res.status(200).json(users);
-  } catch (error) {
-    next(error);
-  }
-};
-
-
-
 // exports.getAdminHowManyShoesUploaded = async (req, res, next) => {
 //   try {
 //     // 🔐 admin check
@@ -238,6 +170,75 @@ exports.getAdminUsersList = async (req, res, next) => {
 //   }
 // };
 
+
+const User = require("../model/userSchema");
+const Product = require("../model/productSchema");
+// const cloudinary = require("../utils/cloudinary");
+const uploadToPhpServer = require("../utils/uploadToPhpServer");
+exports.getAdminHome = async (req, res, next) => {
+  try {
+    // 1️⃣ Login check
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+
+    // 2️⃣ Role check (ONLY ADMIN)
+    if (req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    // 3️⃣ Fetch ALL users with role = "user"
+    const users = await User.find({ role: "user" }).sort({
+      createdAt: -1,
+    });
+
+    // 4️⃣ Render admin page OR send data
+    res.render("Admin/adminHome", {
+      isLoggedIn: req.session.isLoggedIn,
+      admin: req.session.user,
+      users: users,
+    });
+
+    // 🔁 OR (agar API banana hai)
+    // res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getAdminUsersList = async (req, res, next) => {
+  try {
+    // 1️⃣ Login check
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+
+    // 2️⃣ Role check (ONLY ADMIN)
+    if (req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    // 3️⃣ Fetch ALL users with role = "user"
+    const users = await User.find({ role: "user" }).sort({
+      createdAt: -1,
+    });
+
+    // 4️⃣ Render admin page OR send data
+    res.render("Admin/userList", {
+      isLoggedIn: req.session.isLoggedIn,
+      admin: req.session.user,
+      users: users,
+    });
+
+    // 🔁 OR (agar API banana hai)
+    // res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
 exports.getAdminHowManyShoesUploaded = async (req, res, next) => {
   try {
     // 🔐 SESSION + LOGIN CHECK
@@ -322,9 +323,9 @@ exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
     // 📦 SIZES FIX
     let sizeArray = [];
     if (Array.isArray(sizes)) {
-      sizeArray = sizes.map(Number);
+      sizeArray = sizes.map(String);
     } else if (sizes) {
-      sizeArray = [Number(sizes)];
+      sizeArray = [String(sizes)];
     }
 
     // 🧠 CREATE PRODUCT
@@ -385,9 +386,9 @@ exports.postAdminShoesEditProducts = async (req, res, next) => {
     // 👟 SIZES FIX
     let sizeArray = [];
     if (Array.isArray(sizes)) {
-      sizeArray = sizes.map(Number);
+      sizeArray = sizes.map(String);
     } else if (sizes) {
-      sizeArray = [Number(sizes)];
+      sizeArray = [String(sizes)];
     }
 
     // ✏ UPDATE BASIC FIELDS
@@ -826,9 +827,9 @@ exports.postAdminHowManyClothesUploaded = async (req, res, next) => {
     // 📦 SIZES FIX
     let sizeArray = [];
     if (Array.isArray(sizes)) {
-      sizeArray = sizes.map(Number);
+      sizeArray = sizes.map(String);
     } else if (sizes) {
-      sizeArray = [Number(sizes)];
+      sizeArray = [String (sizes)];
     }
 
     // 🧠 CREATE PRODUCT
@@ -888,9 +889,9 @@ exports.postAdminClothesEditProducts = async (req, res, next) => {
     // 👟 SIZES FIX
     let sizeArray = [];
     if (Array.isArray(sizes)) {
-      sizeArray = sizes.map(Number);
+      sizeArray = sizes.map(String);
     } else if (sizes) {
-      sizeArray = [Number(sizes)];
+      sizeArray = [String(sizes)];
     }
 
     // ✏ UPDATE BASIC FIELDS
@@ -926,3 +927,4 @@ exports.postAdminClothesEditProducts = async (req, res, next) => {
     res.status(500).send("Update failed");
   }
 };
+
