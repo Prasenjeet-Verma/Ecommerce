@@ -71,6 +71,20 @@ const userSchema = new mongoose.Schema(
       }
     ],
 
+
+    dob: { type: Date },
+    street: { type: String },
+    city: { type: String },
+    pincode: { type: String },
+    state: { type: String },
+    country: { type: String },
+    profilePhoto: {
+      type: String,
+      default: "https://ui-avatars.com/api/?name=Rider+Shoe&background=c084fc&color=fff"
+    },
+
+
+
   },
   {
     timestamps: true,

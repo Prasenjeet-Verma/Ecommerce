@@ -102,8 +102,9 @@ exports.postLogin = [
         _id: user._id.toString(), // ⭐ FIX (ObjectId issue solved)
         username: user.username,
         role: user.role,
+        profilePhoto: user.profilePhoto,
       };
-
+      await req.session.save();
       // ✅ ROLE BASED REDIRECT
       if (user.role === "admin") {
         return res.redirect("/admin-home");

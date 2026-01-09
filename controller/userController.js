@@ -1,6 +1,7 @@
 const User = require("../model/userSchema");
 const Product = require("../model/productSchema");
 const Order = require("../model/orderSchema");
+const uploadToPhpServer = require("../utils/uploadToPhpServer");
 exports.getHome = async (req, res, next) => {
   try {
     // 1️⃣ Not logged in
@@ -633,5 +634,118 @@ exports.getOrderSuccess = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.redirect("/");
+  }
+};
+
+
+exports.getOrderHistory = async (req, res, next) => {
+  try {
+    // 🔐 LOGIN CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+    // 👤 FETCH USER
+    const user = await User.findById(req.session.user._id);
+    // ❌ Invalid user or wrong role
+    if (!user || user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+    // 📜 FETCH ORDERS
+    const orders = await Order.find({ user: user._id }).populate("product");
+    res.render("User/orderHistory", {
+      orders,
+      user: req.session.user,
+      isLoggedIn: req.session.isLoggedIn
+    });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+
+
+// GET PROFILE
+exports.getProfile = async (req, res, next) => {
+  try {
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+
+    const user = await User.findById(req.session.user._id);
+
+    if (!user || user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    res.render("User/profile", {
+      user,
+      isLoggedIn: true,
+    });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+// UPDATE PROFILE (with optional photo)
+exports.updateUserData = async (req, res, next) => {
+  try {
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+
+    const userId = req.session.user._id;
+
+    const {
+      username,
+      phoneNo,
+      emailAddress,
+      dob,
+      street,
+      city,
+      state,
+      country,
+      pincode,
+    } = req.body;
+
+    let profilePhotoUrl;
+
+    // If user uploaded a new profile photo
+    if (req.file) {
+      profilePhotoUrl = await uploadToPhpServer(req.file.path);
+    }
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        username,
+        phoneNo,
+        emailAddress,
+        dob: dob ? new Date(dob) : undefined,
+        street,
+        city,
+        state,
+        country,
+        pincode,
+        ...(profilePhotoUrl && { profilePhoto: profilePhotoUrl }), // only update if uploaded
+      },
+      { new: true, runValidators: true }
+    );
+
+    // Update session
+    req.session.user = {
+  _id: updatedUser._id.toString(),
+  username: updatedUser.username,
+  role: updatedUser.role,
+  profilePhoto: updatedUser.profilePhoto,
+};
+
+
+    res.redirect("/profile");
+  } catch (err) {
+    console.error("❌ Update User Error:", err);
+    res.status(500).send("Update failed, try again.");
   }
 };

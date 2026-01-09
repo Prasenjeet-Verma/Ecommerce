@@ -1,7 +1,7 @@
 const express = require('express');
 const userRouter = express.Router();
 const userController = require('../controller/userController');
-
+const upload = require("../utils/multer"); // your multer config
 
 userRouter.get('/', userController.getHome);
 userRouter.get('/luxuryBoysWatches', userController.getLuxuryBoysWatches);
@@ -16,4 +16,27 @@ userRouter.post('/add-to-cart', userController.postAddToCart);
 userRouter.get('/product/:id', userController.getViewProduct);
 userRouter.get("/order-success/:id", userController.getOrderSuccess);
 userRouter.post('/buy-now', userController.postBuyNowOrder);
+userRouter.get('/order-history', userController.getOrderHistory);
+
+
+// GET PROFILE
+userRouter.get("/profile", userController.getProfile);
+
+// POST UPDATE PROFILE
+userRouter.post(
+  "/update-user-data",
+  (req, res, next) => {
+    upload.single("profilePhoto")(req, res, function (err) {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).send("Image must be under 2MB");
+        }
+        return res.status(400).send(err.message);
+      }
+      next();
+    });
+  },
+  userController.updateUserData
+);
+
 module.exports = userRouter;

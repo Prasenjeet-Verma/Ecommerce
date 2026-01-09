@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile | Rider Shoe</title>
+  <link rel="stylesheet" href="/css/userProfile.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+
+<form action="/update-user-data" method="POST" enctype="multipart/form-data">
+
+  <div class="profile-wrapper">
+
+    <div class="top-nav-icons">
+      <a href="/" class="nav-circle">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+    </div>
+
+    <div class="profile-container">
+
+      <!-- LEFT -->
+      <aside class="glass-card">
+        <div class="avatar-section">
+
+          <div class="avatar-box">
+            <img src="<%= user.profilePhoto %>" id="profilePreview" />
+
+            <div class="edit-badge" onclick="document.getElementById('profilePhotoInput').click()">
+              <i class="fa-solid fa-pen"></i>
+            </div>
+
+            <input type="file" name="profilePhoto" id="profilePhotoInput" hidden accept="image/*" />
+          </div>
+
+          <h3 style="color: var(--color-brand-dark)">
+            <%= user.username %>
+          </h3>
+          <p style="font-size: 0.8rem; opacity: 0.7">Verified Customer</p>
+        </div>
+
+        <nav>
+          <a href="/profile" class="menu-link active"><i class="fa-solid fa-user-circle"></i> Profile</a>
+          <a href="/order-history" class="menu-link"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
+          <a href="/wishlist" class="menu-link"><i class="fa-solid fa-heart"></i> Wishlist</a>
+          <a href="/logout" class="menu-link" style="color:red"><i class="fa-solid fa-power-off"></i> Logout</a>
+        </nav>
+      </aside>
+
+      <!-- RIGHT -->
+      <main class="glass-card">
+
+        <h2>Account Information</h2>
+
+        <div class="form-grid">
+          <input type="text" name="username" value="<%= user.username %>" required />
+          <input type="tel" name="phoneNo" value="<%= user.phoneNo %>" required />
+          <input type="email" name="emailAddress" value="<%= user.emailAddress %>" required />
+          <input type="date" name="dob" value="<%= user.dob ? user.dob.toISOString().split('T')[0] : '' %>" />
+        </div>
+
+        <h3>Address</h3>
+
+        <input type="text" name="street" value="<%= user.street || '' %>" />
+        <input type="text" name="city" value="<%= user.city || '' %>" />
+        <input type="text" name="state" value="<%= user.state || '' %>" />
+        <input type="text" name="country" value="<%= user.country || '' %>" />
+        <input type="text" name="pincode" value="<%= user.pincode || '' %>" />
+
+        <button type="submit" class="save-btn">Save Changes</button>
+
+      </main>
+
+    </div>
+  </div>
+
+</form>
+
+<script>
+document.getElementById("profilePhotoInput").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(file){
+    document.getElementById("profilePreview").src = URL.createObjectURL(file);
+  }
+});
+</script>
+
+</body>
+</html>
