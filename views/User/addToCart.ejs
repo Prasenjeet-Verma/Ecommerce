@@ -1,17 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Your Cart</title>
 
-  <link rel="stylesheet" href="/css/cart.css" />
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    rel="stylesheet"
-  />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rider Shoes</title>
+
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/slider.css">
+  <link rel="stylesheet" href="/css/userbody.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/whatsapp.css">
+  <link rel="stylesheet" href="/css/productstyle.css" />
+  <link rel="stylesheet" href="/css/heart.css">
+  <link rel="stylesheet" href="/css/sopping.css">
+   <link rel="stylesheet" href="/css/cart.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/heart.js"></script>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              light: '#F3E8FF', /* Very light purple */
+              DEFAULT: '#C084FC', /* Medium Purple */
+              dark: '#6B21A8', /* Deep Purple for text */
+              accent: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
 </head>
 
-<body>
+<!-- ========================== Header ============================================-->
+
+<body class="text-gray-800 font-sans">
   <%- include('../partials/userHeader') %>
 
   <div class="cart-container">
@@ -76,7 +109,7 @@
         </div>
 
         <div class="summary-row summary-total">
-          <span>Order Total</span>
+          <span>Total Order</span>
           <span>₹<%= orderTotal %></span>
         </div>
 

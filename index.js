@@ -9,8 +9,10 @@ require("dotenv").config(); // <-- load .env variables
 const rootDir = require("./utils/pathUtils");
 const userRouter = require("./routes/userRouter");
 const adminRouter = require("./routes/adminRouter");
+const paymentRouter = require("./routes/paymentRoutes");
 const loginSignupRouter = require("./routes/loginSignupRouter");
 const User = require("./model/userSchema"); // 🔥 MUST
+
 // ---------------- EXPRESS APP ----------------
 const app = express();
 app.set("view engine", "ejs");
@@ -41,6 +43,7 @@ app.use((req, res, next) => {
   req.isLoggedIn = req.session.isLoggedIn;
   next();
 });
+
 app.use(async (req, res, next) => {
   try {
     res.locals.isLoggedIn = req.session.isLoggedIn || false;
@@ -61,6 +64,39 @@ app.use(async (req, res, next) => {
     next();
   } catch (err) {
     console.error("Wishlist middleware error:", err);
+    next();
+  }
+});
+
+
+app.use(async (req, res, next) => {
+  try {
+    res.locals.isLoggedIn = req.session.isLoggedIn || false;
+    res.locals.user = req.session.user || null;
+
+    res.locals.wishlistIds = [];
+    res.locals.cartProductIds = []; // ✅ ADD THIS
+
+    if (req.session.isLoggedIn && req.session.user) {
+      const user = await User.findById(req.session.user._id)
+        .select("wishlist cart");
+
+      // ❤️ Wishlist
+      if (user?.wishlist?.length) {
+        res.locals.wishlistIds = user.wishlist.map(id => id.toString());
+      }
+
+      // 🛒 Cart
+      if (user?.cart?.length) {
+        res.locals.cartProductIds = user.cart.map(item =>
+          item.product.toString()
+        );
+      }
+    }
+
+    next();
+  } catch (err) {
+    console.error("Global middleware error:", err);
     next();
   }
 });

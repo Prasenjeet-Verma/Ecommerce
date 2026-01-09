@@ -260,3 +260,14 @@ h1 {
     font-size: 2rem;
   }
 }
+
+
+/* new added */
+.size-btn.active-size {
+  background: black;
+  color: white;
+  border: 2px solid black;
+}
+.size-btn:hover {
+  border: 2px solid black;
+}

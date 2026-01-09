@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rider Shoes</title>
+
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/slider.css">
+  <link rel="stylesheet" href="/css/userbody.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/whatsapp.css">
+  <link rel="stylesheet" href="/css/productstyle.css" />
+  <link rel="stylesheet" href="/css/heart.css">
+  <link rel="stylesheet" href="/css/sopping.css">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/heart.js"></script>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              light: '#F3E8FF', /* Very light purple */
+              DEFAULT: '#C084FC', /* Medium Purple */
+              dark: '#6B21A8', /* Deep Purple for text */
+              accent: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+</head>
+
+<!-- ========================== Header ============================================-->
+
+<body class="text-gray-800 font-sans">
+
+  <%- include('../partials/userHeader') %>
+    <div class="container">
+
+      <!-- 🖼️ PRODUCT IMAGE -->
+      <div class="product-gallery">
+
+        <% const isInWishlist=wishlistIds.includes(product._id.toString()); %>
+
+          <button class="wishlist-btn <%= isInWishlist ? 'active' : '' %>"
+            onclick="toggleFav(this, '<%= product._id %>')">
+            <i class="<%= isInWishlist ? 'fa-solid fa-heart' : 'fa-regular fa-heart' %>"></i>
+          </button>
+
+          <img src="<%= product.images[0] %>" class="main-img" alt="<%= product.title %>" />
+      </div>
+
+      <!-- 🧾 PRODUCT INFO -->
+      <main class="glass-panel">
+
+        <span class="brand-tag">
+          <%= product.brand || "Premium Quality" %>
+        </span>
+
+        <h1>
+          <%= product.title %>
+        </h1>
+
+        <!-- 💰 PRICE -->
+        <div class="price">
+          ₹<%= product.offerPrice %>
+
+            <% if (product.offerPercentage> 0) { %>
+              <span class="mrp">₹<%= product.price %></span>
+              <span class="text-green-600 font-bold ml-2">
+                (<%= product.offerPercentage %>% OFF)
+              </span>
+              <% } %>
+        </div>
+
+        <!-- 📄 DESCRIPTION -->
+        <p class="description">
+          <%= product.description || "No description available." %>
+        </p>
+
+        <!-- 👟 SIZE -->
+        <% if (product.category==="shoes" && product.sizes.length) { %>
+          <label class="selector-label">Select Size (UK)</label>
+          <div class="size-grid">
+            <% product.sizes.forEach(size=> { %>
+              <button type="button" class="size-btn" onclick="selectSize('<%= size %>', this)">
+                <%= size %>
+              </button>
+
+              <% }) %>
+          </div>
+          <p id="sizeError" class="text-red-600 text-sm mt-2 hidden">
+            Please select a shoe size
+          </p>
+          <% } %>
+
+            <!-- 🔢 QUANTITY -->
+            <label class="selector-label">Quantity</label>
+            <div class="qty-input">
+              <button class="qty-btn" onclick="updateQty(-1)">
+                <i class="fa-solid fa-minus"></i>
+              </button>
+              <span id="qty-val" class="font-bold">1</span>
+              <button class="qty-btn" onclick="updateQty(1)">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+
+            <!-- 🛒 ACTION BUTTONS -->
+            <div class="action-btns">
+              <button class="btn btn-cart" onclick="addToCart(this, '<%= product._id %>')" <%=isInCart ? "disabled" : ""
+                %>
+                style="<%= isInCart ? 'opacity:0.7;cursor:not-allowed;' : '' %>"
+                  >
+                  <i class="fa-solid fa-cart-plus"></i>
+                  <%= isInCart ? "✔ Added" : "Add to Cart" %>
+              </button>
+
+              <button class="btn btn-buy" onclick="openCheckout()">
+                Buy Now
+              </button>
+
+            </div>
+
+            <!-- 🚚 INFO -->
+            <div class="mt-8 grid grid-cols-2 gap-4 border-t pt-6 text-sm">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-truck-fast"></i> Free Fast Delivery
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-box"></i> Stock: <%= product.totalStock %>
+              </div>
+            </div>
+
+      </main>
+    </div>
+    <!-- 🛒 Buy Now Modal -->
+    <div id="checkoutModal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center">
+
+      <form action="/buy-now" method="POST"
+        class="bg-white w-[90%] max-w-lg rounded-2xl p-6 space-y-4 shadow-xl relative">
+
+        <button type="button" onclick="closeCheckout()" class="absolute top-3 right-3 text-xl">✖</button>
+
+        <h2 class="text-xl font-bold text-brand-dark">Delivery Details</h2>
+
+        <input type="hidden" name="productId" value="<%= product._id %>">
+        <input type="hidden" name="qty" id="buyQty">
+        <input type="hidden" name="size" id="selectedSize">
+
+
+        <div>
+          <label class="block text-sm font-semibold">Full Name</label>
+          <input name="name" required class="w-full border p-2 rounded">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold">Mobile Number</label>
+          <input name="mobile" required pattern="[0-9]{10}" class="w-full border p-2 rounded">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold">Address</label>
+          <textarea name="address" required class="w-full border p-2 rounded"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-semibold">Pincode</label>
+            <input name="pincode" required class="w-full border p-2 rounded">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold">State</label>
+            <input name="state" required class="w-full border p-2 rounded">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold">Payment Method</label>
+
+          <select name="paymentMethod" required class="w-full border p-2 rounded">
+            <option value="COD">Cash on Delivery</option>
+            <option value="ONLINE">UPI / Card</option>
+          </select>
+        </div>
+
+
+        <button class="w-full bg-brand-dark text-white py-3 rounded-xl font-bold">
+          Place Order
+        </button>
+
+      </form>
+    </div>
+
+    <script src="/js/sopping.js"></script>
+    <script src="/js/buynow.js"></script>
+</body>
+
+</html>
