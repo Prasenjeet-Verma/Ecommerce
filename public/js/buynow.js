@@ -2,21 +2,22 @@ let chosenSize = null;
 
 function openCheckout() {
   const sizeError = document.getElementById("sizeError");
+  const sizeInput = document.getElementById("selectedSize");
 
-  // 👟 If size selector exists → validate
-  if (sizeError) {
+  // ✅ Only validate size if size selector exists (i.e., product is shoes)
+  if (sizeError && sizeInput) {
     if (!chosenSize) {
       sizeError.classList.remove("hidden");
-      return;
+      return; // prevent modal from opening
     }
     sizeError.classList.add("hidden");
   }
 
-  // set qty
+  // Set quantity
   const qty = document.getElementById("qty-val").innerText;
   document.getElementById("buyQty").value = qty;
 
-  // open modal
+  // Open modal
   document.getElementById("checkoutModal").classList.remove("hidden");
 }
 
@@ -26,12 +27,11 @@ function closeCheckout() {
 
 function selectSize(size, btn) {
   chosenSize = size;
-  document.getElementById("selectedSize").value = size;
 
-  document.querySelectorAll(".size-btn").forEach(b => {
-    b.classList.remove("active-size");
-  });
+  const sizeInput = document.getElementById("selectedSize");
+  if (sizeInput) sizeInput.value = size;
 
+  document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active-size"));
   btn.classList.add("active-size");
 
   const error = document.getElementById("sizeError");

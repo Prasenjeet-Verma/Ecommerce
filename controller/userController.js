@@ -533,9 +533,6 @@ exports.getViewProduct = async (req, res, next) => {
 exports.postBuyNowOrder = async (req, res) => {
   try {
     const { productId, qty, name, mobile, address, pincode, state, paymentMethod, size } = req.body;
-    if (!size) {
-      return res.status(400).send("Size is required");
-    }
     const userId = req.session.user._id;
 
     const product = await Product.findById(productId);
@@ -546,6 +543,11 @@ exports.postBuyNowOrder = async (req, res) => {
 
     if (product.totalStock < qty) {
       return res.send("Out of stock");
+    }
+
+    // ✅ Only require size if product is shoes
+    if (product.category === "shoes" && !size) {
+      return res.status(400).send("Size is required for shoes");
     }
 
     const price = product.offerPrice;
@@ -559,7 +561,7 @@ exports.postBuyNowOrder = async (req, res) => {
         user: userId,
         product: productId,
         qty,
-            size,   // 👈 VERY IMPORTANT
+        size,   // optional for non-shoes
         price,
         totalAmount,
         name,
@@ -569,8 +571,7 @@ exports.postBuyNowOrder = async (req, res) => {
         state,
       };
 
-      // Redirect to Razorpay / Stripe page
-     return res.send("ONLINE payment gateway integration pending");
+      return res.send("ONLINE payment gateway integration pending");
     }
 
     // ===========================
@@ -589,7 +590,7 @@ exports.postBuyNowOrder = async (req, res) => {
       user: userId,
       product: productId,
       qty,
-      size,   // 👈 save size
+      size: product.category === "shoes" ? size : null,  // save size only for shoes
       price,
       totalAmount,
       name,
@@ -597,8 +598,8 @@ exports.postBuyNowOrder = async (req, res) => {
       address,
       pincode,
       state,
-      paymentMethod: "COD",
-      paymentStatus: "Pending",
+      paymentMethod: paymentMethod === "COD" ? "COD" : "ONLINE",
+      paymentStatus: paymentMethod === "COD" ? "Pending" : "Paid",
       orderStatus: "Confirmed",
     });
 
