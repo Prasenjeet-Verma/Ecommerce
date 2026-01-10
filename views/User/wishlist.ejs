@@ -9,7 +9,7 @@
 
   <link rel="stylesheet" href="/css/wishlist.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-  <script src="/js/heart.js"></script>
+
 </head>
 
 <body>
@@ -75,16 +75,26 @@
                     View Product
                   </button>
                 </a>
+                <% if (product.category==="shoes" && product.sizes && product.sizes.length> 0) { %>
+                  <label for="size-<%= product._id %>" class="selector-label">Select Size (UK)</label>
+                  <select id="size-<%= product._id %>" onchange="selectedSize=this.value" class="size-dropdown">
+                    <option value="" disabled selected>Select</option>
+                    <% product.sizes.forEach(size=> { %>
+                      <option value="<%= size %>">
+                        <%= size %>
+                      </option>
+                      <% }) %>
+                  </select>
+                  <% } %>
+                    <% const isInCart=cartProductIds.includes(product._id.toString()); %>
 
-                <% const isInCart=cartProductIds.includes(product._id.toString()); %>
-
-                  <button class="add-to-cart-btn cart" onclick="addToCart(this, '<%= product._id %>')" <%=isInCart
-                    ? "disabled" : "" %>
-                    style="<%= isInCart ? 'opacity:0.7;cursor:not-allowed;' : '' %>"
-                      >
-                      <i class="fa-solid fa-cart-plus"></i>
-                      <%= isInCart ? "✔ Added" : "Add to Cart" %>
-                  </button>
+                      <button class="add-to-cart-btn cart" onclick="addToCart(this, '<%= product._id %>')" <%=isInCart
+                        ? "disabled" : "" %>
+                        style="<%= isInCart ? 'opacity:0.7;cursor:not-allowed;' : '' %>"
+                          >
+                          <i class="fa-solid fa-cart-plus"></i>
+                          <%= isInCart ? "✔ Added" : "Add to Cart" %>
+                      </button>
 
 
               </div>
@@ -93,7 +103,7 @@
             <% }) %>
         </div>
   </div>
-
+  <script src="/js/heart.js"></script>
   <!-- ♻️ SAME WISHLIST JS -->
 </body>
 

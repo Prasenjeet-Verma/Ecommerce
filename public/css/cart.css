@@ -124,7 +124,7 @@ h2 {
 .remove-item {
   position: absolute;
   top: 1.5rem;
-  right: 0;
+  right: 10px;
   color: #ff4757;
   cursor: pointer;
 }
@@ -203,8 +203,14 @@ h2 {
 }
 
 .hidden {
-  display: none !important;
+  display: none;
 }
+
+/* Summary must NEVER hide */
+aside .glass-panel {
+  display: block !important;
+}
+
 
 .advance-highlight .amount {
   font-size: 2rem;

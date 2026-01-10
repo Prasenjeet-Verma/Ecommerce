@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/css/productstyle.css" />
   <link rel="stylesheet" href="/css/heart.css">
   <link rel="stylesheet" href="/css/sopping.css">
-   <link rel="stylesheet" href="/css/cart.css" />
+  <link rel="stylesheet" href="/css/cart.css" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/js/heart.js"></script>
@@ -47,83 +47,144 @@
 <body class="text-gray-800 font-sans">
   <%- include('../partials/userHeader') %>
 
-  <div class="cart-container">
+    <div class="cart-container">
 
-    <!-- ================= CART ITEMS ================= -->
-    <main>
-      <section class="glass-panel">
-        <h2>
-          <i class="fa-solid fa-cart-shopping"></i>
-          Your Cart (<%= cartItems.length %> Items)
-        </h2>
+      <!-- ================= CART ITEMS ================= -->
+      <main>
+        <section class="glass-panel">
+          <h2>
+            <i class="fa-solid fa-cart-shopping"></i>
+            Your Cart (<%= cartItems.length %> Items)
+          </h2>
 
-        <% if(cartItems.length === 0){ %>
-          <p style="text-align:center;margin-top:20px;">
-            Your cart is empty 🛒
-          </p>
-        <% } %>
+          <% if(cartItems.length===0){ %>
+            <p style="text-align:center;margin-top:20px;">
+              Your cart is empty 🛒
+            </p>
+            <% } %>
 
-        <% cartItems.forEach(item => { %>
-          <div class="cart-item">
+              <% cartItems.forEach(item=> { %>
+                <div class="cart-item">
 
-            <img src="<%= item.image %>" class="product-img" />
+                  <img src="<%= item.image %>" class="product-img" />
 
-            <div class="item-details">
-              <h3><%= item.title %></h3>
+                  <div class="item-details">
+                    <h3>
+                      <%= item.title %>
+                    </h3>
+               <% if(item.size){ %>
+  <p class="item-meta">Size: <%= item.size %></p>
+<% } %>
+                    
+                        <div class="qty-selector">
+                          <button class="qty-btn" onclick="updateQty('<%= item._id %>','dec')">−</button>
+                          <span id="qty-<%= item._id %>">
+                            <%= item.quantity %>
+                          </span>
+                          <button class="qty-btn" onclick="updateQty('<%= item._id %>','inc')">+</button>
+                        </div>
 
-              <% if(item.sizes && item.sizes.length > 0){ %>
-                <p class="item-meta">
-                  Size: <%= item.sizes[0] %>
-                </p>
-              <% } %>
+                        <i class="fa-solid fa-trash-can remove-item" onclick="removeItem('<%= item._id %>')"></i>
+                      </div>
+                      
+                      <p class="item-price">₹<%= item.total %>
+                      </p>
+                    </div>
 
-              <div class="qty-selector">
-                <button class="qty-btn">−</button>
-                <span style="font-weight:bold"><%= item.quantity %></span>
-                <button class="qty-btn">+</button>
-              </div>
+                <% }) %>
+              </section>
+            </main>
+    </div>
+      <!-- ================= SUMMARY ================= -->
+      <aside>
+        <div class="glass-panel">
+          <h2>Order Summary</h2>
 
-              <p class="item-price">₹<%= item.total %></p>
-            </div>
-
-            <i class="fa-solid fa-trash-can remove-item"></i>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₹<%= subtotal %></span>
           </div>
-        <% }) %>
 
-      </section>
-    </main>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span style="color:green;font-weight:bold">FREE</span>
+          </div>
 
-    <!-- ================= SUMMARY ================= -->
-    <aside>
-      <div class="glass-panel">
-        <h2>Order Summary</h2>
+          <div class="summary-row summary-total">
+            <span>Total Order</span>
+            <span>₹<%= orderTotal %></span>
+          </div>
 
-        <div class="summary-row">
-          <span>Subtotal</span>
-          <span>₹<%= subtotal %></span>
+          <button class="checkout-btn" onclick="openCheckout()">
+            Proceed to Checkout
+          </button>
+
+
+          <p class="cod-notice">
+            <i class="fa-solid fa-shield-check"></i>
+            Secure Payment
+          </p>
         </div>
+      </aside>
 
-        <div class="summary-row">
-          <span>Shipping</span>
-          <span style="color:green;font-weight:bold">FREE</span>
-        </div>
-
-        <div class="summary-row summary-total">
-          <span>Total Order</span>
-          <span>₹<%= orderTotal %></span>
-        </div>
-
-        <button class="checkout-btn">
-          Proceed to Checkout
-        </button>
-
-        <p class="cod-notice">
-          <i class="fa-solid fa-shield-check"></i>
-          Secure Payment
-        </p>
       </div>
-    </aside>
+      <!-- 🛒 Buy Now Modal -->
+      <!-- 🛒 Checkout Modal -->
+      <div id="checkoutModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center">
 
-  </div>
+        <form action="/cart/checkout" method="POST"
+          class="bg-white w-[90%] max-w-lg rounded-2xl p-6 space-y-4 shadow-xl relative">
+
+          <button type="button" onclick="closeCheckout()" class="absolute top-3 right-3 text-xl">✖</button>
+
+          <h2 class="text-xl font-bold text-brand-dark">Delivery Details</h2>
+
+          <input type="hidden" name="fromCart" value="true">
+
+          <div>
+            <label class="block text-sm font-semibold">Full Name</label>
+            <input name="name" required class="w-full border p-2 rounded">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold">Mobile Number</label>
+            <input name="mobile" required pattern="[0-9]{10}" class="w-full border p-2 rounded">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold">Address</label>
+            <textarea name="address" required class="w-full border p-2 rounded"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-semibold">Pincode</label>
+              <input name="pincode" required class="w-full border p-2 rounded">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold">State</label>
+              <input name="state" required class="w-full border p-2 rounded">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold">Payment Method</label>
+            <select name="paymentMethod" required class="w-full border p-2 rounded">
+              <option value="COD">Cash on Delivery</option>
+              <option value="ONLINE">UPI / Card</option>
+            </select>
+          </div>
+
+          <button class="w-full bg-brand-dark text-white py-3 rounded-xl font-bold">
+            Place Order
+          </button>
+
+        </form>
+      </div>
+
 </body>
+<script src="/js/buynow.js"></script>
+<script src="/js/cart.js"></script>
+
 </html>

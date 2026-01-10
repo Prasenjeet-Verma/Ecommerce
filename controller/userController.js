@@ -254,6 +254,553 @@ exports.getAdidasProducts = async (req, res, next) => {
   }
 };
 
+exports.getAsicsProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "shoes", // 👟 Asics shoes
+      brand: "ASICS", // 👟 Asics brand filter
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const asicsProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/asicsProducts", {
+        products: asicsProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const asicsProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/asicsProducts", {
+      products: asicsProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get Adidas Products Error:", error);
+    next(error);
+  }
+}
+
+exports.getPumaProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "shoes", // 👟 Puma shoes
+      brand: "PUMA", // 👟 Puma brand filter
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const pumaProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/pumaProducts", {
+        products: pumaProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const pumaProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/pumaProducts", {
+      products: pumaProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get Adidas Products Error:", error);
+    next(error);
+  }
+}
+
+exports.getHokaProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "shoes", // 👟 Hoka shoes
+      brand: "HOKA", // 👟 Hoka brand filter
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const hokaProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/hokaProducts", {
+        products: hokaProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const hokaProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/hokaProducts", {
+      products: hokaProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get Adidas Products Error:", error);
+    next(error);
+  }
+}
+
+exports.getNbProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "shoes", // 👟 NB shoes
+      brand: "NB", // 👟 NB brand filter
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const nbProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/nbProducts", {
+        products: nbProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const nbProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/nbProducts", {
+      products: nbProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get NB Products Error:", error);
+    next(error);
+  }
+}
+
+exports.getReebokProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "shoes", // 👟 Reebok shoes
+      brand: "REEBOK", // 👟 Reebok brand filter
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const reebokProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/reebokProducts", {
+        products: reebokProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const reebokProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/reebokProducts", {
+      products: reebokProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get Reebok Products Error:", error);
+    next(error);
+  }
+}
+
+exports.getAllShoesProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "shoes", // 👟 All shoes
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const allShoesProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/allShoes", {
+        products: allShoesProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const allShoesProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/allShoes", {
+      products: allShoesProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get All Shoes Products Error:", error);
+    next(error);
+  }
+}
+
+
+exports.getAllClothesProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "clothes", // 👟 All clothes
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const allClothesProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/allClothes", {
+        products: allClothesProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const allClothesProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/allClothes", {
+      products: allClothesProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get All Clothes Products Error:", error);
+    next(error);
+  }
+}
+
+
+exports.getAllGooglesProducts = async (req, res, next) => {
+    try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "glasses", // 👟 All glasses
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const allGooglesProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/allGoogles", {
+        products: allGooglesProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const allGooglesProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/allWatches", {
+      products: allGooglesProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get All Googles Products Error:", error);
+    next(error);
+  }
+}
+
+exports.getAllWatchesProducts = async (req, res, next) => {
+      try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "watch", // 👟 All watches
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const allWatchesProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/allWatches", {
+        products: allWatchesProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const allWatchesProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/allWatches", {
+      products: allWatchesProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get All Watches Products Error:", error);
+    next(error);
+  }
+}
+
 exports.getAllLuxuryLadiesBags = async (req, res, next) => {
   try {
     // 1️⃣ Not logged in
@@ -303,133 +850,92 @@ exports.getAllLuxuryLadiesBags = async (req, res, next) => {
   }
 };
 
-exports.getAddToCart = async (req, res) => {
+// GET PROFILE
+exports.getProfile = async (req, res, next) => {
   try {
-    // 🔐 LOGIN CHECK
     if (!req.session.isLoggedIn || !req.session.user) {
       return res.redirect("/login");
     }
 
-    // 👤 USER + CART PRODUCTS
-    const user = await User.findById(req.session.user._id).populate(
-      "cart.product"
-    );
-
-    if (!user) {
-      return res.redirect("/login");
-    }
-
-    // 🛒 FILTER REMOVED / INACTIVE PRODUCTS
-    const cartItems = user.cart.filter(
-      (item) => item.product && item.product.status === "active"
-    );
-
-    // 💰 CALCULATIONS
-    let subtotal = 0;
-
-    const formattedCart = cartItems.map((item) => {
-      const price =
-        item.product.offerPrice && item.product.offerPrice > 0
-          ? item.product.offerPrice
-          : item.product.price;
-
-      const total = price * item.quantity;
-      subtotal += total;
-
-      return {
-        _id: item.product._id,
-        title: item.product.title,
-        image: item.product.images[0],
-        price,
-        quantity: item.quantity,
-        category: item.product.category,
-        gender: item.product.gender,
-        sizes: item.product.sizes,
-        total,
-      };
-    });
-
-    // 🚚 SHIPPING (FREE)
-    const shipping = 0;
-
-    // 🧮 FINAL TOTAL
-    const orderTotal = subtotal + shipping;
-
-    return res.render("User/addToCart", {
-      pageTitle: "Your Cart",
-      cartItems: formattedCart,
-      subtotal,
-      shipping,
-      orderTotal,
-      user: req.session.user,
-      isLoggedIn: req.session.isLoggedIn,
-    });
-  } catch (err) {
-    console.error("Cart page error:", err);
-    return res.redirect("/");
-  }
-};
-
-exports.postAddToCart = async (req, res) => {
-  try {
-    // 🔐 LOGIN CHECK
-    if (!req.session.isLoggedIn || !req.session.user) {
-      return res.redirect("/login");
-    }
-
-    const { productId } = req.body;
-
-    if (!productId) {
-      return res.json({
-        success: false,
-        message: "Product ID missing",
-      });
-    }
-
-    // 🔍 PRODUCT CHECK
-    const product = await Product.findById(productId);
-    if (!product || product.status !== "active") {
-      return res.json({
-        success: false,
-        message: "Product not available",
-      });
-    }
-
-    // 👤 USER
     const user = await User.findById(req.session.user._id);
 
-    // 🔁 ALREADY IN CART
-    const exists = user.cart.find(
-      (item) => item.product.toString() === productId
-    );
-
-    if (exists) {
-      return res.json({
-        success: false,
-        message: "Item already in cart",
-      });
+    if (!user || user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
     }
 
-    // ➕ ADD TO CART
-    user.cart.push({
-      product: productId,
-      quantity: 1,
-    });
-
-    await user.save();
-
-    return res.json({
-      success: true,
-      message: "Added to cart",
+    res.render("User/profile", {
+      user,
+      isLoggedIn: true,
     });
   } catch (err) {
-    console.error("Add to cart error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    console.error(err);
+    next(err);
   }
 };
+
+// UPDATE PROFILE (with optional photo)
+exports.updateUserData = async (req, res, next) => {
+  try {
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+
+    const userId = req.session.user._id;
+
+    const {
+      username,
+      phoneNo,
+      emailAddress,
+      dob,
+      street,
+      city,
+      state,
+      country,
+      pincode,
+    } = req.body;
+
+    let profilePhotoUrl;
+
+    // If user uploaded a new profile photo
+    if (req.file) {
+      profilePhotoUrl = await uploadToPhpServer(req.file.path);
+    }
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        username,
+        phoneNo,
+        emailAddress,
+        dob: dob ? new Date(dob) : undefined,
+        street,
+        city,
+        state,
+        country,
+        pincode,
+        ...(profilePhotoUrl && { profilePhoto: profilePhotoUrl }), // only update if uploaded
+      },
+      { new: true, runValidators: true }
+    );
+
+    // Update session
+    req.session.user = {
+      _id: updatedUser._id.toString(),
+      username: updatedUser.username,
+      role: updatedUser.role,
+      profilePhoto: updatedUser.profilePhoto,
+    };
+
+
+    res.redirect("/profile");
+  } catch (err) {
+    console.error("❌ Update User Error:", err);
+    res.status(500).send("Update failed, try again.");
+  }
+};
+
+
 
 exports.posttoggleWishlist = async (req, res) => {
   try {
@@ -619,7 +1125,11 @@ exports.getOrderSuccess = async (req, res) => {
       return res.redirect("/login");
     }
 
-    const order = await Order.findById(req.params.id).populate("product");
+    // For order success
+    const order = await Order.findById(req.params.id)
+      .populate("product")             // Buy now product
+      .populate("items.product");      // Cart products
+
 
     if (!order || order.user.toString() !== req.session.user._id.toString()) {
       return res.redirect("/");
@@ -640,112 +1150,320 @@ exports.getOrderSuccess = async (req, res) => {
 
 exports.getOrderHistory = async (req, res, next) => {
   try {
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+
+    const user = await User.findById(req.session.user._id);
+    if (!user || user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    const orders = await Order.find({ user: user._id })
+      .populate("product")
+      .populate("items.product")
+      .sort({ createdAt: -1 });
+
+    // 🧠 Normalize data for EJS
+    const finalOrders = orders.map(order => {
+      let products = [];
+
+      // 🛒 Cart order
+      if (order.items && order.items.length > 0) {
+        products = order.items.map(item => ({
+          product: item.product,
+          qty: item.qty,
+          size: item.size,
+          price: item.price,
+          total: item.total
+        }));
+      }
+      // ⚡ Buy now order
+      else if (order.product) {
+        products = [{
+          product: order.product,
+          qty: order.qty,
+          size: order.size,
+          price: order.price,
+          total: order.price * order.qty
+        }];
+      }
+
+      return {
+        ...order.toObject(),
+        products
+      };
+    });
+
+    res.render("User/orderHistory", {
+      orders: finalOrders,
+      user: req.session.user,
+      isLoggedIn: req.session.isLoggedIn
+    });
+
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+
+exports.getAddToCart = async (req, res) => {
+  try {
     // 🔐 LOGIN CHECK
     if (!req.session.isLoggedIn || !req.session.user) {
       return res.redirect("/login");
     }
-    // 👤 FETCH USER
-    const user = await User.findById(req.session.user._id);
-    // ❌ Invalid user or wrong role
-    if (!user || user.role !== "user") {
-      return req.session.destroy(() => res.redirect("/login"));
-    }
-    // 📜 FETCH ORDERS
-    const orders = await Order.find({ user: user._id }).populate("product");
-    res.render("User/orderHistory", {
-      orders,
-      user: req.session.user,
-      isLoggedIn: req.session.isLoggedIn
-    });
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-};
 
-
-
-// GET PROFILE
-exports.getProfile = async (req, res, next) => {
-  try {
-    if (!req.session.isLoggedIn || !req.session.user) {
-      return res.redirect("/login");
-    }
-
-    const user = await User.findById(req.session.user._id);
-
-    if (!user || user.role !== "user") {
-      return req.session.destroy(() => res.redirect("/login"));
-    }
-
-    res.render("User/profile", {
-      user,
-      isLoggedIn: true,
-    });
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-};
-
-// UPDATE PROFILE (with optional photo)
-exports.updateUserData = async (req, res, next) => {
-  try {
-    if (!req.session.isLoggedIn || !req.session.user) {
-      return res.redirect("/login");
-    }
-
-    const userId = req.session.user._id;
-
-    const {
-      username,
-      phoneNo,
-      emailAddress,
-      dob,
-      street,
-      city,
-      state,
-      country,
-      pincode,
-    } = req.body;
-
-    let profilePhotoUrl;
-
-    // If user uploaded a new profile photo
-    if (req.file) {
-      profilePhotoUrl = await uploadToPhpServer(req.file.path);
-    }
-
-    // Update user
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        username,
-        phoneNo,
-        emailAddress,
-        dob: dob ? new Date(dob) : undefined,
-        street,
-        city,
-        state,
-        country,
-        pincode,
-        ...(profilePhotoUrl && { profilePhoto: profilePhotoUrl }), // only update if uploaded
-      },
-      { new: true, runValidators: true }
+    // 👤 USER + CART PRODUCTS
+    const user = await User.findById(req.session.user._id).populate(
+      "cart.product"
     );
 
-    // Update session
-    req.session.user = {
-  _id: updatedUser._id.toString(),
-  username: updatedUser.username,
-  role: updatedUser.role,
-  profilePhoto: updatedUser.profilePhoto,
+    if (!user) {
+      return res.redirect("/login");
+    }
+
+    // 🛒 FILTER REMOVED / INACTIVE PRODUCTS
+    const cartItems = user.cart.filter(
+      (item) => item.product && item.product.status === "active"
+    );
+
+    // 💰 CALCULATIONS
+    let subtotal = 0;
+
+    const formattedCart = cartItems.map((item) => {
+      const price =
+        item.product.offerPrice && item.product.offerPrice > 0
+          ? item.product.offerPrice
+          : item.product.price;
+
+      const total = price * item.quantity;
+      subtotal += total;
+
+      return {
+        _id: item.product._id,
+        title: item.product.title,
+        image: item.product.images[0],
+        price,
+        quantity: item.quantity,
+        category: item.product.category,
+        gender: item.product.gender,
+        size: item.size,   // ✅ SEND USER SELECTED SIZE
+        total,
+      };
+    });
+
+
+    // 🚚 SHIPPING (FREE)
+    const shipping = 0;
+
+    // 🧮 FINAL TOTAL
+    const orderTotal = subtotal + shipping;
+
+    return res.render("User/addToCart", {
+      pageTitle: "Your Cart",
+      cartItems: formattedCart,
+      subtotal,
+      shipping,
+      orderTotal,
+      user: req.session.user,
+      isLoggedIn: req.session.isLoggedIn,
+    });
+  } catch (err) {
+    console.error("Cart page error:", err);
+    return res.redirect("/");
+  }
+};
+
+exports.postAddToCart = async (req, res) => {
+  try {
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.status(401).json({ success: false });
+    }
+
+    const { productId, size, quantity } = req.body;
+
+    if (!productId || !quantity) {
+      return res.json({ success: false, message: "Invalid data" });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product || product.status !== "active") {
+      return res.json({ success: false, message: "Product not available" });
+    }
+
+    const user = await User.findById(req.session.user._id);
+
+    // 🔁 Same product + same size already exists
+    const item = user.cart.find(
+      i => i.product.toString() === productId && i.size === size
+    );
+    const existing = item;
+
+    if (existing) {
+      existing.quantity += Number(quantity);
+    } else {
+      user.cart.push({
+        product: productId,
+        quantity,
+        size: size || null   // 👈 SAVE SIZE
+      });
+
+    }
+
+    await user.save();
+
+    return res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
 };
 
 
-    res.redirect("/profile");
+
+// UPDATE QTY
+exports.updateCartQty = async (req, res) => {
+  try {
+    const { productId, action } = req.body;
+
+    const user = await User.findById(req.session.user._id);
+
+    const item = user.cart.find(
+      (i) => i.product.toString() === productId
+    );
+
+    if (!item) return res.json({ success: false });
+
+    if (action === "inc") item.quantity += 1;
+    if (action === "dec" && item.quantity > 1) item.quantity -= 1;
+
+    await user.save();
+
+    res.json({ success: true });
   } catch (err) {
-    console.error("❌ Update User Error:", err);
-    res.status(500).send("Update failed, try again.");
+    res.status(500).json({ success: false });
+  }
+};
+
+// REMOVE ITEM
+exports.removeFromCart = async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    const user = await User.findById(req.session.user._id);
+
+    user.cart = user.cart.filter(
+      (i) => i.product.toString() !== productId
+    );
+
+    await user.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false });
+  }
+};
+
+exports.postCartCheckout = async (req, res) => {
+  try {
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+
+    const { name, mobile, address, pincode, state, paymentMethod } = req.body;
+    const userId = req.session.user._id;
+
+    const user = await User.findById(userId).populate("cart.product");
+
+    if (!user || user.cart.length === 0) {
+      return res.redirect("/cart");
+    }
+
+    let orderItems = [];
+    let totalAmount = 0;
+
+    // ===========================
+    // 1️⃣ VALIDATE & CALCULATE
+    // ===========================
+    for (let item of user.cart) {
+      const product = item.product;
+
+      if (!product || product.status !== "active") {
+        return res.send(`${product.title} not available`);
+      }
+
+      if (product.totalStock < item.quantity) {
+        return res.send(`${product.title} out of stock`);
+      }
+
+      const price = product.offerPrice > 0 ? product.offerPrice : product.price;
+      const total = price * item.quantity;
+      totalAmount += total;
+
+      orderItems.push({
+        product: product._id,
+        title: product.title,
+        qty: item.quantity,
+        size: item.size || null,
+        price,
+        total
+      });
+
+    }
+
+    // ===========================
+    // 💵 ONLINE PAYMENT
+    // ===========================
+    if (paymentMethod === "ONLINE") {
+      req.session.tempCartOrder = {
+        user: userId,
+        items: orderItems,
+        totalAmount,
+        name,
+        mobile,
+        address,
+        pincode,
+        state
+      };
+
+      return res.send("ONLINE payment gateway pending");
+    }
+
+    // ===========================
+    // 🚚 CASH ON DELIVERY
+    // ===========================
+    for (let item of user.cart) {
+      await Product.updateOne(
+        { _id: item.product._id, totalStock: { $gte: item.quantity } },
+        { $inc: { totalStock: -item.quantity } }
+      );
+    }
+
+    const order = await Order.create({
+      user: userId,
+      items: orderItems,
+      totalAmount,
+      name,
+      mobile,
+      address,
+      pincode,
+      state,
+      paymentMethod: "COD",
+      paymentStatus: "Pending",
+      orderStatus: "Confirmed"
+    });
+
+    // 🧹 Clear Cart
+    user.cart = [];
+    await user.save();
+
+    res.redirect("/order-success/" + order._id);
+
+  } catch (err) {
+    console.error(err);
+    res.send("Cart Order Failed");
   }
 };

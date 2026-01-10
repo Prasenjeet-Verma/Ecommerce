@@ -1,87 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Orders | Rider Shoe</title>
-    <link rel="stylesheet" href="/css/oder-history.css">
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="orders-wrapper">
-      <div class="header-actions">
-        <a href="/" class="back-link">
-          <i class="fa-solid fa-arrow-left"></i> My Profile
-        </a>
-        <h2 style="color: var(--color-brand-dark)">Order History</h2>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Orders | Rider Shoe</title>
+  <link rel="stylesheet" href="/css/oder-history.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
 
-      <% if (orders.length === 0) { %>
-        <p style="text-align:center; margin-top:2rem; color:var(--color-gray-600)">
-          You have no orders yet.
+<body>
+<div class="orders-wrapper">
+
+  <div class="header-actions">
+    <a href="/" class="back-link">
+      <i class="fa-solid fa-arrow-left"></i> My Profile
+    </a>
+    <h2>Order History</h2>
+  </div>
+
+  <% if (orders.length === 0) { %>
+    <p style="text-align:center;margin-top:2rem;">No orders yet</p>
+  <% } %>
+
+  <% orders.forEach(order => { %>
+
+  <div class="order-card">
+
+    <!-- Order Header -->
+    <div class="order-header">
+      <div>
+        <span class="order-id">#RS-<%= order._id.toString().slice(-5) %></span>
+        <p class="order-date">
+          <%= order.createdAt.toLocaleDateString("en-GB") %>
         </p>
-      <% } %>
+      </div>
+      <span class="status-badge">
+        <%= order.orderStatus %>
+      </span>
+    </div>
 
-      <% orders.forEach(order => { %>
-      <div class="order-card">
-        <div class="order-header">
-          <div>
-            <span class="order-id">#RS-<%= order._id.toString().slice(-5) %></span>
-            <p class="order-date">Placed on <%= order.createdAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) %></p>
-          </div>
-          <span class="status-badge <%= "status-" + order.orderStatus.toLowerCase().replace(/ /g,"-") %>">
-            <%= order.orderStatus %>
-          </span>
-        </div>
+    <!-- ================= BUY NOW ================= -->
+    <% if(order.product){ %>
 
-        <div class="product-info">
-          <img
-            src="<%= order.product.images && order.product.images[0] ? order.product.images[0] : 'https://via.placeholder.com/150' %>"
-            alt="<%= order.product.name %>"
-            class="product-img"
-          />
-          <div class="product-details">
-            <h4><%= order.product.name %></h4>
-            <% if(order.size){ %>
-              <p>Size: <%= order.size %> | Quantity: <%= order.qty %></p>
-            <% } else { %>
-              <p>Quantity: <%= order.qty %></p>
-            <% } %>
-            
-            <% if(order.paymentMethod === "COD") { %>
-              <p class="advance-badge">
-                <i class="fa-solid fa-check"></i> ₹<%= order.price %> COD Booking
-              </p>
-            <% } %>
-          </div>
-        </div>
-
-        <div class="order-footer">
-          <div>
-            <p style="font-size: 0.8rem; opacity: 0.7">Total Amount</p>
-            <span class="price-tag">₹<%= order.totalAmount %></span>
-          </div>
-
-          <% if(order.orderStatus !== "Delivered" && order.orderStatus !== "Cancelled") { %>
-            <a href="/track/<%= order._id %>" class="track-btn">Track Order</a>
-          <% } %>
+      <div class="product-info">
+        <img src="<%= order.product.images[0] %>" class="product-img"/>
+        <div>
+          <h4><%= order.product.title %></h4>
+          <p>Qty: <%= order.qty %> | Size: <%= order.size || "N/A" %></p>
+          <p>₹<%= order.price %></p>
         </div>
       </div>
+
+    <% } %>
+
+    <!-- ================= CART ORDER ================= -->
+    <% if(order.items && order.items.length > 0){ %>
+
+      <% order.items.forEach(item => { %>
+        <div class="product-info">
+          <img src="<%= item.product.images[0] %>" class="product-img"/>
+          <div>
+            <h4><%= item.product.title %></h4>
+            <p>Qty: <%= item.qty %> | Size: <%= item.size || "N/A" %></p>
+            <p>₹<%= item.price %></p>
+          </div>
+        </div>
       <% }) %>
 
-      <div style="text-align: center; margin-top: 2rem">
-        <p style="font-size: 0.9rem; color: var(--color-gray-600)">
-          Need help with an order?
-          <a
-            href="/contactus"
-            style="color: var(--color-brand-dark); font-weight: bold"
-            >Contact Support</a
-          >
-        </p>
+    <% } %>
+
+    <!-- Order Footer -->
+    <div class="order-footer">
+      <div>
+        <small>Total</small>
+        <strong>₹<%= order.totalAmount %></strong>
       </div>
+
+      <a href="/track/<%= order._id %>" class="track-btn">Track</a>
     </div>
-  </body>
+
+  </div>
+
+  <% }) %>
+
+</div>
+</body>
 </html>

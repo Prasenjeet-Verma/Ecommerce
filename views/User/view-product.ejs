@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="/css/sopping.css">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/js/heart.js"></script>
+
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -90,48 +90,46 @@
         </p>
 
         <!-- 👟 SIZE -->
-        <% if (product.category==="shoes" && product.sizes.length) { %>
-          <label class="selector-label">Select Size (UK)</label>
-          <div class="size-grid">
-            <% product.sizes.forEach(size=> { %>
-              <button type="button" class="size-btn" onclick="selectSize('<%= size %>', this)">
-                <%= size %>
-              </button>
+    <!-- SIZE -->
+<% if (product.category==="shoes" && product.sizes.length) { %>
+  <label class="selector-label">Select Size (UK)</label>
+  <div class="size-grid">
+    <% product.sizes.forEach(size => { %>
+      <button type="button" class="size-btn" onclick="selectSize('<%= size %>', this)">
+        <%= size %>
+      </button>
+    <% }) %>
+  </div>
+  <p id="sizeError" class="text-red-600 text-sm mt-2 hidden">
+    Please select a shoe size
+  </p>
+<% } %>
 
-              <% }) %>
-          </div>
-          <p id="sizeError" class="text-red-600 text-sm mt-2 hidden">
-            Please select a shoe size
-          </p>
-          <% } %>
+<!-- QUANTITY -->
+<label class="selector-label">Quantity</label>
+<div class="qty-input">
+  <button class="qty-btn" onclick="updateQty(-1)">
+    <i class="fa-solid fa-minus"></i>
+  </button>
+  <span id="qty-val" class="font-bold">1</span>
+  <button class="qty-btn" onclick="updateQty(1)">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+</div>
 
-            <!-- 🔢 QUANTITY -->
-            <label class="selector-label">Quantity</label>
-            <div class="qty-input">
-              <button class="qty-btn" onclick="updateQty(-1)">
-                <i class="fa-solid fa-minus"></i>
-              </button>
-              <span id="qty-val" class="font-bold">1</span>
-              <button class="qty-btn" onclick="updateQty(1)">
-                <i class="fa-solid fa-plus"></i>
-              </button>
-            </div>
+<!-- ADD TO CART -->
+<div class="action-btns">
+  <button class="btn btn-cart" onclick="addToCart(this, '<%= product._id %>')" <%=isInCart ? "disabled" : "" %>
+          style="<%= isInCart ? 'opacity:0.7;cursor:not-allowed;' : '' %>">
+    <i class="fa-solid fa-cart-plus"></i>
+    <%= isInCart ? "✔ Added" : "Add to Cart" %>
+  </button>
 
-            <!-- 🛒 ACTION BUTTONS -->
-            <div class="action-btns">
-              <button class="btn btn-cart" onclick="addToCart(this, '<%= product._id %>')" <%=isInCart ? "disabled" : ""
-                %>
-                style="<%= isInCart ? 'opacity:0.7;cursor:not-allowed;' : '' %>"
-                  >
-                  <i class="fa-solid fa-cart-plus"></i>
-                  <%= isInCart ? "✔ Added" : "Add to Cart" %>
-              </button>
+  <button class="btn btn-buy" onclick="openCheckout()">
+    Buy Now
+  </button>
+</div>
 
-              <button class="btn btn-buy" onclick="openCheckout()">
-                Buy Now
-              </button>
-
-            </div>
 
             <!-- 🚚 INFO -->
             <div class="mt-8 grid grid-cols-2 gap-4 border-t pt-6 text-sm">
@@ -204,8 +202,9 @@
       </form>
     </div>
 
-    <script src="/js/sopping.js"></script>
+    <!-- <script src="/js/sopping.js"></script> -->
     <script src="/js/buynow.js"></script>
+      <script src="/js/heart.js"></script>
 </body>
 
 </html>

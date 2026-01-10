@@ -64,12 +64,23 @@ const userSchema = new mongoose.Schema(
       },
     ],
 
-    cart: [
-      {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-        quantity: { type: Number, default: 1 }
-      }
-    ],
+ cart: [
+  {
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true
+    },
+    size: {
+      type: String,
+      default: null
+    },
+    quantity: {
+      type: Number,
+      default: 1
+    }
+  }
+],
 
 
     dob: { type: Date },

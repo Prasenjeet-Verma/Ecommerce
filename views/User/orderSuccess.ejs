@@ -52,19 +52,29 @@
 
   <p>Order ID: <%= order._id %></p>
 
-  <img src="<%= order.product.images[0] %>" width="200">
+  <% if(order.product) { %>
+    <!-- Buy Now -->
+    <img src="<%= order.product.images[0] %>" width="200">
+    <h2><%= order.product.title %></h2>
+    <p>Qty: <%= order.qty %></p>
+  <% } else if(order.items && order.items.length > 0) { %>
+    <!-- Cart Order -->
+    <% order.items.forEach(item => { %>
+      <img src="<%= item.product.images[0] %>" width="200">
+      <h2><%= item.product.title %></h2>
+      <p>Qty: <%= item.qty %></p>
+      <p>Size: <%= item.size || 'N/A' %></p>
+      <hr/>
+    <% }) %>
+  <% } %>
 
-  <h2><%= order.product.title %></h2>
-
-  <p>Qty: <%= order.qty %></p>
   <p>Total: ₹<%= order.totalAmount %></p>
-
   <p>Status: <b><%= order.orderStatus %></b></p>
-
   <p>Payment: <%= order.paymentMethod %> – <%= order.paymentStatus %></p>
 
   <a href="/" class="btn">Continue Shopping</a>
 </div>
+
 
 </body>
 </html>
