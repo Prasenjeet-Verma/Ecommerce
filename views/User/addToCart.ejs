@@ -77,11 +77,11 @@
 <% } %>
                     
                         <div class="qty-selector">
-                          <button class="qty-btn" onclick="updateQty('<%= item._id %>','dec')">−</button>
+                          <button class="qty-btn" onclick="updateCartQty('<%= item._id %>','dec')">−</button>
                           <span id="qty-<%= item._id %>">
                             <%= item.quantity %>
                           </span>
-                          <button class="qty-btn" onclick="updateQty('<%= item._id %>','inc')">+</button>
+                          <button class="qty-btn" onclick="updateCartQty('<%= item._id %>','inc')">+</button>
                         </div>
 
                         <i class="fa-solid fa-trash-can remove-item" onclick="removeItem('<%= item._id %>')"></i>
