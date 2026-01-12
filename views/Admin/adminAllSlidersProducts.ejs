@@ -32,7 +32,7 @@
       <h1>Products</h1>
 
       <div class="select-wrapper">
-        <select id="Display" onchange="filterWatches(this.value)">
+        <select id="Display" onchange="filterSliders(this.value)">
           <option value="all" <%=selectedFilter==='all' ? 'selected' : '' %>>
             All
           </option>
@@ -47,8 +47,9 @@
 
 
 
+
       <button class="btn-add" onclick="openModal('addModal')">
-        + Add Product
+        + Add New Sliders
       </button>
     </header>
 
@@ -67,7 +68,7 @@
             <p class="shoe-price">₹<%= product.price %>
             </p>
 
-            <% if (product.offerPercentage> 0) { %>
+            <% if(product.offerPercentage> 0){ %>
               <p class="shoe-offer" style="color:red;">
                 Offer <%= product.offerPercentage %>%
               </p>
@@ -83,9 +84,14 @@
                 <p style="color:blue;">
                   <%= product.gender %>
                 </p>
+                <p style="color:blue;">
+                  <%= product.brand %>
+                </p>
+                <p style="color:blue;">
+                  <%= product.sizes.join(", ") %></p>
 
-                <p style="color:goldenrod;">
-                  <%= product.status==="active" ? "Show" : "Hide" %>
+        <p style=" color:goldenrod;">
+                    <%= product.status==="active" ? "Show" : "Hide" %>
                 </p>
 
                 <button class="btn-edit" onclick='openEditModal(<%- JSON.stringify(product) %>)'>
@@ -95,17 +101,18 @@
         </div>
         <% }) %>
     </div>
+
   </main>
 
-  <!-- ============================== Add Watches Modal ===================== -->
+  <!-- ============================== Add Sliders Modal ===================== -->
 
-  <form action="/admin-howmanywatchesuploaded" method="POST" enctype="multipart/form-data">
+  <form action="/admin-howmanyslidersuploaded" method="POST" enctype="multipart/form-data">
     <div class="modal-overlay" id="addModal">
       <div class="modal-box">
-        <h2>Add New Watches</h2>
+        <h2>Add New Sliders</h2>
 
         <div class="form-group">
-          <label>Watches Name</label>
+          <label>Sliders Name</label>
           <input type="text" name="title" required />
         </div>
 
@@ -135,15 +142,41 @@
           <option value="female">Female</option>
           <option value="unisex">Unisex</option>
         </select>
+<!-- 
+        <label>Brand</label>
+        <select name="brand" required>
+          <option>ADIDAS</option>
+          <option>ASICS</option>
+          <option>NB</option>
+          <option>PUMA</option>
+          <option>REEBOK</option>
+          <option>HOKA</option>
+        </select> -->
 
         <!-- 🔥 Multiple Images -->
         <div class="form-group">
           <label>Product Images (3–4)</label>
           <input type="file" name="images" accept="image/*" multiple required />
+          <small style="color:gray">
+            Max 4 images • Each max 2MB
+          </small>
+        </div>
+
+
+        <!-- Sizes -->
+        <div class="category-box">
+          <div>Select Size ✔</div>
+
+          <label><input type="checkbox" name="sizes" value="6" /> 6</label>
+          <label><input type="checkbox" name="sizes" value="7" /> 7</label>
+          <label><input type="checkbox" name="sizes" value="8" /> 8</label>
+          <label><input type="checkbox" name="sizes" value="9" /> 9</label>
+          <label><input type="checkbox" name="sizes" value="10" /> 10</label>
+          <label><input type="checkbox" name="sizes" value="11" /> 11</label>
         </div>
 
         <!-- Hidden -->
-        <input type="hidden" name="category" value="watch" />
+        <input type="hidden" name="category" value="sliders" />
 
         <div class="modal-btns">
           <button type="button" class="btn-main btn-cancel" onclick="closeModal('addModal')">
@@ -156,10 +189,9 @@
       </div>
     </div>
   </form>
+  <!-- ============================== Edit Sliders Modal ===================== -->
 
-  <!-- ============================== Edit Modal ===================== -->
-
-  <form action="/admin-editwatchesproducts" method="POST" enctype="multipart/form-data">
+  <form action="/admin-editsliderslproducts" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="productId" id="editProductId" />
 
     <div class="modal-overlay" id="editModal">
@@ -167,7 +199,7 @@
         <h2>Edit Product</h2>
 
         <div class="form-group">
-          <label>Watch Name</label>
+          <label>Shoe Name</label>
           <input type="text" name="title" id="editName" required />
         </div>
 
@@ -198,6 +230,15 @@
           <option value="unisex">Unisex</option>
         </select>
 
+        <!-- <label>Brand</label>
+        <select name="brand" id="editBrand">
+          <option>ADIDAS</option>
+          <option>ASICS</option>
+          <option>NB</option>
+          <option>PUMA</option>
+          <option>REEBOK</option>
+          <option>HOKA</option>
+        </select> -->
 
         <label>Status</label>
         <select name="status" id="editStatus">
@@ -218,6 +259,18 @@
           <small style="color:gray">Leave empty to keep old images</small>
         </div>
 
+        <!-- Sizes -->
+        <div class="category-box">
+          <div>Select Size ✔</div>
+
+          <label><input type="checkbox" name="sizes" value="6" /> 6</label>
+          <label><input type="checkbox" name="sizes" value="7" /> 7</label>
+          <label><input type="checkbox" name="sizes" value="8" /> 8</label>
+          <label><input type="checkbox" name="sizes" value="9" /> 9</label>
+          <label><input type="checkbox" name="sizes" value="10" /> 10</label>
+          <label><input type="checkbox" name="sizes" value="11" /> 11</label>
+        </div>
+
         <div class="modal-btns">
           <button type="button" class="btn-main btn-cancel" onclick="closeModal('editModal')">
             Cancel
@@ -230,7 +283,7 @@
     </div>
   </form>
 
-  <script src="/js/watchesProduct.js"></script>
+  <script src="/js/slidersProduct.js"></script>
 </body>
 
 </html>

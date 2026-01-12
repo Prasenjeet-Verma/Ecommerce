@@ -2,6 +2,11 @@
 let selectedSize = null;
 let quantity = 1;
 
+function sizeRequired() {
+  return window.PRODUCT_CATEGORY === "shoes" || window.PRODUCT_CATEGORY === "clothes";
+}
+
+
 // ===== TOAST MESSAGE =====
 function showToast(message, success = true) {
   const toast = document.createElement("div");
@@ -156,6 +161,14 @@ async function toggleCart(btn, productId) {
       btn.dataset.incart = "false";
       showToast("Removed from cart 🗑️", false);
     }
+    return;
+  }
+
+  // ⛔ BLOCK if size required but not selected
+  if (sizeRequired() && !selectedSize) {
+    const err = document.getElementById("sizeError");
+    if (err) err.classList.remove("hidden");
+    showToast("Please select a size", false);
     return;
   }
 

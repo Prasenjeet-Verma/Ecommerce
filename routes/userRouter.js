@@ -16,8 +16,8 @@ userRouter.get('/puma', userController.getPumaProducts);
 userRouter.get('/hoka', userController.getHokaProducts);
 userRouter.get('/nb', userController.getNbProducts);
 userRouter.get('/reebok', userController.getReebokProducts);
-
-
+userRouter.get('/crocs', userController.getCrocsProducts);
+userRouter.get('/sliders', userController.getSlidersProducts);
 
 userRouter.get('/allClothes', userController.getAllClothesProducts);
 userRouter.get('/allshoes', userController.getAllShoesProducts);

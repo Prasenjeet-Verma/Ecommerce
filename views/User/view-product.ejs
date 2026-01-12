@@ -90,9 +90,11 @@
         </p>
 
         <!-- 👟 SIZE -->
-    <!-- SIZE -->
-<% if (product.category==="shoes" && product.sizes.length) { %>
-  <label class="selector-label">Select Size (UK)</label>
+<% if (product.sizes && product.sizes.length > 0) { %>
+  <label class="selector-label">
+    Select Size <%= product.category === "shoes" ? "(UK)" : "" %>
+  </label>
+
   <div class="size-grid">
     <% product.sizes.forEach(size => { %>
       <button type="button" class="size-btn" onclick="selectSize('<%= size %>', this)">
@@ -100,10 +102,12 @@
       </button>
     <% }) %>
   </div>
+
   <p id="sizeError" class="text-red-600 text-sm mt-2 hidden">
-    Please select a shoe size
+    Please select a size
   </p>
 <% } %>
+
 
 <!-- QUANTITY -->
 <label class="selector-label">Quantity</label>
@@ -157,7 +161,7 @@
         <h2 class="text-xl font-bold text-brand-dark">Delivery Details</h2>
 
         <input type="hidden" name="productId" value="<%= product._id %>">
-        <input type="hidden" name="qty" id="buyQty">
+        <input type="hidden" name="qty" id="buyQty" value="1">
         <input type="hidden" name="size" id="selectedSize">
 
 
@@ -203,6 +207,9 @@
 
       </form>
     </div>
+<script>
+  window.PRODUCT_CATEGORY = "<%= product.category %>";
+</script>
 
     <!-- <script src="/js/sopping.js"></script> -->
     <script src="/js/buynow.js"></script>

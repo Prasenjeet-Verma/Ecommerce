@@ -52,23 +52,25 @@
 
   <p>Order ID: <%= order._id %></p>
 
-  <% if(order.product) { %>
-    <!-- Buy Now -->
-    <img src="<%= order.product.images[0] %>" width="200">
-    <h2><%= order.product.title %></h2>
-    <p>Qty: <%= order.qty %></p>
-  <% } else if(order.items && order.items.length > 0) { %>
-    <!-- Cart Order -->
-    <% order.items.forEach(item => { %>
-      <img src="<%= item.product.images[0] %>" width="200">
-      <h2><%= item.product.title %></h2>
-      <p>Qty: <%= item.qty %></p>
-      <p>Size: <%= item.size || 'N/A' %></p>
-      <hr/>
-    <% }) %>
-  <% } %>
+<% order.items.forEach(item => { %>
+  <div style="border:1px solid #ddd;padding:10px;margin:10px;border-radius:10px">
+    <img src="<%= item.product.images[0] %>" width="150">
+    <h2><%= item.product.title %></h2>
 
-  <p>Total: ₹<%= order.totalAmount %></p>
+    <p>Qty: <%= item.qty %></p>
+
+    <% if(item.size) { %>
+      <p>Size: <%= item.size %></p>
+    <% } %>
+
+    <p>Price: ₹<%= item.price %></p>
+    <p>Total: ₹<%= item.total %></p>
+  </div>
+<% }) %>
+
+  <p class="text-xl font-bold">
+  Grand Total: ₹<%= order.totalAmount %>
+</p>
   <p>Status: <b><%= order.orderStatus %></b></p>
   <p>Payment: <%= order.paymentMethod %> – <%= order.paymentStatus %></p>
 

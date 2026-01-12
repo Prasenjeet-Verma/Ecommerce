@@ -1109,3 +1109,383 @@ exports.postAdminBagsEditProducts = async (req, res, next) => {
     res.status(500).send("Update failed");
   }
 };
+
+
+exports.getAdminHowManyCrocsUploaded = async (req, res, next) => {
+  try {
+    // 🔐 SESSION + LOGIN CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    const admin = req.session.user;
+
+    // 🔒 ROLE CHECK (important)
+    if (admin.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    // 🔍 FILTER FROM QUERY
+    const filter = req.query.filter || "all";
+
+    let findQuery = { category: "crocs" };
+
+    if (filter === "show") {
+      findQuery.status = "active";
+    } else if (filter === "hide") {
+      findQuery.status = "inactive";
+    }
+
+    // 📦 FETCH PRODUCTS
+    const products = await Product.find(findQuery).sort({ createdAt: -1 });
+
+    // 🖥 RENDER
+    res.render("Admin/adminAllCrocsProducts", {
+      admin,
+      products,
+      selectedFilter: filter,
+      isLoggedIn: req.session.isLoggedIn,
+    });
+
+  } catch (err) {
+    console.error("❌ Get Crocs Error:", err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.postAdminHowManyCrocsUploaded = async (req, res, next) => {
+  try {
+    // 🔐 SESSION + ROLE CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    const admin = req.session.user;
+    if (admin.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    const {
+      title,
+       description,   // 👈 SAVE
+      price,
+      offerPercentage,
+      totalStock,
+      gender,
+      // brand,
+      sizes,
+      category,
+    } = req.body;
+
+    const offer = Number(offerPercentage) || 0;
+
+    // 🖼 IMAGE VALIDATION
+    if (!req.files || req.files.length < 1) {
+      return res.status(400).send("Minimum 1 image required");
+    }
+
+    // 🚀 UPLOAD TO PHP SERVER
+    let imageUrls = [];
+
+     for (let file of req.files) {
+      const url = await uploadToPhpServer(file.path);
+      imageUrls.push(url);
+    }
+
+    // 📦 SIZES FIX
+    let sizeArray = [];
+    if (Array.isArray(sizes)) {
+      sizeArray = sizes.map(String);
+    } else if (sizes) {
+      sizeArray = [String (sizes)];
+    }
+
+    // 🧠 CREATE PRODUCT
+    const product = new Product({
+      title,
+      description,   // 👈 ADD
+      price,
+      offerPercentage: offer,
+      totalStock,
+      gender,
+      // brand,
+      category,
+      sizes: sizeArray,
+      images: imageUrls,
+      createdBy: admin._id,
+    });
+
+    await product.save();
+
+    console.log("✅ Crocs added (PHP Upload)");
+    res.redirect("/admin-howmanycrocsuploaded");
+
+  } catch (err) {
+    console.error("❌ Add Crocs Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+exports.postAdminCrocsEditProducts = async (req, res, next) => {
+  try {
+    // 🔐 LOGIN + ROLE CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    if (req.session.user.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    const {
+      productId,
+      title,
+       description,   // 👈 ADD
+      price,
+      offerPercentage,
+      totalStock,
+      gender,
+      // brand,
+      status,
+      sizes,
+    } = req.body;
+
+    // 🧠 FIND PRODUCT
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+
+    // 👟 SIZES FIX
+    let sizeArray = [];
+    if (Array.isArray(sizes)) {
+      sizeArray = sizes.map(String);
+    } else if (sizes) {
+      sizeArray = [String(sizes)];
+    }
+
+    // ✏ UPDATE BASIC FIELDS
+    product.title = title;
+    product.description = description; // 👈 UPDATE
+    product.price = price;
+    product.offerPercentage = offerPercentage || 0;
+    product.totalStock = totalStock;
+    product.gender = gender;
+    // product.brand = brand;
+    product.status = status;
+    product.sizes = sizeArray;
+
+    // 🖼 IMAGE UPDATE (OPTIONAL PHP UPLOAD)
+    if (req.files && req.files.length > 0) {
+      let imageUrls = [];
+
+      for (let file of req.files) {
+        const url = await uploadToPhpServer(file.path);
+        imageUrls.push(url);
+      }
+
+      product.images = imageUrls; // 🔥 replace old images
+    }
+    // else → keep old images automatically
+
+    await product.save(); // offerPrice auto recalculated
+
+    console.log("✅ Crocs updated (PHP Upload):", product.title);
+
+    return res.redirect("/admin-howmanycrocsuploaded");
+  } catch (err) {
+    console.error("❌ Edit Crocs Error:", err);
+    res.status(500).send("Update failed");
+  }
+};
+
+
+
+
+exports.getAdminHowManySlidersUploaded = async (req, res, next) => {
+  try {
+    // 🔐 SESSION + LOGIN CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    const admin = req.session.user;
+
+    // 🔒 ROLE CHECK (important)
+    if (admin.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    // 🔍 FILTER FROM QUERY
+    const filter = req.query.filter || "all";
+
+    let findQuery = { category: "sliders" };
+
+    if (filter === "show") {
+      findQuery.status = "active";
+    } else if (filter === "hide") {
+      findQuery.status = "inactive";
+    }
+
+    // 📦 FETCH PRODUCTS
+    const products = await Product.find(findQuery).sort({ createdAt: -1 });
+
+    // 🖥 RENDER
+    res.render("Admin/adminAllSlidersProducts", {
+      admin,
+      products,
+      selectedFilter: filter,
+      isLoggedIn: req.session.isLoggedIn,
+    });
+
+  } catch (err) {
+    console.error("❌ Get Crocs Error:", err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.postAdminHowManySlidersUploaded = async (req, res, next) => {
+  try {
+    // 🔐 SESSION + ROLE CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    const admin = req.session.user;
+    if (admin.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    const {
+      title,
+       description,   // 👈 SAVE
+      price,
+      offerPercentage,
+      totalStock,
+      gender,
+      // brand,
+      sizes,
+      category,
+    } = req.body;
+
+    const offer = Number(offerPercentage) || 0;
+
+    // 🖼 IMAGE VALIDATION
+    if (!req.files || req.files.length < 1) {
+      return res.status(400).send("Minimum 1 image required");
+    }
+
+    // 🚀 UPLOAD TO PHP SERVER
+    let imageUrls = [];
+
+     for (let file of req.files) {
+      const url = await uploadToPhpServer(file.path);
+      imageUrls.push(url);
+    }
+
+    // 📦 SIZES FIX
+    let sizeArray = [];
+    if (Array.isArray(sizes)) {
+      sizeArray = sizes.map(String);
+    } else if (sizes) {
+      sizeArray = [String (sizes)];
+    }
+
+    // 🧠 CREATE PRODUCT
+    const product = new Product({
+      title,
+      description,   // 👈 ADD
+      price,
+      offerPercentage: offer,
+      totalStock,
+      gender,
+      // brand,
+      category,
+      sizes: sizeArray,
+      images: imageUrls,
+      createdBy: admin._id,
+    });
+
+    await product.save();
+
+    console.log("✅ Sliders added (PHP Upload)");
+    res.redirect("/admin-howmanyslidersuploaded");
+
+  } catch (err) {
+    console.error("❌ Add Sliders Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+exports.postAdminSlidersEditProducts = async (req, res, next) => {
+  try {
+    // 🔐 LOGIN + ROLE CHECK
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    if (req.session.user.role !== "admin") {
+      return res.status(403).redirect("/login");
+    }
+
+    const {
+      productId,
+      title,
+       description,   // 👈 ADD
+      price,
+      offerPercentage,
+      totalStock,
+      gender,
+      // brand,
+      status,
+      sizes,
+    } = req.body;
+
+    // 🧠 FIND PRODUCT
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+
+    // 👟 SIZES FIX
+    let sizeArray = [];
+    if (Array.isArray(sizes)) {
+      sizeArray = sizes.map(String);
+    } else if (sizes) {
+      sizeArray = [String(sizes)];
+    }
+
+    // ✏ UPDATE BASIC FIELDS
+    product.title = title;
+    product.description = description; // 👈 UPDATE
+    product.price = price;
+    product.offerPercentage = offerPercentage || 0;
+    product.totalStock = totalStock;
+    product.gender = gender;
+    // product.brand = brand;
+    product.status = status;
+    product.sizes = sizeArray;
+
+    // 🖼 IMAGE UPDATE (OPTIONAL PHP UPLOAD)
+    if (req.files && req.files.length > 0) {
+      let imageUrls = [];
+
+      for (let file of req.files) {
+        const url = await uploadToPhpServer(file.path);
+        imageUrls.push(url);
+      }
+
+      product.images = imageUrls; // 🔥 replace old images
+    }
+    // else → keep old images automatically
+
+    await product.save(); // offerPrice auto recalculated
+
+    console.log("✅ Sliders updated (PHP Upload):", product.title);
+
+    return res.redirect("/admin-howmanyslidersuploaded");
+  } catch (err) {
+    console.error("❌ Edit Sliders Error:", err);
+    res.status(500).send("Update failed");
+  }
+};

@@ -221,6 +221,86 @@ adminRouter.post(
 );
 
 
+//crocs
+adminRouter.get('/admin-howmanycrocsuploaded', adminController.getAdminHowManyCrocsUploaded);
+adminRouter.post(
+  "/admin-howmanycrocsuploaded",
+  (req, res, next) => {
+    upload.array("images", 4)(req, res, function (err) {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).send("Each image must be under 2MB");
+        }
+        if (err.code === "LIMIT_FILE_COUNT") {
+          return res.status(400).send("Maximum 4 images allowed");
+        }
+        return res.status(400).send(err.message);
+      }
+      next();
+    });
+  },
+  adminController.postAdminHowManyCrocsUploaded
+);
+
+adminRouter.post(
+  "/admin-editcrocsproducts",
+  (req, res, next) => {
+    upload.array("images", 4)(req, res, function (err) {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).send("Each image must be under 2MB");
+        }
+        if (err.code === "LIMIT_FILE_COUNT") {
+          return res.status(400).send("Maximum 4 images allowed");
+        }
+        return res.status(400).send(err.message);
+      }
+      next();
+    });
+  },
+  adminController.postAdminCrocsEditProducts
+);
+
+//sliders
+adminRouter.get('/admin-howmanyslidersuploaded', adminController.getAdminHowManySlidersUploaded);
+
+adminRouter.post(
+  "/admin-howmanyslidersuploaded",
+  (req, res, next) => {
+    upload.array("images", 4)(req, res, function (err) {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).send("Each image must be under 2MB");
+        }
+        if (err.code === "LIMIT_FILE_COUNT") {
+          return res.status(400).send("Maximum 4 images allowed");
+        }
+        return res.status(400).send(err.message);
+      }
+      next();
+    });
+  },
+  adminController.postAdminHowManySlidersUploaded
+);
+
+adminRouter.post(
+  "/admin-editsliderslproducts",
+  (req, res, next) => {
+    upload.array("images", 4)(req, res, function (err) {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).send("Each image must be under 2MB");
+        }
+        if (err.code === "LIMIT_FILE_COUNT") {
+          return res.status(400).send("Maximum 4 images allowed");
+        }
+        return res.status(400).send(err.message);
+      }
+      next();
+    });
+  },
+  adminController.postAdminSlidersEditProducts
+);
 
 module.exports = adminRouter;
  

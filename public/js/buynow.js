@@ -1,24 +1,18 @@
 function openCheckout() {
-  const sizeError = document.getElementById("sizeError");
-
-  // Validate only if size exists
-  if (sizeError && !selectedSize) {
-    sizeError.classList.remove("hidden");
+  if ((window.PRODUCT_CATEGORY === "shoes" || window.PRODUCT_CATEGORY === "clothes") && !selectedSize) {
+    const sizeError = document.getElementById("sizeError");
+    if (sizeError) sizeError.classList.remove("hidden");
+    alert("Please select a size");
     return;
   }
 
-  // Set qty
-  document.getElementById("buyQty").value =
-    document.getElementById("qty-val").innerText;
+  // Set qty from JS variable (not innerText)
+  const buyQtyInput = document.getElementById("buyQty");
+  if (buyQtyInput) buyQtyInput.value = quantity; // ✅ fixed
 
   // Set size
   const sizeInput = document.getElementById("selectedSize");
   if (sizeInput) sizeInput.value = selectedSize;
 
-  // Open modal
   document.getElementById("checkoutModal").classList.remove("hidden");
-}
-
-function closeCheckout() {
-  document.getElementById("checkoutModal").classList.add("hidden");
 }

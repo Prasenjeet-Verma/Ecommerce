@@ -559,12 +559,142 @@ exports.getReebokProducts = async (req, res, next) => {
   }
 }
 
+
+
+
+exports.getCrocsProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "crocs", // 👟 Crocs 
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const crocsProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/crocsProducts", {
+        products: crocsProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const crocsProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/crocsProducts", {
+      products: crocsProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get Crocs Products Error:", error);
+    next(error);
+  }
+}
+
+
+
+exports.getSlidersProducts = async (req, res, next) => {
+  try {
+    const gender = req.query.gender || "all";
+
+    let query = {
+      category: "sliders", // 👟 Crocs 
+      status: "active",
+    };
+
+    // 👇 gender filter
+    if (gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ===============================
+    // 🔐 NOT LOGGED IN (Guest user)
+    // ===============================
+    if (!req.session.isLoggedIn || !req.session.user) {
+      const slidersProducts = await Product.find(query).sort({ createdAt: -1 });
+
+      return res.render("User/slidersProducts", {
+        products: slidersProducts,
+        selectedGender: gender,
+        isLoggedIn: false,
+        user: null,
+      });
+    }
+
+    // ===============================
+    // 🔍 FETCH USER
+    // ===============================
+    const user = await User.findById(req.session.user._id);
+
+    // ❌ USER DELETED
+    if (!user) {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ❌ ONLY USER ROLE ALLOWED
+    if (user.role !== "user") {
+      return req.session.destroy(() => res.redirect("/login"));
+    }
+
+    // ===============================
+    // ✅ LOGGED IN USER
+    // ===============================
+    const slidersProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.render("User/slidersProducts", {
+      products: slidersProducts,
+      selectedGender: gender,
+      isLoggedIn: req.session.isLoggedIn,
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Get Sliders Products Error:", error);
+    next(error);
+  }
+}
+
+
+
+
+
+
 exports.getAllShoesProducts = async (req, res, next) => {
   try {
     const gender = req.query.gender || "all";
 
     let query = {
-      category: "shoes", // 👟 All shoes
+      category: { $in: ["shoes", "crocs", "sliders"] }, // 👟 All shoes
       status: "active",
     };
 
@@ -740,6 +870,8 @@ exports.getAllGooglesProducts = async (req, res, next) => {
     next(error);
   }
 }
+
+
 
 exports.getAllWatchesProducts = async (req, res, next) => {
       try {
@@ -1037,86 +1169,7 @@ exports.getViewProduct = async (req, res, next) => {
 };
 
 
-exports.postBuyNowOrder = async (req, res) => {
-  try {
-    const { productId, qty, name, mobile, address, pincode, state, paymentMethod, size } = req.body;
-    const userId = req.session.user._id;
 
-    const product = await Product.findById(productId);
-
-    if (!product || product.status !== "active") {
-      return res.send("Product not available");
-    }
-
-    if (product.totalStock < qty) {
-      return res.send("Out of stock");
-    }
-
-    // ✅ Only require size if product is shoes
-    if (product.category === "shoes" && !size) {
-      return res.status(400).send("Size is required for shoes");
-    }
-
-    const price = product.offerPrice;
-    const totalAmount = price * qty;
-
-    // ===========================
-    // 💵 ONLINE PAYMENT
-    // ===========================
-    if (paymentMethod === "ONLINE") {
-      req.session.tempOrder = {
-        user: userId,
-        product: productId,
-        qty,
-        size,   // optional for non-shoes
-        price,
-        totalAmount,
-        name,
-        mobile,
-        address,
-        pincode,
-        state,
-      };
-
-      return res.send("ONLINE payment gateway integration pending");
-    }
-
-    // ===========================
-    // 🚚 CASH ON DELIVERY
-    // ===========================
-    const result = await Product.updateOne(
-      { _id: productId, totalStock: { $gte: qty } },
-      { $inc: { totalStock: -qty } }
-    );
-
-    if (result.modifiedCount === 0) {
-      return res.send("Out of stock");
-    }
-
-    const order = await Order.create({
-      user: userId,
-      product: productId,
-      qty,
-      size: product.category === "shoes" ? size : null,  // save size only for shoes
-      price,
-      totalAmount,
-      name,
-      mobile,
-      address,
-      pincode,
-      state,
-      paymentMethod: paymentMethod === "COD" ? "COD" : "ONLINE",
-      paymentStatus: paymentMethod === "COD" ? "Pending" : "Paid",
-      orderStatus: "Confirmed",
-    });
-
-    res.redirect("/order-success/" + order._id);
-
-  } catch (err) {
-    console.error(err);
-    res.send("Order failed");
-  }
-};
 
 
 exports.getOrderSuccess = async (req, res) => {
@@ -1127,7 +1180,7 @@ exports.getOrderSuccess = async (req, res) => {
 
     // For order success
     const order = await Order.findById(req.params.id)
-      .populate("product")             // Buy now product
+      // .populate("product")             // Buy now product
       .populate("items.product");      // Cart products
 
 
@@ -1150,6 +1203,7 @@ exports.getOrderSuccess = async (req, res) => {
 
 exports.getOrderHistory = async (req, res, next) => {
   try {
+    // ✅ Check login
     if (!req.session.isLoggedIn || !req.session.user) {
       return res.redirect("/login");
     }
@@ -1159,35 +1213,20 @@ exports.getOrderHistory = async (req, res, next) => {
       return req.session.destroy(() => res.redirect("/login"));
     }
 
+    // ✅ Populate only items.product
     const orders = await Order.find({ user: user._id })
-      .populate("product")
-      .populate("items.product")
+      .populate("items.product") 
       .sort({ createdAt: -1 });
 
     // 🧠 Normalize data for EJS
     const finalOrders = orders.map(order => {
-      let products = [];
-
-      // 🛒 Cart order
-      if (order.items && order.items.length > 0) {
-        products = order.items.map(item => ({
-          product: item.product,
-          qty: item.qty,
-          size: item.size,
-          price: item.price,
-          total: item.total
-        }));
-      }
-      // ⚡ Buy now order
-      else if (order.product) {
-        products = [{
-          product: order.product,
-          qty: order.qty,
-          size: order.size,
-          price: order.price,
-          total: order.price * order.qty
-        }];
-      }
+      const products = order.items.map(item => ({
+        product: item.product,
+        qty: item.qty,
+        size: item.size,
+        price: item.price,
+        total: item.total
+      }));
 
       return {
         ...order.toObject(),
@@ -1367,103 +1406,142 @@ exports.removeFromCart = async (req, res) => {
   }
 };
 
-exports.postCartCheckout = async (req, res) => {
-  try {
-    if (!req.session.isLoggedIn || !req.session.user) {
-      return res.redirect("/login");
-    }
+exports.postBuyNowOrder = async (req,res)=>{
+ try{
+  let { productId, qty, name, mobile, address, pincode, state, paymentMethod, size } = req.body;
+  const userId = req.session.user._id;
 
-    const { name, mobile, address, pincode, state, paymentMethod } = req.body;
-    const userId = req.session.user._id;
+  qty = Number(qty);
+  if(!qty || qty < 1) return res.send("Invalid quantity");
 
-    const user = await User.findById(userId).populate("cart.product");
+  const product = await Product.findById(productId);
+  if(!product || product.status!=="active") return res.send("Product not available");
 
-    if (!user || user.cart.length === 0) {
-      return res.redirect("/cart");
-    }
-
-    let orderItems = [];
-    let totalAmount = 0;
-
-    // ===========================
-    // 1️⃣ VALIDATE & CALCULATE
-    // ===========================
-    for (let item of user.cart) {
-      const product = item.product;
-
-      if (!product || product.status !== "active") {
-        return res.send(`${product.title} not available`);
-      }
-
-      if (product.totalStock < item.quantity) {
-        return res.send(`${product.title} out of stock`);
-      }
-
-      const price = product.offerPrice > 0 ? product.offerPrice : product.price;
-      const total = price * item.quantity;
-      totalAmount += total;
-
-      orderItems.push({
-        product: product._id,
-        title: product.title,
-        qty: item.quantity,
-        size: item.size || null,
-        price,
-        total
-      });
-
-    }
-
-    // ===========================
-    // 💵 ONLINE PAYMENT
-    // ===========================
-    if (paymentMethod === "ONLINE") {
-      req.session.tempCartOrder = {
-        user: userId,
-        items: orderItems,
-        totalAmount,
-        name,
-        mobile,
-        address,
-        pincode,
-        state
-      };
-
-      return res.send("ONLINE payment gateway pending");
-    }
-
-    // ===========================
-    // 🚚 CASH ON DELIVERY
-    // ===========================
-    for (let item of user.cart) {
-      await Product.updateOne(
-        { _id: item.product._id, totalStock: { $gte: item.quantity } },
-        { $inc: { totalStock: -item.quantity } }
-      );
-    }
-
-    const order = await Order.create({
-      user: userId,
-      items: orderItems,
-      totalAmount,
-      name,
-      mobile,
-      address,
-      pincode,
-      state,
-      paymentMethod: "COD",
-      paymentStatus: "Pending",
-      orderStatus: "Confirmed"
-    });
-
-    // 🧹 Clear Cart
-    user.cart = [];
-    await user.save();
-
-    res.redirect("/order-success/" + order._id);
-
-  } catch (err) {
-    console.error(err);
-    res.send("Cart Order Failed");
+  // Stock only for non-size products
+  if(product.category!=="shoes" && product.category!=="clothes"){
+    if(product.totalStock < qty) return res.send("Out of stock");
   }
+
+  // Size required only for size products
+  if((product.category==="shoes" || product.category==="clothes") && !size){
+    return res.send("Please select size");
+  }
+
+  const price = product.offerPrice>0 ? product.offerPrice : product.price;
+  const totalAmount = price * qty;
+
+  // ONLINE
+  if(paymentMethod==="ONLINE"){
+    req.session.tempOrder = {
+      user:userId,
+      items:[{
+        product:productId,
+        qty,
+        size: (product.category==="shoes"||product.category==="clothes") ? size : null,
+        price,
+        total: totalAmount
+      }],
+      totalAmount,
+      name,mobile,address,pincode,state
+    };
+    return res.send("Online payment pending");
+  }
+
+  // COD stock reduce
+  if(product.category!=="shoes" && product.category!=="clothes"){
+    const r = await Product.updateOne({_id:productId,totalStock:{$gte:qty}},{$inc:{totalStock:-qty}});
+    if(r.modifiedCount===0) return res.send("Out of stock");
+  }
+
+  const order = await Order.create({
+    user:userId,
+    items:[{
+      product:productId,
+      qty,
+      size:(product.category==="shoes"||product.category==="clothes")?size:null,
+      price,
+      total: totalAmount
+    }],
+    totalAmount,
+    name,mobile,address,pincode,state,
+    paymentMethod:"COD",
+    paymentStatus:"Pending",
+    orderStatus:"Confirmed"
+  });
+
+  res.redirect("/order-success/"+order._id);
+
+ }catch(err){
+  console.error(err);
+  res.send("Order Failed");
+ }
+};
+
+exports.postCartCheckout = async (req,res)=>{
+ try{
+  if(!req.session.isLoggedIn) return res.redirect("/login");
+
+  const {name,mobile,address,pincode,state,paymentMethod} = req.body;
+  const user = await User.findById(req.session.user._id).populate("cart.product");
+
+  if(!user || user.cart.length===0) return res.redirect("/cart");
+
+  let items=[];
+  let totalAmount=0;
+
+  for(let c of user.cart){
+    const p = c.product;
+
+    if(!p || p.status!=="active") return res.send(p.title+" not available");
+
+    if(p.category!=="shoes" && p.category!=="clothes"){
+      if(p.totalStock < c.quantity) return res.send(p.title+" out of stock");
+    }
+
+    const price = p.offerPrice>0?p.offerPrice:p.price;
+    const total = price * c.quantity;
+    totalAmount += total;
+
+    items.push({
+      product:p._id,
+      qty:Number(c.quantity),
+      size:c.size||null,
+      price,
+      total
+    });
+  }
+
+  // ONLINE
+  if(paymentMethod==="ONLINE"){
+    req.session.tempCartOrder={user:user._id,items,totalAmount,name,mobile,address,pincode,state};
+    return res.send("Online payment pending");
+  }
+
+  // COD reduce stock
+  for(let c of user.cart){
+    const p = c.product;
+    if(p.category!=="shoes" && p.category!=="clothes"){
+      await Product.updateOne({_id:p._id},{$inc:{totalStock:-c.quantity}});
+    }
+  }
+
+  const order = await Order.create({
+    user:user._id,
+    items,
+    totalAmount,
+    name,mobile,address,pincode,state,
+    paymentMethod:"COD",
+    paymentStatus:"Pending",
+    orderStatus:"Confirmed"
+  });
+
+  user.cart=[];
+  await user.save();
+
+  res.redirect("/order-success/"+order._id);
+
+ }catch(err){
+  console.error(err);
+  res.send("Cart Order Failed");
+ }
 };

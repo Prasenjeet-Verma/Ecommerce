@@ -18,35 +18,7 @@
     <i class="fa-solid fa-bars" style="font-size: 1.5rem; cursor: pointer" onclick="toggleSidebar()"></i>
   </header>
 
-  <aside class="sidebar" id="sidebar">
-    <div style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 2rem;
-        ">
-      <h2><i class="fa-solid fa-bolt"></i><%-admin.username%></h2>
-      <i class="fa-solid fa-xmark" class="hide-desktop" style="cursor: pointer; font-size: 1.5rem; display: none"
-        onclick="toggleSidebar()" id="closeSidebar"></i>
-    </div>
-    <nav>
-      <a href="/admin-home" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-      <a href="/admin-userlist" class="nav-link"><i class="fa-solid fa-users"></i> My Users</a>
-      <a href="/admin-howmanyshoesuploaded" class="nav-link active" style="background-color: black;"><i
-          class="fa-solid fa-shoe-prints"></i> Add Shoes</a>
-      <a href="/admin-howmanyglassesuploaded" class="nav-link active"><i class="fa-solid fa-glasses"></i></i> Add
-        Glasses</a>
-      <a href="/admin-howmanywatchesuploaded" class="nav-link active"><i class="fa-solid fa-stopwatch"></i> Add
-        Watches</a>
-      <a href="/admin-howmanyclothesuploaded" class="nav-link active"><i class="fa-solid fa-shirt"></i> Add Clothes</a>
-      <a href="/admin-howmanybagsuploaded" class="nav-link active"><i class="fa-solid fa-bag-shopping"></i> Add Bags</a>
-      <a href="admin-newoder.html" class="nav-link"><i class="fa-solid fa-cart-shopping"></i> New Orders</a>
-      <a href="admin.order-history.html" class="nav-link"><i class="fa-solid fa-cart-shopping"></i> Orders History</a>
-
-      <a href="/logout" class="nav-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-
-    </nav>
-  </aside>
+<%- include('../partials/adminNavBar') %>
 
   <main class="main-content">
     <header style="

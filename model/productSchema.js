@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      enum: ["shoes", "watch", "clothes", "glasses", "bags"],
+      enum: ["shoes", "watch", "clothes", "glasses", "bags", "crocs", "sliders"],
       required: true,
     },
 
@@ -37,18 +37,6 @@ const productSchema = new mongoose.Schema(
       type: [String],   // 🔥 FIX
       default: [],
     },
-
-
-    // sizes: {
-    //   type: [Number],
-    //   default: [],
-    //   validate: {
-    //     validator: function (v) {
-    //       return this.category !== "shoes" || v.length > 0;
-    //     },
-    //     message: "Sizes required for shoes",
-    //   },
-    // },
 
     images: {
       type: [String],
