@@ -78,12 +78,12 @@ async function removeItem(productId) {
 
 // ================= MODAL =================
 
-function openCheckout() {
-  const modal = document.getElementById("checkoutModal");
-  if (modal) modal.classList.remove("hidden");
-}
+// function openCheckout() {
+//   const modal = document.getElementById("checkoutModal");
+//   if (modal) modal.classList.remove("hidden");
+// }
 
-function closeCheckout() {
-  const modal = document.getElementById("checkoutModal");
-  if (modal) modal.classList.add("hidden");
-}
+// function closeCheckout() {
+//   const modal = document.getElementById("checkoutModal");
+//   if (modal) modal.classList.add("hidden");
+// }

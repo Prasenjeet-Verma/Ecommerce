@@ -1,17 +1,17 @@
-function openCheckout() {
-  const sizeRequired = ["shoes", "crocs", "sliders", "clothes"].includes(window.PRODUCT_CATEGORY);
+// function openCheckout() {
+//   const sizeRequired = ["shoes", "crocs", "sliders", "clothes"].includes(window.PRODUCT_CATEGORY);
 
-  if (sizeRequired && !selectedSize) {
-    const sizeError = document.getElementById("sizeError");
-    if (sizeError) sizeError.classList.remove("hidden");
-    return; // ❌ modal open nahi hoga
-  }
+//   if (sizeRequired && !selectedSize) {
+//     const sizeError = document.getElementById("sizeError");
+//     if (sizeError) sizeError.classList.remove("hidden");
+//     return; // ❌ modal open nahi hoga
+//   }
 
-  document.getElementById("buyQty").value = quantity;
-  document.getElementById("selectedSize").value = selectedSize || "";
+//   document.getElementById("buyQty").value = quantity;
+//   document.getElementById("selectedSize").value = selectedSize || "";
 
-  document.getElementById("checkoutModal").classList.remove("hidden");
-}
+//   document.getElementById("checkoutModal").classList.remove("hidden");
+// }
 
 
 document.addEventListener("DOMContentLoaded", () => {

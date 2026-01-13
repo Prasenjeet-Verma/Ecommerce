@@ -20,84 +20,96 @@
     <i class="fa-solid fa-bars" style="font-size: 1.5rem; cursor: pointer" onclick="toggleSidebar()"></i>
   </header>
 
-<%- include('../partials/adminNavBar') %>
+  <%- include('../partials/adminNavBar') %>
 
-  <!--  ================== Contant Area Start ============ -->
+    <!--  ================== Contant Area Start ============ -->
 
-  <main class="main-content">
-    <div style="
+    <main class="main-content">
+      <div style="
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 2rem;
         " class="header">
-      <div>
-        <h1>Dashboard</h1>
-        <p style="color: #64748b">Managing Rider Shoe Store</p>
-      </div>
-    </div>
-
-    <!--  ================== Sales ============ -->
-
-    <div class="stats-grid">
-      <div class="stat-card">
-        <h3>Today's Sales</h3>
-        <div class="value">₹1,24,500</div>
-      </div>
-
-      <div class="stat-card">
-        <h3>Yesterday Sales</h3>
-        <div class="value">₹1,24,500</div>
-      </div>
-
-      <div class="stat-card">
-        <h3>Total Sales</h3>
-        <div class="value">₹1,24,500</div>
-      </div>
-
-      <!--  ================== Orders ============ -->
-
-      <div class="stat-card" style="background-color: #fca5a5">
-        <h3>Total Cancil Orders</h3>
-        <div class="value">42</div>
-      </div>
-
-      <div class="stat-card" style="background-color: rgba(149, 149, 17, 0.512)">
-        <h3>Total Pending Orders</h3>
-        <div class="value">42</div>
-      </div>
-
-      <div class="stat-card" style="background-color: #0667187b">
-        <h3>Total Complited Orders</h3>
-        <div class="value">42</div>
-      </div>
-
-      <div class="stat-card">
-        <h3>Today's Orders</h3>
-        <div class="value">158</div>
-      </div>
-
-      <div class="stat-card">
-        <h3>Yesterday Orders</h3>
-        <div class="value">158</div>
-      </div>
-
-      <div class="stat-card">
-        <h3>Total Orders</h3>
-        <div class="value">158</div>
-      </div>
-
-      <!--  ================== Products ============ -->
-
-      <a href="admin-shoe-product.html" style="text-decoration: none">
-        <div class="stat-card" style="background-color: #096d9f7b; color: black">
-          <h3>Your Total Products</h3>
-          <div class="value">1158</div>
+        <div>
+          <h1>Dashboard</h1>
+          <p style="color: #64748b">Managing Rider Shoe Store</p>
         </div>
-      </a>
-    </div>
+      </div>
 
-    <!-- <div class="table-container">
+      <!--  ================== Sales ============ -->
+
+      <div class="stats-grid">
+        <a href="/todaysale" style="text-decoration: none">
+          <div class="stat-card">
+            <h3>Today's Sales</h3>
+            <div class="value">₹1,24,500</div>
+          </div>
+        </a>
+        <a href="/yesterdaysale" style="text-decoration: none">
+          <div class="stat-card">
+            <h3>Yesterday Sales</h3>
+            <div class="value">₹1,24,500</div>
+          </div>
+        </a>
+        <a href="/total-sales" style="text-decoration: none">
+          <div class="stat-card">
+            <h3>Total Sales</h3>
+            <div class="value">₹1,24,500</div>
+          </div>
+        </a>
+        <!--  ================== Orders ============ -->
+        <a href="/cancel-orders" style="text-decoration: none">
+          <div class="stat-card" style="background-color: #fca5a5">
+            <h3>Total Cancel Orders</h3>
+            <div class="value">42</div>
+          </div>
+        </a>
+        <a href="/totalpendingorders" style="text-decoration: none">
+          <div class="stat-card" style="background-color: rgba(149, 149, 17, 0.512)">
+            <h3>Total Pending Orders</h3>
+            <div class="value">42</div>
+          </div>
+        </a>
+
+        <a href="/totalcomplitedorders" style="text-decoration: none">
+          <div class="stat-card" style="background-color: #0667187b">
+            <h3>Total Complited Orders</h3>
+            <div class="value">42</div>
+          </div>
+        </a>
+
+        <a href="/todaysorders" style="text-decoration: none">
+          <div class="stat-card">
+            <h3>Today's Orders</h3>
+            <div class="value">158</div>
+          </div>
+        </a>
+
+        <a href="/yesterdayorders" style="text-decoration: none">
+          <div class="stat-card">
+            <h3>Yesterday Orders</h3>
+            <div class="value">158</div>
+          </div>
+        </a>
+        <!--  ================== Total Orders ============ -->
+        <a href="/totalorders" style="text-decoration: none">
+          <div class="stat-card">
+            <h3>Total Orders</h3>
+            <div class="value">158</div>
+          </div>
+        </a>
+        <!--  ================== Products ============ -->
+
+        <a href="/totalproducts" style="text-decoration: none">
+          <div class="stat-card" style="background-color: #096d9f7b; color: black">
+            <h3>Your Total Products</h3>
+            <div class="value">1158</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- <div class="table-container">
         <h2 style="margin-bottom: 1rem; font-size: 1.2rem">Recent Activity</h2>
         <table>
           <thead>
@@ -124,8 +136,8 @@
           </tbody>
         </table>
       </div> -->
-  </main>
-  <script src="/js/adminDashbord.js"></script>
+    </main>
+    <script src="/js/adminDashbord.js"></script>
 </body>
 
 </html>

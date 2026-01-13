@@ -19,8 +19,19 @@ const adminController = require('../controller/adminController');
 adminRouter.get('/admin-home', adminController.getAdminHome);
 adminRouter.get('/admin-userlist', adminController.getAdminUsersList);
 adminRouter.get('/admin-seeuseralldetails/:id', adminController.getAdminSeeUserAllDetails);
-
-
+adminRouter.get('/admin-newoder', adminController.getAdminNewOrders);
+adminRouter.post('/admin-update-order-status', adminController.postAdminUpdateOrderStatus);
+adminRouter.get('/admin-order-history', adminController.getAdminOrderHistory);
+adminRouter.get('/totalproducts', adminController.getTotalProductsCount);
+adminRouter.get('/totalpendingorders', adminController.getTotalPendingOrdersCount);
+adminRouter.get('/cancel-orders', adminController.getCancelOrders);
+adminRouter.get('/totalcomplitedorders', adminController.getTotalComplitedOrdersCount);
+adminRouter.get('/totalorders', adminController.getTotalOrdersCount);
+adminRouter.get('/todaysorders', adminController.getTodaysOrdersCount);
+adminRouter.get('/yesterdayorders', adminController.getYesterdayOrdersCount);
+adminRouter.get('/total-sales', adminController.getTotalSales);
+adminRouter.get('/todaysale', adminController.getTodaySales);
+adminRouter.get('/yesterdaysale', adminController.getYesterdaySales);
 
 
 

@@ -1530,3 +1530,457 @@ exports.getAdminSeeUserAllDetails = async (req, res, next) => {
   }
 };
 
+exports.getAdminNewOrders = async (req, res) => {
+  try {
+    // 🔐 security
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const orders = await Order.find({
+      orderStatus: { $nin: ["Delivered", "Cancelled"] }
+    })
+      .populate("user")
+      .populate("items.product")   // 🔥 THIS IS THE FIX
+      .sort({ createdAt: -1 });
+
+    res.render("Admin/admin-neworder", {
+      orders,
+      isLoggedIn: req.session.isLoggedIn,
+      admin: req.session.user
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error loading orders");
+  }
+};
+
+
+exports.postAdminUpdateOrderStatus = async (req, res) => {
+  try {
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const { orderId, status } = req.body;
+
+    const order = await Order.findById(orderId);
+    if (!order) return res.redirect("/admin-newoder");
+
+    // If admin cancels
+    if (status === "Cancelled") {
+      order.orderStatus = "Cancelled";
+      order.cancelled.isCancelled = true;
+      order.cancelled.cancelledAt = new Date();
+      order.cancelled.cancelledBy = "admin";
+      order.cancelled.cancelReason = "Cancelled by admin";
+    }
+
+    // If delivered
+    if (status === "Delivered") {
+      order.orderStatus = "Delivered";
+      order.paymentStatus = "Paid";
+    }
+
+    await order.save();
+
+    // 🔥 Update user's stats if delivered
+    if (status === "Delivered") {
+      await User.findByIdAndUpdate(order.user, {
+        $inc: {
+          totalSpend: order.totalAmount,
+          totalOrders: 1
+        }
+      });
+    }
+
+    res.redirect("/admin-newoder");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Status update failed");
+  }
+};
+
+
+exports.getAdminOrderHistory = async (req, res) => {
+  try {
+    // 🔐 Only admin allowed
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const orders = await Order.find({
+      orderStatus: { $in: ["Delivered", "Cancelled"] }
+    })
+      .populate("user")
+      .populate("items.product")
+      .sort({ createdAt: -1 });
+
+    res.render("Admin/admin-order-history", {
+      orders,
+      isLoggedIn: req.session.isLoggedIn,
+      admin: req.session.user
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Failed to load order history");
+  }
+};
+
+
+exports.getTotalProductsCount = async (req, res) => {
+  try {
+    // 🔐 Admin only
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const filter = req.query.filter || "all";
+
+    let query = {};
+    if (filter === "active") query.status = "active";
+    if (filter === "inactive") query.status = "inactive";
+
+    // Fetch products
+    const products = await Product.find(query).sort({ createdAt: -1 }).lean();
+
+    // Stats
+    const totalProducts = await Product.countDocuments();
+    const activeProducts = await Product.countDocuments({ status: "active" });
+    const inactiveProducts = await Product.countDocuments({ status: "inactive" });
+
+    // Category wise
+    const categoryStats = await Product.aggregate([
+      { $group: { _id: "$category", count: { $sum: 1 } } }
+    ]);
+
+    res.render("Admin/admin-total-products", {
+      products,
+      totalProducts,
+      activeProducts,
+      inactiveProducts,
+      categoryStats,
+      filter,
+      isLoggedIn: req.session.isLoggedIn,
+      admin: req.session.user
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Failed to load products");
+  }
+};
+
+
+exports.getTotalPendingOrdersCount = async (req, res) => {
+  try {
+    // 🔐 Admin Security
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    // Pending = Confirmed OR Shipped (but not delivered & not cancelled)
+    const orders = await Order.find({
+      "cancelled.isCancelled": false,
+      orderStatus: { $in: ["Confirmed", "Shipped"] }
+    })
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.render("Admin/admin-pending-orders", {
+      orders,
+      admin: req.session.user,
+      isLoggedIn: true
+    });
+
+  } catch (err) {
+    console.error("Pending Orders Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+exports.getCancelOrders = async (req, res) => {
+  try {
+    // 🔐 Admin security
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const orders = await Order.find({
+      "cancelled.isCancelled": true,
+      orderStatus: "Cancelled"
+    })
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images")
+      .sort({ "cancelled.cancelledAt": -1 })
+      .lean();
+
+    res.render("Admin/admin-cancel-orders", {
+      orders,
+      admin: req.session.user,
+      isLoggedIn: true
+    });
+
+  } catch (err) {
+    console.error("Cancelled Orders Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+exports.getTotalComplitedOrdersCount = async (req, res) => {
+  try {
+    // 🔐 Admin check
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    // Find completed orders → Delivered
+    const orders = await Order.find({ orderStatus: "Delivered" })
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images price")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const totalCompletedOrders = orders.length;
+
+    res.render("Admin/admin-completed-orders", {
+      orders,
+      totalCompletedOrders,
+      admin: req.session.user,
+      isLoggedIn: true
+    });
+
+  } catch (err) {
+    console.error("Completed Orders Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+exports.getTotalOrdersCount = async (req, res) => {
+  try {
+    // 🔐 Admin check
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const orders = await Order.find({})
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images price")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const totalOrders = orders.length;
+
+    res.render("Admin/admin-total-orders", {
+      orders,
+      totalOrders,
+      admin: req.session.user,
+      isLoggedIn: true
+    });
+
+  } catch (err) {
+    console.error("Total Orders Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+exports.getTodaysOrdersCount = async (req, res) => {
+  try {
+    // 🔐 Admin check
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const start = new Date();
+    start.setHours(0, 0, 0, 0); // Today start
+
+    const end = new Date();
+    end.setHours(23, 59, 59, 999); // Today end
+
+    // Fetch today's orders
+    const orders = await Order.find({
+      createdAt: { $gte: start, $lte: end }
+    })
+    .populate("user", "username phoneNo emailAddress")
+    .populate("items.product", "title images price")
+    .sort({ createdAt: -1 })
+    .lean();
+
+    const totalOrders = orders.length;
+
+    res.render("Admin/admin-todays-orders", {
+      orders,
+      totalOrders,
+      admin: req.session.user,
+      isLoggedIn: true
+    });
+
+  } catch (err) {
+    console.error("Todays Orders Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+
+exports.getYesterdayOrdersCount = async (req, res) => {
+  try {
+    // 🔐 Admin check
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    // Get yesterday's date range
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    const startOfYesterday = new Date(
+      yesterday.getFullYear(),
+      yesterday.getMonth(),
+      yesterday.getDate(),
+      0, 0, 0
+    );
+
+    const endOfYesterday = new Date(
+      yesterday.getFullYear(),
+      yesterday.getMonth(),
+      yesterday.getDate(),
+      23, 59, 59
+    );
+
+    // Fetch orders created yesterday
+    const orders = await Order.find({
+      createdAt: { $gte: startOfYesterday, $lte: endOfYesterday }
+    })
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images price")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const totalOrders = orders.length;
+
+    res.render("Admin/admin-yesterday-orders", {
+      orders,
+      totalOrders,
+      admin: req.session.user,
+      isLoggedIn: req.session.isLoggedIn
+    });
+
+  } catch (err) {
+    console.error("Yesterday Orders Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+
+exports.getTodaySales = async (req, res) => {
+  try {
+    // 🔐 Admin check
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const today = new Date();
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+    const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+
+    // Fetch today's orders
+    const orders = await Order.find({
+      createdAt: { $gte: startOfToday, $lte: endOfToday },
+      orderStatus: { $nin: ["Cancelled"] } // Only include active orders
+    })
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images price")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Calculate total sales
+    const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    res.render("Admin/admin-today-sales", {
+      orders,
+      totalSales,
+      admin: req.session.user,
+      isLoggedIn: true
+    });
+
+  } catch (err) {
+    console.error("Today Sales Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+
+exports.getYesterdaySales = async (req, res) => {
+  try {
+    // 🔐 Admin check
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    const today = new Date();
+    const startOfYesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 0, 0, 0);
+    const endOfYesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 23, 59, 59);
+
+    // Fetch yesterday's orders (excluding cancelled)
+    const orders = await Order.find({
+      createdAt: { $gte: startOfYesterday, $lte: endOfYesterday },
+      orderStatus: { $nin: ["Cancelled"] }
+    })
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images price")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Calculate total sales
+    const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    res.render("Admin/admin-yesterday-sales", {
+      orders,
+      totalSales,
+      admin: req.session.user,
+      isLoggedIn: true
+    });
+
+  } catch (err) {
+    console.error("Yesterday Sales Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+
+
+exports.getTotalSales = async (req, res) => {
+  try {
+    // 🔐 Admin check
+    if (!req.session.isLoggedIn || req.session.user.role !== "admin") {
+      return res.redirect("/login");
+    }
+
+    // Get all orders except cancelled
+    const orders = await Order.find({ orderStatus: { $ne: "Cancelled" } })
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images price")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Total sales amount
+    const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    res.render("Admin/admin-total-sale", {
+      orders,
+      totalSales,
+      admin: req.session.user,
+      isLoggedIn: true
+    });
+
+  } catch (err) {
+    console.error("Total Sales Error:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+

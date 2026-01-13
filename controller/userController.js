@@ -1476,27 +1476,29 @@ exports.postBuyNowOrder = async (req, res) => {
     const product = await Product.findById(productId);
     if (!product || product.status !== "active") return res.send("Product not available");
 
-    // Stock only for non-size products
-    if (product.category !== "shoes" && product.category !== "clothes") {
-      if (product.totalStock < qty) return res.send("Out of stock");
+    const sizeRequired = ["shoes","crocs","sliders","clothes"].includes(product.category);
+
+    // ❌ block if size product but no size selected
+    if (sizeRequired && !size) {
+      return res.send("Please select size");
     }
 
-    // Size required only for size products
-    if (["shoes", "crocs", "sliders", "clothes"].includes(product.category) && !size) {
-      return res.send("Please select size");
+    // Stock only for non-size products
+    if (!sizeRequired) {
+      if (product.totalStock < qty) return res.send("Out of stock");
     }
 
     const price = product.offerPrice > 0 ? product.offerPrice : product.price;
     const totalAmount = price * qty;
 
-    // ONLINE
+    // 💳 ONLINE
     if (paymentMethod === "ONLINE") {
       req.session.tempOrder = {
         user: userId,
         items: [{
           product: productId,
           qty,
-          size: (product.category === "shoes" || product.category === "clothes") ? size : null,
+          size: sizeRequired ? size : null,
           price,
           total: totalAmount
         }],
@@ -1506,9 +1508,12 @@ exports.postBuyNowOrder = async (req, res) => {
       return res.send("Online payment pending");
     }
 
-    // COD stock reduce
-    if (product.category !== "shoes" && product.category !== "clothes") {
-      const r = await Product.updateOne({ _id: productId, totalStock: { $gte: qty } }, { $inc: { totalStock: -qty } });
+    // 📦 COD stock reduce only for non-size products
+    if (!sizeRequired) {
+      const r = await Product.updateOne(
+        { _id: productId, totalStock: { $gte: qty } },
+        { $inc: { totalStock: -qty } }
+      );
       if (r.modifiedCount === 0) return res.send("Out of stock");
     }
 
@@ -1517,7 +1522,7 @@ exports.postBuyNowOrder = async (req, res) => {
       items: [{
         product: productId,
         qty,
-        size: (product.category === "shoes" || product.category === "clothes") ? size : null,
+        size: sizeRequired ? size : null,
         price,
         total: totalAmount
       }],
@@ -1536,6 +1541,7 @@ exports.postBuyNowOrder = async (req, res) => {
   }
 };
 
+
 exports.postCartCheckout = async (req, res) => {
   try {
     if (!req.session.isLoggedIn) return res.redirect("/login");
@@ -1550,10 +1556,17 @@ exports.postCartCheckout = async (req, res) => {
 
     for (let c of user.cart) {
       const p = c.product;
-
       if (!p || p.status !== "active") return res.send(p.title + " not available");
 
-      if (p.category !== "shoes" && p.category !== "clothes") {
+      const sizeRequired = ["shoes","crocs","sliders","clothes"].includes(p.category);
+
+      // ⛔ size product but size missing
+      if (sizeRequired && !c.size) {
+        return res.send("Please select size for " + p.title);
+      }
+
+      // 📦 stock only for non-size products
+      if (!sizeRequired) {
         if (p.totalStock < c.quantity) return res.send(p.title + " out of stock");
       }
 
@@ -1564,23 +1577,33 @@ exports.postCartCheckout = async (req, res) => {
       items.push({
         product: p._id,
         qty: Number(c.quantity),
-        size: c.size || null,
+        size: sizeRequired ? c.size : null,
         price,
         total
       });
     }
 
-    // ONLINE
+    // 💳 ONLINE
     if (paymentMethod === "ONLINE") {
-      req.session.tempCartOrder = { user: user._id, items, totalAmount, name, mobile, address, pincode, state };
+      req.session.tempCartOrder = {
+        user: user._id,
+        items,
+        totalAmount,
+        name, mobile, address, pincode, state
+      };
       return res.send("Online payment pending");
     }
 
-    // COD reduce stock
+    // 📦 COD reduce stock
     for (let c of user.cart) {
       const p = c.product;
-      if (p.category !== "shoes" && p.category !== "clothes") {
-        await Product.updateOne({ _id: p._id }, { $inc: { totalStock: -c.quantity } });
+      const sizeRequired = ["shoes","crocs","sliders","clothes"].includes(p.category);
+
+      if (!sizeRequired) {
+        await Product.updateOne(
+          { _id: p._id, totalStock: { $gte: c.quantity } },
+          { $inc: { totalStock: -c.quantity } }
+        );
       }
     }
 
