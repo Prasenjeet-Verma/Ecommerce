@@ -38,6 +38,7 @@ userRouter.post("/cart/remove", userController.removeFromCart);
 userRouter.post("/cart/checkout", userController.postCartCheckout);
 
 
+userRouter.post("/order/cancel", userController.cancelOrder);
 
 
 // GET PROFILE

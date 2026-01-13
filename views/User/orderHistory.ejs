@@ -9,55 +9,88 @@
 </head>
 
 <body>
-<div class="orders-wrapper">
+  <div class="orders-wrapper">
 
-  <div class="header-actions">
-    <a href="/" class="back-link">
-      <i class="fa-solid fa-arrow-left"></i> My Profile
-    </a>
-    <h2>Order History</h2>
-  </div>
-
-  <% if (orders.length === 0) { %>
-    <p style="text-align:center;margin-top:2rem;">No orders yet</p>
-  <% } %>
-
-  <% orders.forEach(order => { %>
-  <div class="order-card">
-
-    <!-- Order Header -->
-    <div class="order-header">
-      <div>
-        <span class="order-id">#RS-<%= order._id.toString().slice(-5) %></span>
-        <p class="order-date"><%= order.createdAt.toLocaleDateString("en-GB") %></p>
-      </div>
-      <span class="status-badge"><%= order.orderStatus %></span>
+    <div class="header-actions">
+      <a href="/" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> My Profile
+      </a>
+      <h2>Order History</h2>
     </div>
 
-    <!-- Products -->
-    <% order.items.forEach(item => { %>
-      <div class="product-info">
-        <img src="<%= item.product.images[0] %>" class="product-img"/>
-        <div>
-          <h4><%= item.product.title %></h4>
-          <p>Qty: <%= item.qty %> | Size: <%= item.size || "N/A" %></p>
-          <p>₹<%= item.price %></p>
+    <% 
+      // 🔥 Filter out cancelled orders
+      const activeOrders = orders.filter(order => order.orderStatus !== "Cancelled"); 
+    %>
+
+    <% if (activeOrders.length === 0) { %>
+      <p style="text-align:center;margin-top:2rem;">No active orders</p>
+    <% } %>
+
+    <% activeOrders.forEach(order => { %>
+      <div class="order-card">
+
+        <!-- Order Header -->
+        <div class="order-header">
+          <div>
+            <span class="order-id">#RS-<%= order._id.toString().slice(-5) %></span>
+            <p class="order-date"><%= order.createdAt.toLocaleDateString("en-GB") %></p>
+          </div>
+          <span class="status-badge"><%= order.orderStatus %></span>
         </div>
+
+        <!-- Products -->
+        <% order.items.forEach(item => { %>
+          <div class="product-info">
+            <img src="<%= item.product.images[0] %>" class="product-img" />
+            <div>
+              <h4><%= item.product.title %></h4>
+              <p>Qty: <%= item.qty %> | Size: <%= item.size || "N/A" %></p>
+              <p>₹<%= item.price %></p>
+            </div>
+          </div>
+        <% }) %>
+
+        <!-- Order Footer -->
+        <div class="order-footer">
+          <div>
+            <small>Total</small>
+            <strong>₹<%= order.totalAmount %></strong>
+          </div>
+
+          <div class="order-actions">
+            <a href="/track/<%= order._id %>" class="track-btn">Track</a>
+
+            <% if(order.orderStatus !== "Delivered") { %>
+              <button class="cancel-btn" onclick="cancelOrder('<%= order._id %>')">Cancel Order</button>
+            <% } %>
+          </div>
+        </div>
+
       </div>
     <% }) %>
 
-    <!-- Order Footer -->
-    <div class="order-footer">
-      <div>
-        <small>Total</small>
-        <strong>₹<%= order.totalAmount %></strong>
-      </div>
-      <a href="/track/<%= order._id %>" class="track-btn">Track</a>
-    </div>
-
   </div>
-  <% }) %>
 
-</div>
+  <script>
+  async function cancelOrder(orderId) {
+    // ❌ Remove confirm alert
+    const res = await fetch("/order/cancel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // ✅ Remove order card from DOM instead of reload
+      const card = document.querySelector(`.cancel-btn[onclick="cancelOrder('${orderId}')"]`).closest(".order-card");
+      if(card) card.remove();
+    } else {
+      console.error(data.message || "Cancel failed");
+    }
+  }
+  </script>
 </body>
 </html>

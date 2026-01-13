@@ -812,7 +812,7 @@ exports.getAllClothesProducts = async (req, res, next) => {
 
 
 exports.getAllGooglesProducts = async (req, res, next) => {
-    try {
+  try {
     const gender = req.query.gender || "all";
 
     let query = {
@@ -874,7 +874,7 @@ exports.getAllGooglesProducts = async (req, res, next) => {
 
 
 exports.getAllWatchesProducts = async (req, res, next) => {
-      try {
+  try {
     const gender = req.query.gender || "all";
 
     let query = {
@@ -1215,7 +1215,7 @@ exports.getOrderHistory = async (req, res, next) => {
 
     // ✅ Populate only items.product
     const orders = await Order.find({ user: user._id })
-      .populate("items.product") 
+      .populate("items.product")
       .sort({ createdAt: -1 });
 
     // 🧠 Normalize data for EJS
@@ -1465,142 +1465,196 @@ exports.postAddToCart = async (req, res) => {
 };
 
 
-exports.postBuyNowOrder = async (req,res)=>{
- try{
-  let { productId, qty, name, mobile, address, pincode, state, paymentMethod, size } = req.body;
-  const userId = req.session.user._id;
+exports.postBuyNowOrder = async (req, res) => {
+  try {
+    let { productId, qty, name, mobile, address, pincode, state, paymentMethod, size } = req.body;
+    const userId = req.session.user._id;
 
-  qty = Number(qty);
-  if(!qty || qty < 1) return res.send("Invalid quantity");
+    qty = Number(qty);
+    if (!qty || qty < 1) return res.send("Invalid quantity");
 
-  const product = await Product.findById(productId);
-  if(!product || product.status!=="active") return res.send("Product not available");
+    const product = await Product.findById(productId);
+    if (!product || product.status !== "active") return res.send("Product not available");
 
-  // Stock only for non-size products
-  if(product.category!=="shoes" && product.category!=="clothes"){
-    if(product.totalStock < qty) return res.send("Out of stock");
-  }
+    // Stock only for non-size products
+    if (product.category !== "shoes" && product.category !== "clothes") {
+      if (product.totalStock < qty) return res.send("Out of stock");
+    }
 
-  // Size required only for size products
-  if (["shoes","crocs","sliders","clothes"].includes(product.category) && !size) {
-    return res.send("Please select size");
-  }
+    // Size required only for size products
+    if (["shoes", "crocs", "sliders", "clothes"].includes(product.category) && !size) {
+      return res.send("Please select size");
+    }
 
-  const price = product.offerPrice>0 ? product.offerPrice : product.price;
-  const totalAmount = price * qty;
+    const price = product.offerPrice > 0 ? product.offerPrice : product.price;
+    const totalAmount = price * qty;
 
-  // ONLINE
-  if(paymentMethod==="ONLINE"){
-    req.session.tempOrder = {
-      user:userId,
-      items:[{
-        product:productId,
+    // ONLINE
+    if (paymentMethod === "ONLINE") {
+      req.session.tempOrder = {
+        user: userId,
+        items: [{
+          product: productId,
+          qty,
+          size: (product.category === "shoes" || product.category === "clothes") ? size : null,
+          price,
+          total: totalAmount
+        }],
+        totalAmount,
+        name, mobile, address, pincode, state
+      };
+      return res.send("Online payment pending");
+    }
+
+    // COD stock reduce
+    if (product.category !== "shoes" && product.category !== "clothes") {
+      const r = await Product.updateOne({ _id: productId, totalStock: { $gte: qty } }, { $inc: { totalStock: -qty } });
+      if (r.modifiedCount === 0) return res.send("Out of stock");
+    }
+
+    const order = await Order.create({
+      user: userId,
+      items: [{
+        product: productId,
         qty,
-        size: (product.category==="shoes"||product.category==="clothes") ? size : null,
+        size: (product.category === "shoes" || product.category === "clothes") ? size : null,
         price,
         total: totalAmount
       }],
       totalAmount,
-      name,mobile,address,pincode,state
-    };
-    return res.send("Online payment pending");
+      name, mobile, address, pincode, state,
+      paymentMethod: "COD",
+      paymentStatus: "Pending",
+      orderStatus: "Confirmed"
+    });
+
+    res.redirect("/order-success/" + order._id);
+
+  } catch (err) {
+    console.error(err);
+    res.send("Order Failed");
   }
-
-  // COD stock reduce
-  if(product.category!=="shoes" && product.category!=="clothes"){
-    const r = await Product.updateOne({_id:productId,totalStock:{$gte:qty}},{$inc:{totalStock:-qty}});
-    if(r.modifiedCount===0) return res.send("Out of stock");
-  }
-
-  const order = await Order.create({
-    user:userId,
-    items:[{
-      product:productId,
-      qty,
-      size:(product.category==="shoes"||product.category==="clothes")?size:null,
-      price,
-      total: totalAmount
-    }],
-    totalAmount,
-    name,mobile,address,pincode,state,
-    paymentMethod:"COD",
-    paymentStatus:"Pending",
-    orderStatus:"Confirmed"
-  });
-
-  res.redirect("/order-success/"+order._id);
-
- }catch(err){
-  console.error(err);
-  res.send("Order Failed");
- }
 };
 
-exports.postCartCheckout = async (req,res)=>{
- try{
-  if(!req.session.isLoggedIn) return res.redirect("/login");
+exports.postCartCheckout = async (req, res) => {
+  try {
+    if (!req.session.isLoggedIn) return res.redirect("/login");
 
-  const {name,mobile,address,pincode,state,paymentMethod} = req.body;
-  const user = await User.findById(req.session.user._id).populate("cart.product");
+    const { name, mobile, address, pincode, state, paymentMethod } = req.body;
+    const user = await User.findById(req.session.user._id).populate("cart.product");
 
-  if(!user || user.cart.length===0) return res.redirect("/cart");
+    if (!user || user.cart.length === 0) return res.redirect("/cart");
 
-  let items=[];
-  let totalAmount=0;
+    let items = [];
+    let totalAmount = 0;
 
-  for(let c of user.cart){
-    const p = c.product;
+    for (let c of user.cart) {
+      const p = c.product;
 
-    if(!p || p.status!=="active") return res.send(p.title+" not available");
+      if (!p || p.status !== "active") return res.send(p.title + " not available");
 
-    if(p.category!=="shoes" && p.category!=="clothes"){
-      if(p.totalStock < c.quantity) return res.send(p.title+" out of stock");
+      if (p.category !== "shoes" && p.category !== "clothes") {
+        if (p.totalStock < c.quantity) return res.send(p.title + " out of stock");
+      }
+
+      const price = p.offerPrice > 0 ? p.offerPrice : p.price;
+      const total = price * c.quantity;
+      totalAmount += total;
+
+      items.push({
+        product: p._id,
+        qty: Number(c.quantity),
+        size: c.size || null,
+        price,
+        total
+      });
     }
 
-    const price = p.offerPrice>0?p.offerPrice:p.price;
-    const total = price * c.quantity;
-    totalAmount += total;
+    // ONLINE
+    if (paymentMethod === "ONLINE") {
+      req.session.tempCartOrder = { user: user._id, items, totalAmount, name, mobile, address, pincode, state };
+      return res.send("Online payment pending");
+    }
 
-    items.push({
-      product:p._id,
-      qty:Number(c.quantity),
-      size:c.size||null,
-      price,
-      total
+    // COD reduce stock
+    for (let c of user.cart) {
+      const p = c.product;
+      if (p.category !== "shoes" && p.category !== "clothes") {
+        await Product.updateOne({ _id: p._id }, { $inc: { totalStock: -c.quantity } });
+      }
+    }
+
+    const order = await Order.create({
+      user: user._id,
+      items,
+      totalAmount,
+      name, mobile, address, pincode, state,
+      paymentMethod: "COD",
+      paymentStatus: "Pending",
+      orderStatus: "Confirmed"
     });
-  }
 
-  // ONLINE
-  if(paymentMethod==="ONLINE"){
-    req.session.tempCartOrder={user:user._id,items,totalAmount,name,mobile,address,pincode,state};
-    return res.send("Online payment pending");
-  }
+    user.cart = [];
+    await user.save();
 
-  // COD reduce stock
-  for(let c of user.cart){
-    const p = c.product;
-    if(p.category!=="shoes" && p.category!=="clothes"){
-      await Product.updateOne({_id:p._id},{$inc:{totalStock:-c.quantity}});
+    res.redirect("/order-success/" + order._id);
+
+  } catch (err) {
+    console.error(err);
+    res.send("Cart Order Failed");
+  }
+};
+
+exports.cancelOrder = async (req, res) => {
+  try {
+    if (!req.session.isLoggedIn) {
+      return res.status(401).json({ success: false });
     }
+
+    const { orderId } = req.body;
+
+    const order = await Order.findById(orderId).populate("items.product");
+
+    if (!order) return res.json({ success: false, message: "Order not found" });
+
+    // 🔥 USER OWNERSHIP CHECK
+    if (order.user.toString() !== req.session.user._id.toString()) {
+      return res.status(403).json({ success: false, message: "Not your order" });
+    }
+
+    if (order.cancelled.isCancelled)
+      return res.json({ success: false, message: "Already cancelled" });
+
+    if (order.orderStatus === "Delivered")
+      return res.json({ success: false, message: "Delivered orders can't be cancelled" });
+
+    if (order.paymentMethod === "ONLINE" && order.paymentStatus === "Paid") {
+      return res.json({
+        success: false,
+        message: "Paid orders need admin approval for cancellation"
+      });
+    }
+
+    // 🔁 RESTORE STOCK
+    for (const item of order.items) {
+      await Product.findByIdAndUpdate(item.product._id, {
+        $inc: { totalStock: item.qty }
+      });
+    }
+
+
+    // 🔥 SAVE CANCEL DATA
+    order.orderStatus = "Cancelled";
+    order.cancelled.isCancelled = true;
+    order.cancelled.cancelledAt = new Date();
+    order.cancelled.cancelledBy = "user";
+
+    await order.save();
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false });
   }
-
-  const order = await Order.create({
-    user:user._id,
-    items,
-    totalAmount,
-    name,mobile,address,pincode,state,
-    paymentMethod:"COD",
-    paymentStatus:"Pending",
-    orderStatus:"Confirmed"
-  });
-
-  user.cart=[];
-  await user.save();
-
-  res.redirect("/order-success/"+order._id);
-
- }catch(err){
-  console.error(err);
-  res.send("Cart Order Failed");
- }
 };

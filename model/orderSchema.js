@@ -38,7 +38,17 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-
+  // 🔥 CANCEL SYSTEM
+  cancelled: {
+    isCancelled: { type: Boolean, default: false },
+    cancelledAt: { type: Date },
+    cancelledBy: {
+      type: String,
+      enum: ["user", "admin", null],
+      default: null
+    },
+    cancelReason: { type: String, default: null }
+  },
   name: String,
   mobile: String,
   address: String,
@@ -57,9 +67,9 @@ const orderSchema = new mongoose.Schema({
   },
   orderStatus: {
     type: String,
-    enum: ["Pending","Confirmed","Shipped","Delivered","Cancelled"],
+    enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"],
     default: "Confirmed"
   }
-},{timestamps:true});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Order", orderSchema);
