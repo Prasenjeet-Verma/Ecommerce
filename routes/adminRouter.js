@@ -14,10 +14,17 @@ const adminRouter = express.Router();
 const adminController = require('../controller/adminController');
 
 
-// userRouter.get('/', userController.home);
+
+//Admin Dashboard Routes
 adminRouter.get('/admin-home', adminController.getAdminHome);
 adminRouter.get('/admin-userlist', adminController.getAdminUsersList);
-// adminRouter.get('/admin-seeuseralldetails', adminController.getAdminAllUserDetails); <-- ismai user details ke sath sath users orders details bhi add krna hai isliye ismai abhi code nhi likha gaya hai.
+adminRouter.get('/admin-seeuseralldetails/:id', adminController.getAdminSeeUserAllDetails);
+
+
+
+
+
+//Upload Products Routes
 adminRouter.get('/admin-howmanyshoesuploaded', adminController.getAdminHowManyShoesUploaded);
 
 const upload = require("../utils/multer");

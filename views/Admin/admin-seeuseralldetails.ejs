@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile | Rider Admin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/admin-userdetails.css">
+  </head>
+  <body>
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <header class="mobile-header">
+      <span style="font-weight: 800">Rider Admin</span>
+      <i class="fa-solid fa-bars" style="font-size: 1.5rem; cursor: pointer;" onclick="toggleSidebar()"></i>
+    </header>
+
+    <%- include('../partials/adminNavBar') %>
+
+    <main class="main-content">
+      <a href="/admin-userlist" style="text-decoration: none; color: var(--color-brand-accent); font-weight: 700; display: flex; align-items: center; gap: 5px; margin-bottom: 1.5rem;">
+        <i class="fa-solid fa-arrow-left"></i> Back to User List
+      </a>
+
+      <!-- Profile Card -->
+      <div class="profile-card">
+        <div class="profile-img-big">
+          <% if (user.profilePhoto) { %>
+            <img src="<%= user.profilePhoto %>" alt="<%= user.username %>">
+          <% } else { %>
+            <%= user.username.charAt(0).toUpperCase() + user.username.charAt(1).toUpperCase() %>
+          <% } %>
+        </div>
+        <div class="profile-details">
+          <h1><%= user.username %></h1>
+          <p>
+            Customer since 
+            <%= new Date(user.createdAt).toLocaleString('default', { month: 'long', year: 'numeric' }) %> 
+            • ID: #USR-<%= user._id.toString().slice(-5).toUpperCase() %>
+          </p>
+          <span class="status-pill">
+            <%= user.userStatus === "active" ? "Active Member" : "Suspended Member" %>
+          </span>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="mini-card">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <h3>₹<%= user.totalSpend %></h3>
+          <span>Lifetime Spend</span>
+        </div>
+        <div class="mini-card">
+          <i class="fa-solid fa-truck"></i>
+          <h3><%= user.totalOrders %></h3>
+          <span>Total Orders</span>
+        </div>
+        <div class="mini-card">
+          <i class="fa-solid fa-star" style="color: #f59e0b"></i>
+          <h3>4.8</h3> <!-- Optional: calculate real reliability later -->
+          <span>Reliability</span>
+        </div>
+      </div>
+
+      <!-- Contact & Orders -->
+      <div class="info-container">
+        <!-- Contact Details -->
+        <div class="info-box">
+          <h2><i class="fa-solid fa-address-book"></i> Contact Details</h2>
+          <div class="info-item"><label>Email Address</label><p><%= user.emailAddress %></p></div>
+          <div class="info-item"><label>Phone Number</label><p><%= user.phoneNo %></p></div>
+          <div class="info-item"><label>Shipping Address</label>
+            <p>
+              <%= user.street %>, <%= user.city %>, <%= user.state %> - <%= user.pincode %>
+            </p>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="info-box">
+          <h2><i class="fa-solid fa-clock-rotate-left"></i> Recent Order History</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Order ID</th><th>Date</th><th>Amount</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <% if (orders.length > 0) { %>
+                  <% orders.forEach(order => { %>
+                    <tr>
+                      <td>#<%= order._id.toString().slice(-5).toUpperCase() %></td>
+                      <td>
+                        <%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                      </td>
+                      <td>₹<%= order.totalAmount %></td>
+                      <td style="color: <%= order.orderStatus === 'Delivered' ? 'var(--color-success)' : 'var(--color-warning)' %>; font-weight: 700">
+                        <%= order.orderStatus %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr><td colspan="4" style="text-align:center;">No orders found</td></tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+      }
+    </script>
+  </body>
+</html>

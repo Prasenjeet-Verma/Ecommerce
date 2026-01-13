@@ -173,6 +173,7 @@
 
 const User = require("../model/userSchema");
 const Product = require("../model/productSchema");
+const Order = require("../model/orderSchema");
 // const cloudinary = require("../utils/cloudinary");
 const uploadToPhpServer = require("../utils/uploadToPhpServer");
 exports.getAdminHome = async (req, res, next) => {
@@ -1489,3 +1490,43 @@ exports.postAdminSlidersEditProducts = async (req, res, next) => {
     res.status(500).send("Update failed");
   }
 };
+
+// GET /admin-seeuseralldetails/:id
+exports.getAdminSeeUserAllDetails = async (req, res, next) => {
+  try {
+    // 🔐 Security check: logged in?
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.redirect("/login");
+    }
+
+    // 🔐 Security check: only admin can access
+    if (req.session.user.role !== "admin") {
+      return res.status(403).send("Access denied. Admins only.");
+    }
+
+    const userId = req.params.id;
+
+    // ✅ Fetch the user
+    const user = await User.findById(userId).lean();
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // ✅ Fetch the user's orders, sorted by latest first
+    const orders = await Order.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // ✅ Render the admin page with user, orders, and session info
+    res.render("Admin/admin-seeuseralldetails", {
+      user,
+      orders,
+      isLoggedIn: req.session.isLoggedIn,
+      admin: req.session.user.role
+    });
+  } catch (err) {
+    console.error("Error fetching user details:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
