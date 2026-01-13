@@ -1,113 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Wishlist | <%= user.username %></title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Wishlist | <%= user.username %>
-  </title>
+    <link rel="stylesheet" href="/css/wishlist.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
 
-  <link rel="stylesheet" href="/css/wishlist.css" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <body>
+    <div class="wishlist-container">
+      <!-- 🔙 BACK -->
+      <div class="top-nav">
+        <a href="/" class="nav-btn">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+      </div>
 
-</head>
+      <!-- 🧡 HEADER -->
+      <div class="header-title">
+        <h1>My Wishlist</h1>
+        <p>You have <%= wishlist.length %> item(s) saved</p>
+      </div>
 
-<body>
-  <div class="wishlist-container">
-    <!-- 🔙 BACK -->
-    <div class="top-nav">
-      <a href="/" class="nav-btn">
-        <i class="fa-solid fa-arrow-left"></i>
-      </a>
-    </div>
-
-    <!-- 🧡 HEADER -->
-    <div class="header-title">
-      <h1>My Wishlist</h1>
-      <p>You have <%= wishlist.length %> item(s) saved</p>
-    </div>
-
-    <!-- ❌ EMPTY -->
-    <% if (wishlist.length===0) { %>
+      <!-- ❌ EMPTY -->
+      <% if (wishlist.length===0) { %>
       <p style="text-align: center; margin-top: 40px; font-size: 1.2rem">
         Your wishlist is empty 🤍
       </p>
       <% } %>
 
-        <!-- ✅ LIST -->
-        <div class="wishlist-grid">
-          <% wishlist.forEach(product=> { %>
-            <div class="wish-card">
-              <!-- REMOVE -->
-              <button class="remove-wish" title="Remove" onclick="toggleFav(this, '<%= product._id %>')">
-                <i class="fa-solid fa-heart-crack"></i>
-              </button>
+      <!-- ✅ LIST -->
+      <div class="wishlist-grid">
+        <% wishlist.forEach(product=> { %>
+        <div class="wish-card">
+          <!-- REMOVE -->
+          <button
+            class="remove-wish"
+            title="Remove"
+            onclick="toggleFav(this, '<%= product._id %>')"
+          >
+            <i class="fa-solid fa-heart-crack"></i>
+          </button>
 
-              <!-- IMAGE -->
-              <div class="product-img-box">
-                <img src="<%= product.images[0] %>" alt="<%= product.title %>" />
-              </div>
+          <!-- IMAGE -->
+          <div class="product-img-box">
+            <img src="<%= product.images[0] %>" alt="<%= product.title %>" />
+          </div>
 
-              <!-- INFO -->
-              <div class="product-info">
-                <span class="category" style="text-transform: capitalize">
-                  <%= product.category %>
-                </span>
+          <!-- INFO -->
+          <div class="product-info">
+            <span class="category" style="text-transform: capitalize">
+              <%= product.category %>
+            </span>
 
-                <h3 class="product-name">
-                  <%= product.title %>
-                </h3>
+            <h3 class="product-name"><%= product.title %></h3>
 
-                <div class="price-row">
-                  <span class="price">
-                    ₹<%= product.offerPrice || product.price %>
-                  </span>
+            <div class="price-row">
+              <span class="price">
+                ₹<%= product.offerPrice || product.price %>
+              </span>
 
-                  <span class="stock-status">
-                    <i class="fa-solid fa-circle-check"></i>
-                    In Stock
-                  </span>
-                </div>
-
-                <a href="/product/<%= product._id %>">
-                  <button class="add-to-cart-btn">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    View Product
-                  </button>
-                </a>
-              <% if (["shoes","crocs","sliders","clothes"].includes(product.category) && product.sizes && product.sizes.length > 0) { %>
-                  <label for="size-<%= product._id %>" class="selector-label">Select Size (UK)</label>
-                  <select onchange="wishlistSizes['<%= product._id %>'] = this.value" class="size-dropdown">
-                    <option value="" disabled selected>Select</option>
-                    <% product.sizes.forEach(size=> { %>
-                      <option value="<%= size %>">
-                        <%= size %>
-                      </option>
-                      <% }) %>
-                  </select>
-                  <% } %>
-                    <% const isInCart=cartProductIds.includes(product._id.toString()); %>
-
-               <button class="add-to-cart-btn cart"
-  data-incart="<%= isInCart ? 'true' : 'false' %>"
-  onclick="toggleWishlistCart(this, '<%= product._id %>')">
-
-  <i class="fa-solid fa-cart-plus"></i>
-  <span><%= isInCart ? "✔ Added" : "Add to Cart" %></span>
-</button>
-
-
-
-              </div>
-
+              <span class="stock-status">
+                <i class="fa-solid fa-circle-check"></i>
+                In Stock
+              </span>
             </div>
-            <% }) %>
-        </div>
-  </div>
-   <script src="/js/buynow.js"></script>
-      <script src="/js/heart.js"></script>
-      <script src="/js/cart.js"></script>
-  <!-- ♻️ SAME WISHLIST JS -->
-</body>
 
+            <a href="/product/<%= product._id %>" style="text-decoration: none;">
+              <button class="add-to-cart-btn">
+                <i class="fa-solid fa-bag-shopping"></i>
+                View Product
+              </button>
+            </a>
+            <% if
+            (["shoes","crocs","sliders","clothes"].includes(product.category) &&
+            product.sizes && product.sizes.length > 0) { %>
+            <div style="position: relative; top: 0.5rem; right: -18%; padding: 5px; color: #6b21a8; width: 65%;">
+              <label for="size-<%= product._id %>" class="selector-label"
+                >Select Size (UK)</label
+              >
+              <select
+                onchange="wishlistSizes['<%= product._id %>'] = this.value"
+                class="size-dropdown"
+              >
+                <option value="" disabled selected>Select</option>
+                <% product.sizes.forEach(size=> { %>
+                <option value="<%= size %>"><%= size %></option>
+                <% }) %>
+              </select>
+            </div>
+            <% } %> <% const
+            isInCart=cartProductIds.includes(product._id.toString()); %>
+
+            <button
+              class="add-to-cart-btn cart"
+              data-incart="<%= isInCart ? 'true' : 'false' %>"
+              onclick="toggleWishlistCart(this, '<%= product._id %>')"
+            >
+              <i class="fa-solid fa-cart-plus"></i>
+              <span><%= isInCart ? "✔ Added" : "Add to Cart" %></span>
+            </button>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+    <script src="/js/buynow.js"></script>
+    <script src="/js/heart.js"></script>
+    <script src="/js/cart.js"></script>
+    <!-- ♻️ SAME WISHLIST JS -->
+  </body>
 </html>

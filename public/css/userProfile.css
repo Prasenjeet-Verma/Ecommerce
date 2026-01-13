@@ -196,3 +196,31 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* space between inputs */
+  width: 100%;
+}
+
+.form-input {
+  padding: 10px;
+  width: 98%;
+  border-radius: 10px;
+  border: 1px solid #6b21a8;
+  color: #6b21a8;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+  margin-bottom: 10px;
+}
+
+.form-input::placeholder {
+  color: #9d7cd8; /* optional placeholder color */
+}
+
+.form-input:focus {
+  border-color: #9333ea;
+  box-shadow: 0 0 5px rgba(147, 51, 234, 0.3);
+}

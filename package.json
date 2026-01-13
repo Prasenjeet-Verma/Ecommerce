@@ -38,5 +38,8 @@
   "bugs": {
     "url": "https://github.com/Prasenjeet-Verma/Ecommerce/issues"
   },
-  "homepage": "https://github.com/Prasenjeet-Verma/Ecommerce#readme"
+  "homepage": "https://github.com/Prasenjeet-Verma/Ecommerce#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }

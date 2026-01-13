@@ -62,7 +62,9 @@
             <a href="/track/<%= order._id %>" class="track-btn">Track</a>
 
             <% if(order.orderStatus !== "Delivered") { %>
-              <button class="cancel-btn" onclick="cancelOrder('<%= order._id %>')">Cancel Order</button>
+              <button class="cancel-btn" 
+              style="background: var(--color-brand-dark); color: white; padding: 0.6rem 1.2rem; border-radius: 0.75rem; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: 0.3s; border: 0px;"
+              onclick="cancelOrder('<%= order._id %>')">Cancel Order</button>
             <% } %>
           </div>
         </div>
