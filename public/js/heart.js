@@ -1,10 +1,12 @@
 // ===== GLOBAL STATE =====
+const wishlistSizes = {}; // productId → size
 let selectedSize = null;
 let quantity = 1;
 
 function sizeRequired() {
-  return window.PRODUCT_CATEGORY === "shoes" || window.PRODUCT_CATEGORY === "clothes";
+  return ["shoes", "crocs", "sliders", "clothes"].includes(window.PRODUCT_CATEGORY);
 }
+
 
 
 // ===== TOAST MESSAGE =====
@@ -32,18 +34,18 @@ function showToast(message, success = true) {
 function selectSize(size, btn) {
   selectedSize = size;
 
-  // Highlight selected button
   document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 
-  // Hide error
-  const err = document.getElementById("sizeError");
-  if (err) err.classList.add("hidden");
+  const sizeError = document.getElementById("sizeError");
+  if (sizeError) sizeError.classList.add("hidden");
 
-  // Sync hidden field for Buy Now
-  const hiddenSize = document.getElementById("selectedSize");
-  if (hiddenSize) hiddenSize.value = size;
+  const sizeRequired = ["shoes", "crocs", "sliders", "clothes"].includes(window.PRODUCT_CATEGORY);
+  if (sizeRequired) {
+    document.getElementById("buyNowBtn").disabled = false;
+  }
 }
+
 
 // ===== QUANTITY SELECTION =====
 function changeQty(val) {
@@ -86,12 +88,19 @@ async function toggleFav(icon, productId) {
 // ===== ADD TO CART =====
 async function addToCart(btn, productId) {
   try {
-    // Default quantity to 1 if missing
-    const qtyEl = document.getElementById("qty-val");
-    const qty = qtyEl ? parseInt(qtyEl.innerText) : 1;
+    const qty = 1;
 
-    // If product requires size, but no size selected, use null for wishlist
-    const size = selectedSize || null;
+    const card = btn.closest(".wish-card");
+    const category = card.querySelector(".category").innerText.toLowerCase();
+
+    const needsSize = ["shoes","crocs","sliders","clothes"].includes(category);
+
+    const size = wishlistSizes[productId] || null;
+
+    if (needsSize && !size) {
+      showToast("Please select size first", false);
+      return;
+    }
 
     const res = await fetch("/add-to-cart", {
       method: "POST",
@@ -113,7 +122,7 @@ async function addToCart(btn, productId) {
     showToast("Added to cart 🛒", true);
 
   } catch (err) {
-    console.error("Add to cart error:", err);
+    console.error(err);
     showToast("Something went wrong 😢", false);
   }
 }
@@ -123,9 +132,9 @@ async function addToCart(btn, productId) {
 function openCheckout() {
   const sizeError = document.getElementById("sizeError");
 
-  if (sizeError && !selectedSize) {
-    sizeError.classList.remove("hidden");
-    showToast("Please select a shoe size", false);
+  if (sizeRequired() && !selectedSize) {
+    if (sizeError) sizeError.classList.remove("hidden");
+    showToast("Please select a size", false);
     return;
   }
 
@@ -137,6 +146,7 @@ function openCheckout() {
 
   document.getElementById("checkoutModal").classList.remove("hidden");
 }
+
 
 function closeCheckout() {
   document.getElementById("checkoutModal").classList.add("hidden");
@@ -192,3 +202,53 @@ async function toggleCart(btn, productId) {
 }
 
 
+async function toggleWishlistCart(btn, productId) {
+  const inCart = btn.dataset.incart === "true";
+
+  const card = btn.closest(".wish-card");
+  const category = card.querySelector(".category").innerText.toLowerCase();
+
+  const needsSize = ["shoes","crocs","sliders","clothes"].includes(category);
+  const size = wishlistSizes[productId] || null;
+
+  // ⛔ size required but not selected
+  if (!inCart && needsSize && !size) {
+    showToast("Please select size first", false);
+    return;
+  }
+
+  // 🔴 REMOVE FROM CART
+  if (inCart) {
+    const res = await fetch("/cart/remove", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      btn.querySelector("span").innerText = "Add to Cart";
+      btn.dataset.incart = "false";
+      showToast("Removed from cart 🗑️", false);
+    }
+    return;
+  }
+
+  // 🟢 ADD TO CART
+  const res = await fetch("/add-to-cart", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId, size, quantity: 1 })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    btn.querySelector("span").innerText = "✔ Added";
+    btn.dataset.incart = "true";
+    showToast("Added to cart 🛒", true);
+  } else {
+    showToast(data.message || "Add to cart failed", false);
+  }
+}

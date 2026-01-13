@@ -1315,51 +1315,6 @@ exports.getAddToCart = async (req, res) => {
   }
 };
 
-exports.postAddToCart = async (req, res) => {
-  try {
-    if (!req.session.isLoggedIn || !req.session.user) {
-      return res.status(401).json({ success: false });
-    }
-
-    const { productId, size, quantity } = req.body;
-
-    if (!productId || !quantity) {
-      return res.json({ success: false, message: "Invalid data" });
-    }
-
-    const product = await Product.findById(productId);
-    if (!product || product.status !== "active") {
-      return res.json({ success: false, message: "Product not available" });
-    }
-
-    const user = await User.findById(req.session.user._id);
-
-    // 🔁 Same product + same size already exists
-    const item = user.cart.find(
-      i => i.product.toString() === productId && i.size === size
-    );
-    const existing = item;
-
-    if (existing) {
-      existing.quantity += Number(quantity);
-    } else {
-      user.cart.push({
-        product: productId,
-        quantity,
-        size: size || null   // 👈 SAVE SIZE
-      });
-
-    }
-
-    await user.save();
-
-    return res.json({ success: true });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false });
-  }
-};
 
 
 
@@ -1406,6 +1361,110 @@ exports.removeFromCart = async (req, res) => {
   }
 };
 
+// exports.postAddToCart = async (req, res) => {
+//   try {
+//     if (!req.session.isLoggedIn || !req.session.user) {
+//       return res.status(401).json({ success: false });
+//     }
+
+//     const { productId, size, quantity } = req.body;
+
+//     if (!productId || !quantity) {
+//       return res.json({ success: false, message: "Invalid data" });
+//     }
+
+//     const product = await Product.findById(productId);
+//     if (!product || product.status !== "active") {
+//       return res.json({ success: false, message: "Product not available" });
+//     }
+
+//     const user = await User.findById(req.session.user._id);
+
+//     // 🔁 Same product + same size already exists
+//     const item = user.cart.find(
+//       i => i.product.toString() === productId && i.size === size
+//     );
+//     const existing = item;
+
+//     if (existing) {
+//       existing.quantity += Number(quantity);
+//     } else {
+//       user.cart.push({
+//         product: productId,
+//         quantity,
+//         size: size || null   // 👈 SAVE SIZE
+//       });
+
+//     }
+
+//     await user.save();
+
+//     return res.json({ success: true });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false });
+//   }
+// };
+
+
+exports.postAddToCart = async (req, res) => {
+  try {
+    // 🔐 Login check
+    if (!req.session.isLoggedIn || !req.session.user) {
+      return res.status(401).json({ success: false, message: "Login required" });
+    }
+
+    const { productId, size, quantity } = req.body;
+
+    if (!productId || !quantity || quantity < 1) {
+      return res.json({ success: false, message: "Invalid data" });
+    }
+
+    // 📦 Load product
+    const product = await Product.findById(productId);
+    if (!product || product.status !== "active") {
+      return res.json({ success: false, message: "Product not available" });
+    }
+
+    // 🧠 Check if size is required
+    const sizeRequired = ["shoes", "crocs", "sliders", "clothes"].includes(product.category);
+
+    if (sizeRequired && !size) {
+      return res.json({ success: false, message: "Please select size" });
+    }
+
+    // 👤 Load user
+    const user = await User.findById(req.session.user._id);
+
+    // 🔁 Same product + same size = update quantity
+    const existing = user.cart.find(
+      i =>
+        i.product.toString() === productId &&
+        (sizeRequired ? i.size === size : true)
+    );
+
+    if (existing) {
+      existing.quantity += Number(quantity);
+    } else {
+      user.cart.push({
+        product: productId,
+        quantity: Number(quantity),
+        size: sizeRequired ? size : null
+      });
+    }
+
+    await user.save();
+
+    return res.json({ success: true });
+
+  } catch (err) {
+    console.error("Add to cart error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
 exports.postBuyNowOrder = async (req,res)=>{
  try{
   let { productId, qty, name, mobile, address, pincode, state, paymentMethod, size } = req.body;
@@ -1423,7 +1482,7 @@ exports.postBuyNowOrder = async (req,res)=>{
   }
 
   // Size required only for size products
-  if((product.category==="shoes" || product.category==="clothes") && !size){
+  if (["shoes","crocs","sliders","clothes"].includes(product.category) && !size) {
     return res.send("Please select size");
   }
 

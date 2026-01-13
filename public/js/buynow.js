@@ -1,18 +1,26 @@
 function openCheckout() {
-  if ((window.PRODUCT_CATEGORY === "shoes" || window.PRODUCT_CATEGORY === "clothes") && !selectedSize) {
+  const sizeRequired = ["shoes", "crocs", "sliders", "clothes"].includes(window.PRODUCT_CATEGORY);
+
+  if (sizeRequired && !selectedSize) {
     const sizeError = document.getElementById("sizeError");
     if (sizeError) sizeError.classList.remove("hidden");
-    alert("Please select a size");
-    return;
+    return; // ❌ modal open nahi hoga
   }
 
-  // Set qty from JS variable (not innerText)
-  const buyQtyInput = document.getElementById("buyQty");
-  if (buyQtyInput) buyQtyInput.value = quantity; // ✅ fixed
-
-  // Set size
-  const sizeInput = document.getElementById("selectedSize");
-  if (sizeInput) sizeInput.value = selectedSize;
+  document.getElementById("buyQty").value = quantity;
+  document.getElementById("selectedSize").value = selectedSize || "";
 
   document.getElementById("checkoutModal").classList.remove("hidden");
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const sizeRequired = ["shoes", "crocs", "sliders", "clothes"].includes(window.PRODUCT_CATEGORY);
+  const buyBtn = document.getElementById("buyNowBtn");
+
+  if (sizeRequired) {
+    buyBtn.disabled = true;   // only for size products
+  } else {
+    buyBtn.disabled = false;  // watches, bags, glasses
+  }
+});
