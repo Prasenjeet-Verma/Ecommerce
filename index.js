@@ -1,3 +1,6 @@
+require("dotenv").config();
+console.log("DEBUG ENV:", process.env.MONGO_URI);
+
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
