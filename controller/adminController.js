@@ -34,7 +34,6 @@
 //   }
 // };
 
-
 // exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
 //   try {
 //     // 🔐 Session + Role Check
@@ -170,7 +169,6 @@
 //   }
 // };
 
-
 const User = require("../model/userSchema");
 const Product = require("../model/productSchema");
 const Order = require("../model/orderSchema");
@@ -238,8 +236,6 @@ exports.getAdminUsersList = async (req, res, next) => {
   }
 };
 
-
-
 exports.getAdminHowManyShoesUploaded = async (req, res, next) => {
   try {
     // 🔐 SESSION + LOGIN CHECK
@@ -275,13 +271,11 @@ exports.getAdminHowManyShoesUploaded = async (req, res, next) => {
       selectedFilter: filter,
       isLoggedIn: req.session.isLoggedIn,
     });
-
   } catch (err) {
     console.error("❌ Get Shoes Error:", err);
     res.status(500).send("Server Error");
   }
 };
-
 
 exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
   try {
@@ -298,7 +292,7 @@ exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
     const {
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -317,7 +311,7 @@ exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
     // 🚀 UPLOAD TO PHP SERVER
     let imageUrls = [];
 
-     for (let file of req.files) {
+    for (let file of req.files) {
       const url = await uploadToPhpServer(file.path);
       imageUrls.push(url);
     }
@@ -334,7 +328,7 @@ exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
     const product = new Product({
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage: offer,
       totalStock,
       gender,
@@ -349,13 +343,11 @@ exports.postAdminHowManyShoesProductUploaded = async (req, res, next) => {
 
     console.log("✅ Shoe added (PHP Upload)");
     res.redirect("/admin-howmanyshoesuploaded");
-
   } catch (err) {
     console.error("❌ Add Shoe Error:", err);
     res.status(500).send("Something went wrong");
   }
 };
-
 
 exports.postAdminShoesEditProducts = async (req, res, next) => {
   try {
@@ -372,7 +364,7 @@ exports.postAdminShoesEditProducts = async (req, res, next) => {
       productId,
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -430,8 +422,6 @@ exports.postAdminShoesEditProducts = async (req, res, next) => {
   }
 };
 
-
-
 exports.getAdminHowManyGlassesUploaded = async (req, res, next) => {
   try {
     // 🔐 ADMIN SESSION CHECK
@@ -462,13 +452,11 @@ exports.getAdminHowManyGlassesUploaded = async (req, res, next) => {
       selectedFilter: filter, // 👈 for select box
       isLoggedIn: req.session.isLoggedIn,
     });
-
   } catch (err) {
     console.error("❌ Glasses GET Error:", err);
     res.status(500).send("Server Error");
   }
 };
-
 
 exports.postAdminHowManyGlassesProductUploaded = async (req, res, next) => {
   try {
@@ -485,7 +473,7 @@ exports.postAdminHowManyGlassesProductUploaded = async (req, res, next) => {
     const {
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -501,9 +489,9 @@ exports.postAdminHowManyGlassesProductUploaded = async (req, res, next) => {
     }
 
     // ☁ CLOUDINARY UPLOAD
-     let imageUrls = [];
+    let imageUrls = [];
 
-     for (let file of req.files) {
+    for (let file of req.files) {
       const url = await uploadToPhpServer(file.path);
       imageUrls.push(url);
     }
@@ -512,7 +500,7 @@ exports.postAdminHowManyGlassesProductUploaded = async (req, res, next) => {
     const product = new Product({
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage: offer,
       totalStock,
       gender,
@@ -525,7 +513,6 @@ exports.postAdminHowManyGlassesProductUploaded = async (req, res, next) => {
 
     console.log("✅ Glasses added successfully");
     res.redirect("/admin-howmanyglassesuploaded");
-
   } catch (err) {
     console.error("❌ Add Glasses Error:", err);
     res.status(500).send("Something went wrong");
@@ -547,7 +534,7 @@ exports.postAdminGlassesEditProducts = async (req, res, next) => {
       productId,
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -593,7 +580,6 @@ exports.postAdminGlassesEditProducts = async (req, res, next) => {
   }
 };
 
-
 exports.getAdminHowManyWatchesUploaded = async (req, res, next) => {
   try {
     // 🔐 ADMIN SESSION CHECK
@@ -624,13 +610,11 @@ exports.getAdminHowManyWatchesUploaded = async (req, res, next) => {
       selectedFilter: filter, // 👈 select box ke liye
       isLoggedIn: req.session.isLoggedIn,
     });
-
   } catch (err) {
     console.error("❌ Watches GET Error:", err);
     res.status(500).send("Server Error");
   }
 };
-
 
 exports.postAdminHowManyWatchesUploaded = async (req, res, next) => {
   try {
@@ -647,7 +631,7 @@ exports.postAdminHowManyWatchesUploaded = async (req, res, next) => {
     const {
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -673,7 +657,7 @@ exports.postAdminHowManyWatchesUploaded = async (req, res, next) => {
     const product = new Product({
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage: offer,
       totalStock,
       gender,
@@ -687,7 +671,6 @@ exports.postAdminHowManyWatchesUploaded = async (req, res, next) => {
 
     console.log("✅ Watch added successfully");
     res.redirect("/admin-howmanywatchesuploaded");
-
   } catch (err) {
     console.error("❌ Add Watch Error:", err);
     res.status(500).send("Something went wrong");
@@ -709,7 +692,7 @@ exports.postAdminWatchesEditProducts = async (req, res, next) => {
       productId,
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -792,7 +775,6 @@ exports.getAdminHowManyClothesUploaded = async (req, res, next) => {
       selectedFilter: filter,
       isLoggedIn: req.session.isLoggedIn,
     });
-
   } catch (err) {
     console.error("❌ Get Shoes Error:", err);
     res.status(500).send("Server Error");
@@ -813,7 +795,7 @@ exports.postAdminHowManyClothesUploaded = async (req, res, next) => {
 
     const {
       title,
-       description,   // 👈 SAVE
+      description, // 👈 SAVE
       price,
       offerPercentage,
       totalStock,
@@ -833,7 +815,7 @@ exports.postAdminHowManyClothesUploaded = async (req, res, next) => {
     // 🚀 UPLOAD TO PHP SERVER
     let imageUrls = [];
 
-     for (let file of req.files) {
+    for (let file of req.files) {
       const url = await uploadToPhpServer(file.path);
       imageUrls.push(url);
     }
@@ -843,13 +825,13 @@ exports.postAdminHowManyClothesUploaded = async (req, res, next) => {
     if (Array.isArray(sizes)) {
       sizeArray = sizes.map(String);
     } else if (sizes) {
-      sizeArray = [String (sizes)];
+      sizeArray = [String(sizes)];
     }
 
     // 🧠 CREATE PRODUCT
     const product = new Product({
       title,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       price,
       offerPercentage: offer,
       totalStock,
@@ -865,7 +847,6 @@ exports.postAdminHowManyClothesUploaded = async (req, res, next) => {
 
     console.log("✅ Clothes added (PHP Upload)");
     res.redirect("/admin-howmanyclothesuploaded");
-
   } catch (err) {
     console.error("❌ Add Clothes Error:", err);
     res.status(500).send("Something went wrong");
@@ -886,7 +867,7 @@ exports.postAdminClothesEditProducts = async (req, res, next) => {
     const {
       productId,
       title,
-       description,   // 👈 ADD
+      description, // 👈 ADD
       price,
       offerPercentage,
       totalStock,
@@ -945,7 +926,6 @@ exports.postAdminClothesEditProducts = async (req, res, next) => {
   }
 };
 
-
 exports.getAdminHowManyBagsUploaded = async (req, res, next) => {
   try {
     // 🔐 SESSION + LOGIN CHECK
@@ -981,7 +961,6 @@ exports.getAdminHowManyBagsUploaded = async (req, res, next) => {
       selectedFilter: filter,
       isLoggedIn: req.session.isLoggedIn,
     });
-
   } catch (err) {
     console.error("❌ Get Bags Error:", err);
     res.status(500).send("Server Error");
@@ -989,7 +968,7 @@ exports.getAdminHowManyBagsUploaded = async (req, res, next) => {
 };
 
 exports.postAdminHowManyBagsUploaded = async (req, res, next) => {
-   try {
+  try {
     // 🔐 SESSION + ROLE CHECK
     if (!req.session.isLoggedIn || !req.session.user) {
       return req.session.destroy(() => res.redirect("/login"));
@@ -1003,7 +982,7 @@ exports.postAdminHowManyBagsUploaded = async (req, res, next) => {
     const {
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -1019,9 +998,9 @@ exports.postAdminHowManyBagsUploaded = async (req, res, next) => {
     }
 
     // ☁ CLOUDINARY UPLOAD
-     let imageUrls = [];
+    let imageUrls = [];
 
-     for (let file of req.files) {
+    for (let file of req.files) {
       const url = await uploadToPhpServer(file.path);
       imageUrls.push(url);
     }
@@ -1030,7 +1009,7 @@ exports.postAdminHowManyBagsUploaded = async (req, res, next) => {
     const product = new Product({
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage: offer,
       totalStock,
       gender,
@@ -1043,15 +1022,14 @@ exports.postAdminHowManyBagsUploaded = async (req, res, next) => {
 
     console.log("✅ Bags added successfully");
     res.redirect("/admin-howmanybagsuploaded");
-
   } catch (err) {
     console.error("❌ Add Bags Error:", err);
     res.status(500).send("Something went wrong");
   }
-}
+};
 
 exports.postAdminBagsEditProducts = async (req, res, next) => {
-   try {
+  try {
     // 🔐 LOGIN + ROLE CHECK
     if (!req.session.isLoggedIn || !req.session.user) {
       return req.session.destroy(() => res.redirect("/login"));
@@ -1065,7 +1043,7 @@ exports.postAdminBagsEditProducts = async (req, res, next) => {
       productId,
       title,
       price,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       offerPercentage,
       totalStock,
       gender,
@@ -1111,7 +1089,6 @@ exports.postAdminBagsEditProducts = async (req, res, next) => {
   }
 };
 
-
 exports.getAdminHowManyCrocsUploaded = async (req, res, next) => {
   try {
     // 🔐 SESSION + LOGIN CHECK
@@ -1147,7 +1124,6 @@ exports.getAdminHowManyCrocsUploaded = async (req, res, next) => {
       selectedFilter: filter,
       isLoggedIn: req.session.isLoggedIn,
     });
-
   } catch (err) {
     console.error("❌ Get Crocs Error:", err);
     res.status(500).send("Server Error");
@@ -1168,7 +1144,7 @@ exports.postAdminHowManyCrocsUploaded = async (req, res, next) => {
 
     const {
       title,
-       description,   // 👈 SAVE
+      description, // 👈 SAVE
       price,
       offerPercentage,
       totalStock,
@@ -1188,7 +1164,7 @@ exports.postAdminHowManyCrocsUploaded = async (req, res, next) => {
     // 🚀 UPLOAD TO PHP SERVER
     let imageUrls = [];
 
-     for (let file of req.files) {
+    for (let file of req.files) {
       const url = await uploadToPhpServer(file.path);
       imageUrls.push(url);
     }
@@ -1198,13 +1174,13 @@ exports.postAdminHowManyCrocsUploaded = async (req, res, next) => {
     if (Array.isArray(sizes)) {
       sizeArray = sizes.map(String);
     } else if (sizes) {
-      sizeArray = [String (sizes)];
+      sizeArray = [String(sizes)];
     }
 
     // 🧠 CREATE PRODUCT
     const product = new Product({
       title,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       price,
       offerPercentage: offer,
       totalStock,
@@ -1220,7 +1196,6 @@ exports.postAdminHowManyCrocsUploaded = async (req, res, next) => {
 
     console.log("✅ Crocs added (PHP Upload)");
     res.redirect("/admin-howmanycrocsuploaded");
-
   } catch (err) {
     console.error("❌ Add Crocs Error:", err);
     res.status(500).send("Something went wrong");
@@ -1241,7 +1216,7 @@ exports.postAdminCrocsEditProducts = async (req, res, next) => {
     const {
       productId,
       title,
-       description,   // 👈 ADD
+      description, // 👈 ADD
       price,
       offerPercentage,
       totalStock,
@@ -1300,9 +1275,6 @@ exports.postAdminCrocsEditProducts = async (req, res, next) => {
   }
 };
 
-
-
-
 exports.getAdminHowManySlidersUploaded = async (req, res, next) => {
   try {
     // 🔐 SESSION + LOGIN CHECK
@@ -1338,7 +1310,6 @@ exports.getAdminHowManySlidersUploaded = async (req, res, next) => {
       selectedFilter: filter,
       isLoggedIn: req.session.isLoggedIn,
     });
-
   } catch (err) {
     console.error("❌ Get Crocs Error:", err);
     res.status(500).send("Server Error");
@@ -1359,7 +1330,7 @@ exports.postAdminHowManySlidersUploaded = async (req, res, next) => {
 
     const {
       title,
-       description,   // 👈 SAVE
+      description, // 👈 SAVE
       price,
       offerPercentage,
       totalStock,
@@ -1379,7 +1350,7 @@ exports.postAdminHowManySlidersUploaded = async (req, res, next) => {
     // 🚀 UPLOAD TO PHP SERVER
     let imageUrls = [];
 
-     for (let file of req.files) {
+    for (let file of req.files) {
       const url = await uploadToPhpServer(file.path);
       imageUrls.push(url);
     }
@@ -1389,13 +1360,13 @@ exports.postAdminHowManySlidersUploaded = async (req, res, next) => {
     if (Array.isArray(sizes)) {
       sizeArray = sizes.map(String);
     } else if (sizes) {
-      sizeArray = [String (sizes)];
+      sizeArray = [String(sizes)];
     }
 
     // 🧠 CREATE PRODUCT
     const product = new Product({
       title,
-      description,   // 👈 ADD
+      description, // 👈 ADD
       price,
       offerPercentage: offer,
       totalStock,
@@ -1411,7 +1382,6 @@ exports.postAdminHowManySlidersUploaded = async (req, res, next) => {
 
     console.log("✅ Sliders added (PHP Upload)");
     res.redirect("/admin-howmanyslidersuploaded");
-
   } catch (err) {
     console.error("❌ Add Sliders Error:", err);
     res.status(500).send("Something went wrong");
@@ -1432,7 +1402,7 @@ exports.postAdminSlidersEditProducts = async (req, res, next) => {
     const {
       productId,
       title,
-       description,   // 👈 ADD
+      description, // 👈 ADD
       price,
       offerPercentage,
       totalStock,
@@ -1522,7 +1492,7 @@ exports.getAdminSeeUserAllDetails = async (req, res, next) => {
       user,
       orders,
       isLoggedIn: req.session.isLoggedIn,
-      admin: req.session.user.role
+      admin: req.session.user.role,
     });
   } catch (err) {
     console.error("Error fetching user details:", err);
@@ -1538,24 +1508,22 @@ exports.getAdminNewOrders = async (req, res) => {
     }
 
     const orders = await Order.find({
-      orderStatus: { $nin: ["Delivered", "Cancelled"] }
+      orderStatus: { $nin: ["Delivered", "Cancelled"] },
     })
       .populate("user")
-      .populate("items.product")   // 🔥 THIS IS THE FIX
+      .populate("items.product") // 🔥 THIS IS THE FIX
       .sort({ createdAt: -1 });
 
     res.render("Admin/admin-neworder", {
       orders,
       isLoggedIn: req.session.isLoggedIn,
-      admin: req.session.user
+      admin: req.session.user,
     });
-
   } catch (err) {
     console.log(err);
     res.status(500).send("Error loading orders");
   }
 };
-
 
 exports.postAdminUpdateOrderStatus = async (req, res) => {
   try {
@@ -1590,8 +1558,8 @@ exports.postAdminUpdateOrderStatus = async (req, res) => {
       await User.findByIdAndUpdate(order.user, {
         $inc: {
           totalSpend: order.totalAmount,
-          totalOrders: 1
-        }
+          totalOrders: 1,
+        },
       });
     }
 
@@ -1602,7 +1570,6 @@ exports.postAdminUpdateOrderStatus = async (req, res) => {
   }
 };
 
-
 exports.getAdminOrderHistory = async (req, res) => {
   try {
     // 🔐 Only admin allowed
@@ -1611,7 +1578,7 @@ exports.getAdminOrderHistory = async (req, res) => {
     }
 
     const orders = await Order.find({
-      orderStatus: { $in: ["Delivered", "Cancelled"] }
+      orderStatus: { $in: ["Delivered", "Cancelled"] },
     })
       .populate("user")
       .populate("items.product")
@@ -1620,15 +1587,13 @@ exports.getAdminOrderHistory = async (req, res) => {
     res.render("Admin/admin-order-history", {
       orders,
       isLoggedIn: req.session.isLoggedIn,
-      admin: req.session.user
+      admin: req.session.user,
     });
-
   } catch (err) {
     console.log(err);
     res.status(500).send("Failed to load order history");
   }
 };
-
 
 exports.getTotalProductsCount = async (req, res) => {
   try {
@@ -1649,11 +1614,13 @@ exports.getTotalProductsCount = async (req, res) => {
     // Stats
     const totalProducts = await Product.countDocuments();
     const activeProducts = await Product.countDocuments({ status: "active" });
-    const inactiveProducts = await Product.countDocuments({ status: "inactive" });
+    const inactiveProducts = await Product.countDocuments({
+      status: "inactive",
+    });
 
     // Category wise
     const categoryStats = await Product.aggregate([
-      { $group: { _id: "$category", count: { $sum: 1 } } }
+      { $group: { _id: "$category", count: { $sum: 1 } } },
     ]);
 
     res.render("Admin/admin-total-products", {
@@ -1664,15 +1631,13 @@ exports.getTotalProductsCount = async (req, res) => {
       categoryStats,
       filter,
       isLoggedIn: req.session.isLoggedIn,
-      admin: req.session.user
+      admin: req.session.user,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).send("Failed to load products");
   }
 };
-
 
 exports.getTotalPendingOrdersCount = async (req, res) => {
   try {
@@ -1684,7 +1649,7 @@ exports.getTotalPendingOrdersCount = async (req, res) => {
     // Pending = Confirmed OR Shipped (but not delivered & not cancelled)
     const orders = await Order.find({
       "cancelled.isCancelled": false,
-      orderStatus: { $in: ["Confirmed", "Shipped"] }
+      orderStatus: { $in: ["Confirmed", "Shipped"] },
     })
       .populate("user", "username phoneNo emailAddress")
       .populate("items.product", "title images")
@@ -1694,9 +1659,8 @@ exports.getTotalPendingOrdersCount = async (req, res) => {
     res.render("Admin/admin-pending-orders", {
       orders,
       admin: req.session.user,
-      isLoggedIn: true
+      isLoggedIn: true,
     });
-
   } catch (err) {
     console.error("Pending Orders Error:", err);
     res.status(500).send("Something went wrong");
@@ -1712,7 +1676,7 @@ exports.getCancelOrders = async (req, res) => {
 
     const orders = await Order.find({
       "cancelled.isCancelled": true,
-      orderStatus: "Cancelled"
+      orderStatus: "Cancelled",
     })
       .populate("user", "username phoneNo emailAddress")
       .populate("items.product", "title images")
@@ -1722,9 +1686,8 @@ exports.getCancelOrders = async (req, res) => {
     res.render("Admin/admin-cancel-orders", {
       orders,
       admin: req.session.user,
-      isLoggedIn: true
+      isLoggedIn: true,
     });
-
   } catch (err) {
     console.error("Cancelled Orders Error:", err);
     res.status(500).send("Something went wrong");
@@ -1751,9 +1714,8 @@ exports.getTotalComplitedOrdersCount = async (req, res) => {
       orders,
       totalCompletedOrders,
       admin: req.session.user,
-      isLoggedIn: true
+      isLoggedIn: true,
     });
-
   } catch (err) {
     console.error("Completed Orders Error:", err);
     res.status(500).send("Something went wrong");
@@ -1779,9 +1741,8 @@ exports.getTotalOrdersCount = async (req, res) => {
       orders,
       totalOrders,
       admin: req.session.user,
-      isLoggedIn: true
+      isLoggedIn: true,
     });
-
   } catch (err) {
     console.error("Total Orders Error:", err);
     res.status(500).send("Something went wrong");
@@ -1803,12 +1764,12 @@ exports.getTodaysOrdersCount = async (req, res) => {
 
     // Fetch today's orders
     const orders = await Order.find({
-      createdAt: { $gte: start, $lte: end }
+      createdAt: { $gte: start, $lte: end },
     })
-    .populate("user", "username phoneNo emailAddress")
-    .populate("items.product", "title images price")
-    .sort({ createdAt: -1 })
-    .lean();
+      .populate("user", "username phoneNo emailAddress")
+      .populate("items.product", "title images price")
+      .sort({ createdAt: -1 })
+      .lean();
 
     const totalOrders = orders.length;
 
@@ -1816,15 +1777,13 @@ exports.getTodaysOrdersCount = async (req, res) => {
       orders,
       totalOrders,
       admin: req.session.user,
-      isLoggedIn: true
+      isLoggedIn: true,
     });
-
   } catch (err) {
     console.error("Todays Orders Error:", err);
     res.status(500).send("Something went wrong");
   }
 };
-
 
 exports.getYesterdayOrdersCount = async (req, res) => {
   try {
@@ -1842,19 +1801,23 @@ exports.getYesterdayOrdersCount = async (req, res) => {
       yesterday.getFullYear(),
       yesterday.getMonth(),
       yesterday.getDate(),
-      0, 0, 0
+      0,
+      0,
+      0
     );
 
     const endOfYesterday = new Date(
       yesterday.getFullYear(),
       yesterday.getMonth(),
       yesterday.getDate(),
-      23, 59, 59
+      23,
+      59,
+      59
     );
 
     // Fetch orders created yesterday
     const orders = await Order.find({
-      createdAt: { $gte: startOfYesterday, $lte: endOfYesterday }
+      createdAt: { $gte: startOfYesterday, $lte: endOfYesterday },
     })
       .populate("user", "username phoneNo emailAddress")
       .populate("items.product", "title images price")
@@ -1867,15 +1830,13 @@ exports.getYesterdayOrdersCount = async (req, res) => {
       orders,
       totalOrders,
       admin: req.session.user,
-      isLoggedIn: req.session.isLoggedIn
+      isLoggedIn: req.session.isLoggedIn,
     });
-
   } catch (err) {
     console.error("Yesterday Orders Error:", err);
     res.status(500).send("Something went wrong");
   }
 };
-
 
 exports.getTodaySales = async (req, res) => {
   try {
@@ -1885,13 +1846,27 @@ exports.getTodaySales = async (req, res) => {
     }
 
     const today = new Date();
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      0,
+      0,
+      0
+    );
+    const endOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      23,
+      59,
+      59
+    );
 
     // Fetch today's orders
     const orders = await Order.find({
       createdAt: { $gte: startOfToday, $lte: endOfToday },
-      orderStatus: { $nin: ["Cancelled"] } // Only include active orders
+      orderStatus: "Delivered", // Only include delivered orders
     })
       .populate("user", "username phoneNo emailAddress")
       .populate("items.product", "title images price")
@@ -1899,21 +1874,22 @@ exports.getTodaySales = async (req, res) => {
       .lean();
 
     // Calculate total sales
-    const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+    const totalSales = orders.reduce(
+      (sum, order) => sum + order.totalAmount,
+      0
+    );
 
     res.render("Admin/admin-today-sales", {
       orders,
       totalSales,
       admin: req.session.user,
-      isLoggedIn: true
+      isLoggedIn: true,
     });
-
   } catch (err) {
     console.error("Today Sales Error:", err);
     res.status(500).send("Something went wrong");
   }
 };
-
 
 exports.getYesterdaySales = async (req, res) => {
   try {
@@ -1923,13 +1899,27 @@ exports.getYesterdaySales = async (req, res) => {
     }
 
     const today = new Date();
-    const startOfYesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 0, 0, 0);
-    const endOfYesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 23, 59, 59);
+    const startOfYesterday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 1,
+      0,
+      0,
+      0
+    );
+    const endOfYesterday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 1,
+      23,
+      59,
+      59
+    );
 
     // Fetch yesterday's orders (excluding cancelled)
     const orders = await Order.find({
       createdAt: { $gte: startOfYesterday, $lte: endOfYesterday },
-      orderStatus: { $nin: ["Cancelled"] }
+      orderStatus: "Delivered",
     })
       .populate("user", "username phoneNo emailAddress")
       .populate("items.product", "title images price")
@@ -1937,22 +1927,22 @@ exports.getYesterdaySales = async (req, res) => {
       .lean();
 
     // Calculate total sales
-    const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+    const totalSales = orders.reduce(
+      (sum, order) => sum + order.totalAmount,
+      0
+    );
 
     res.render("Admin/admin-yesterday-sales", {
       orders,
       totalSales,
       admin: req.session.user,
-      isLoggedIn: true
+      isLoggedIn: true,
     });
-
   } catch (err) {
     console.error("Yesterday Sales Error:", err);
     res.status(500).send("Something went wrong");
   }
 };
-
-
 
 exports.getTotalSales = async (req, res) => {
   try {
@@ -1962,25 +1952,26 @@ exports.getTotalSales = async (req, res) => {
     }
 
     // Get all orders except cancelled
-    const orders = await Order.find({ orderStatus: { $ne: "Cancelled" } })
+    const orders = await Order.find({ orderStatus: "Delivered" })
       .populate("user", "username phoneNo emailAddress")
       .populate("items.product", "title images price")
       .sort({ createdAt: -1 })
       .lean();
 
     // Total sales amount
-    const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+    const totalSales = orders.reduce(
+      (sum, order) => sum + order.totalAmount,
+      0
+    );
 
     res.render("Admin/admin-total-sale", {
       orders,
       totalSales,
       admin: req.session.user,
-      isLoggedIn: true
+      isLoggedIn: true,
     });
-
   } catch (err) {
     console.error("Total Sales Error:", err);
     res.status(500).send("Something went wrong");
   }
 };
-
