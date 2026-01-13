@@ -109,21 +109,18 @@
   <form action="/admin-howmanyshoesuploaded" method="POST" enctype="multipart/form-data">
     <div class="modal-overlay" id="addModal">
       <div class="modal-box">
-        <h2>Add New Shoes</h2>
+        <!-- <h2>Add New Shoes</h2> -->
 
         <div class="form-group">
-          <label>Shoes Name</label>
-          <input type="text" name="title" required />
+          <input type="text" name="title" placeholder="Shoes Name" required />
         </div>
 
         <div class="form-group">
-          <label>Price (₹)</label>
-          <input type="number" name="price" required />
+          <input type="number" name="price" placeholder="Price (₹)" required />
         </div>
 
         <div class="form-group">
-          <label>Description</label>
-          <textarea name="description" rows="3" placeholder="Enter product description" required></textarea>
+          <textarea name="description" rows="3" placeholder="Enter product description"  style="width: 100%; border: 1px solid gray;" required></textarea>
         </div>
 
         <div class="form-group">
@@ -132,31 +129,35 @@
         </div>
 
         <div class="form-group">
-          <label>Total Stock</label>
-          <input type="number" name="totalStock" required />
+          <input type="number" placeholder="Total Stock" name="totalStock" required />
         </div>
 
-        <label>Gender</label>
-        <select name="gender" required>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="unisex">Unisex</option>
-        </select>
+        <div style="display: flex; justify-content: space-around; padding-bottom: 1rem;">
+        <div>
+          <label>Gender</label>
+          <select name="gender" required>
+             <option value="male">Male</option>
+             <option value="female">Female</option>
+             <option value="unisex">Unisex</option>
+          </select>
+        </div>
 
-        <label>Brand</label>
-        <select name="brand" required>
-          <option>ADIDAS</option>
-          <option>ASICS</option>
-          <option>NB</option>
-          <option>PUMA</option>
-          <option>REEBOK</option>
-          <option>HOKA</option>
-        </select>
+        <div>
+          <label>Brand</label>
+          <select name="brand" required>
+             <option>ADIDAS</option>
+             <option>ASICS</option>
+             <option>NB</option>
+             <option>PUMA</option>
+             <option>REEBOK</option>
+             <option>HOKA</option>
+          </select>
+        </div>
+        </div>
 
         <!-- 🔥 Multiple Images -->
         <div class="form-group">
-          <label>Product Images (3–4)</label>
-          <input type="file" name="images" accept="image/*" multiple required />
+          <input type="file" name="images" placeholder="Product Images (3–4)" accept="image/*" multiple required />
           <small style="color:gray">
             Max 4 images • Each max 2MB
           </small>
@@ -165,14 +166,16 @@
 
         <!-- Sizes -->
         <div class="category-box">
-          <div>Select Size ✔</div>
+          <div style="padding-bottom: 0.5rem;">Select Size ✔</div>
 
-          <label><input type="checkbox" name="sizes" value="6" /> 6</label>
+        <div style="display: flex; justify-content: space-between;">
+          <label><input type="checkbox" name="sizes" value="6" style="padding-right: 0.5rem;"/> 6</label>
           <label><input type="checkbox" name="sizes" value="7" /> 7</label>
           <label><input type="checkbox" name="sizes" value="8" /> 8</label>
           <label><input type="checkbox" name="sizes" value="9" /> 9</label>
           <label><input type="checkbox" name="sizes" value="10" /> 10</label>
           <label><input type="checkbox" name="sizes" value="11" /> 11</label>
+        </div>
         </div>
 
         <!-- Hidden -->
