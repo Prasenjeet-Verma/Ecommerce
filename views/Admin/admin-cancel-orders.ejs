@@ -3,9 +3,27 @@
 <head>
   <title>Cancelled Orders</title>
   <link rel="stylesheet" href="/css/admin-newoder.css">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 </head>
 
 <body>
+
+      <div
+      class="sidebar-overlay"
+      id="sidebarOverlay"
+      onclick="toggleSidebar()"
+    ></div>
+
+    <header class="mobile-header">
+      <span style="font-weight: 800; font-size: 1.2rem"
+        ><%-admin.username%></span
+      >
+      <i
+        class="fa-solid fa-bars"
+        style="font-size: 1.5rem; cursor: pointer"
+        onclick="toggleSidebar()"
+      ></i>
+    </header>
 
 <%- include("../partials/adminNavBar") %>
 
@@ -95,4 +113,5 @@
 </main>
 
 </body>
+<script src="/js/shoesProduct.js"></script>
 </html>

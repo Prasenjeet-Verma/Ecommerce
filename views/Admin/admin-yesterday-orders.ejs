@@ -1,108 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Yesterday's Orders | Rider Admin</title>
-  <link rel="stylesheet" href="/css/admin-newoder.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yesterday's Orders | Rider Admin</title>
+    <link rel="stylesheet" href="/css/admin-newoder.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div
+      class="sidebar-overlay"
+      id="sidebarOverlay"
+      onclick="toggleSidebar()"
+    ></div>
 
-<%- include("../partials/adminNavBar") %>
+    <header class="mobile-header">
+      <span style="font-weight: 800; font-size: 1.2rem"
+        ><%-admin.username%></span
+      >
+      <i
+        class="fa-solid fa-bars"
+        style="font-size: 1.5rem; cursor: pointer"
+        onclick="toggleSidebar()"
+      ></i>
+    </header>
 
-<main class="main-content">
+    <%- include("../partials/adminNavBar") %>
 
-  <h1>📦 Yesterday's Orders</h1>
-  <p>Total Orders Yesterday: <strong><%= totalOrders %></strong></p>
+    <main class="main-content">
+      <h1>📦 Yesterday's Orders</h1>
+      <p>Total Orders Yesterday: <strong><%= totalOrders %></strong></p>
 
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>User</th>
-          <th>Products</th>
-          <th>Total Amount</th>
-          <th>Payment</th>
-          <th>Status</th>
-          <th>Date</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (orders.length === 0) { %>
-          <tr>
-            <td colspan="8" style="text-align:center;padding:20px;">
-              No orders yesterday
-            </td>
-          </tr>
-        <% } %>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>User</th>
+              <th>Products</th>
+              <th>Total Amount</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (orders.length === 0) { %>
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 20px">
+                No orders yesterday
+              </td>
+            </tr>
+            <% } %> <% orders.forEach(order => { %>
+            <tr>
+              <td>#<%= order._id.toString().slice(-6).toUpperCase() %></td>
 
-        <% orders.forEach(order => { %>
-          <tr>
-            <td>#<%= order._id.toString().slice(-6).toUpperCase() %></td>
+              <td>
+                <%= order.user?.username || "Guest" %><br />
+                <small><%= order.user?.phoneNo || order.mobile %></small>
+              </td>
 
-            <td>
-              <%= order.user?.username || "Guest" %><br>
-              <small><%= order.user?.phoneNo || order.mobile %></small>
-            </td>
-
-            <td>
-              <% order.items.forEach(item => { %>
-                <div style="display:flex; gap:10px; margin-bottom:8px; align-items:center;">
-                  <img src="<%= item.product.images[0] %>" width="45" style="border-radius:6px;">
+              <td>
+                <% order.items.forEach(item => { %>
+                <div
+                  style="
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 8px;
+                    align-items: center;
+                  "
+                >
+                  <img
+                    src="<%= item.product.images[0] %>"
+                    width="45"
+                    style="border-radius: 6px"
+                  />
                   <div>
-                    <strong><%= item.product.title %></strong><br>
+                    <strong><%= item.product.title %></strong><br />
                     <small>
-                      Qty: <%= item.qty %> 
-                      <% if(item.size){ %> | Size: <%= item.size %> <% } %>
+                      Qty: <%= item.qty %> <% if(item.size){ %> | Size: <%=
+                      item.size %> <% } %>
                     </small>
                   </div>
                 </div>
-              <% }) %>
-            </td>
+                <% }) %>
+              </td>
 
-            <td>₹<%= order.totalAmount %></td>
+              <td>₹<%= order.totalAmount %></td>
 
-            <td>
-              <%= order.paymentMethod %> <br>
-              <small><%= order.paymentStatus %></small>
-            </td>
+              <td>
+                <%= order.paymentMethod %> <br />
+                <small><%= order.paymentStatus %></small>
+              </td>
 
-            <td>
-              <% if(order.orderStatus === "Confirmed"){ %>
-                <span style="color:orange;font-weight:bold;">Confirmed</span>
-              <% } else if(order.orderStatus === "Pending"){ %>
-                <span style="color:gray;font-weight:bold;">Pending</span>
-              <% } else if(order.orderStatus === "Shipped"){ %>
-                <span style="color:blue;font-weight:bold;">Shipped</span>
-              <% } else if(order.orderStatus === "Delivered"){ %>
-                <span style="color:green;font-weight:bold;">Delivered</span>
-              <% } else if(order.orderStatus === "Cancelled"){ %>
-                <span style="color:red;font-weight:bold;">Cancelled</span>
-              <% } %>
-            </td>
+              <td>
+                <% if(order.orderStatus === "Confirmed"){ %>
+                <span style="color: orange; font-weight: bold">Confirmed</span>
+                <% } else if(order.orderStatus === "Pending"){ %>
+                <span style="color: gray; font-weight: bold">Pending</span>
+                <% } else if(order.orderStatus === "Shipped"){ %>
+                <span style="color: blue; font-weight: bold">Shipped</span>
+                <% } else if(order.orderStatus === "Delivered"){ %>
+                <span style="color: green; font-weight: bold">Delivered</span>
+                <% } else if(order.orderStatus === "Cancelled"){ %>
+                <span style="color: red; font-weight: bold">Cancelled</span>
+                <% } %>
+              </td>
 
-            <td>
-              <%= new Date(order.createdAt).toLocaleDateString("en-IN") %>
-            </td>
+              <td>
+                <%= new Date(order.createdAt).toLocaleDateString("en-IN") %>
+              </td>
 
-            <td>
-              <% if(order.user){ %>
+              <td>
+                <% if(order.user){ %>
                 <a href="/admin-seeuseralldetails/<%= order.user._id %>">
-                  <button class="btn-view" style="margin-top:6px;">View Profile</button>
+                  <button class="btn-view" style="margin-top: 6px">
+                    View Profile
+                  </button>
                 </a>
-              <% } else { %>
-                N/A
-              <% } %>
-            </td>
-
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
-
-</main>
-</body>
+                <% } else { %> N/A <% } %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <script src="/js/shoesProduct.js"></script>
+  </body>
 </html>
