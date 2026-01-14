@@ -18,10 +18,10 @@
     <i class="fa-solid fa-bars" style="font-size: 1.5rem; cursor: pointer" onclick="toggleSidebar()"></i>
   </header>
 
-<%- include('../partials/adminNavBar') %>
+  <%- include('../partials/adminNavBar') %>
 
-  <main class="main-content">
-    <header style="
+    <main class="main-content">
+      <header style="
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -29,267 +29,273 @@
           gap: 10px;
         ">
 
-      <h1>Products</h1>
+        <h1>Products</h1>
 
-      <div class="select-wrapper">
-        <select id="Display" onchange="filterShoes(this.value)">
-          <option value="all" <%=selectedFilter==='all' ? 'selected' : '' %>>
-            All
-          </option>
-          <option value="show" <%=selectedFilter==='show' ? 'selected' : '' %>>
-            Show
-          </option>
-          <option value="hide" <%=selectedFilter==='hide' ? 'selected' : '' %>>
-            Hide
-          </option>
-        </select>
+        <div class="select-wrapper">
+          <select id="Display" onchange="filterShoes(this.value)">
+            <option value="all" <%=selectedFilter==='all' ? 'selected' : '' %>>
+              All
+            </option>
+            <option value="show" <%=selectedFilter==='show' ? 'selected' : '' %>>
+              Show
+            </option>
+            <option value="hide" <%=selectedFilter==='hide' ? 'selected' : '' %>>
+              Hide
+            </option>
+          </select>
+        </div>
+
+
+
+
+        <button class="btn-add" onclick="openModal('addModal')">
+          + Add New Shoes
+        </button>
+      </header>
+
+      <div class="product-grid">
+        <% products.forEach(product=> { %>
+          <div class="product-card">
+            <img src="<%= product.images[0] %>" class="product-img" />
+
+            <div class="product-info">
+              <h3 class="shoe-name">
+                <%= product.title %>
+              </h3>
+              <p style="color:gray; font-size:13px;">
+                <%= product.description %>
+              </p>
+              <p class="shoe-price">₹<%= product.price %>
+              </p>
+
+              <% if(product.offerPercentage> 0){ %>
+                <p class="shoe-offer" style="color:red;">
+                  Offer <%= product.offerPercentage %>%
+                </p>
+                <p class="shoe-offer-price" style="color:green;">
+                  Offer Price ₹<%= product.offerPrice %>
+                </p>
+                <% } %>
+
+                  <p class="shoe-stock" style="color:red;">
+                    Total Stock <%= product.totalStock %>
+                  </p>
+
+                  <p style="color:blue;">
+                    <%= product.gender %>
+                  </p>
+                  <p style="color:blue;">
+                    <%= product.brand %>
+                  </p>
+                  <p style="color:blue;">
+                    <%= product.sizes.join(", ") %></p>
+
+                   <p style=" color:goldenrod;">
+                      <%= product.status==="active" ? "Show" : "Hide" %>
+                  </p>
+
+                  <button class="btn-edit" data-id="<%= product._id %>" onclick="openEditModalFromBtn(this)">
+                    Edit Product
+                  </button>
+
+                  <script type="application/json" id="product-<%= product._id %>">
+                   <%- JSON.stringify(product) %>
+                  </script>
+            </div>
+          </div>
+          <% }) %>
       </div>
 
+    </main>
+
+    <!-- ============================== Add Soes Modal ===================== -->
+
+    <form action="/admin-howmanyshoesuploaded" method="POST" enctype="multipart/form-data">
+      <div class="modal-overlay" id="addModal">
+        <div class="modal-box">
+          <!-- <h2>Add New Shoes</h2> -->
+
+          <div class="form-group">
+            <input type="text" name="title" placeholder="Shoes Name" required />
+          </div>
+
+          <div class="form-group">
+            <input type="number" name="price" placeholder="Price (₹)" required />
+          </div>
+
+          <div class="form-group">
+            <textarea name="description" rows="3" placeholder="Enter product description"
+              style="width: 100%; border: 1px solid gray;" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Offer (%)</label>
+            <input type="number" name="offerPercentage" value="0" />
+          </div>
+
+          <div class="form-group">
+            <input type="number" placeholder="Total Stock" name="totalStock" required />
+          </div>
+
+          <div style="display: flex; justify-content: space-around; padding-bottom: 1rem;">
+            <div>
+              <label>Gender</label>
+              <select name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="unisex">Unisex</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Brand</label>
+              <select name="brand" required>
+                <option>ADIDAS</option>
+                <option>ASICS</option>
+                <option>NB</option>
+                <option>PUMA</option>
+                <option>REEBOK</option>
+                <option>HOKA</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 🔥 Multiple Images -->
+          <div class="form-group">
+            <input type="file" name="images" placeholder="Product Images (3–4)" accept="image/*" multiple required />
+            <small style="color:gray">
+              Max 4 images • Each max 2MB
+            </small>
+          </div>
 
 
+          <!-- Sizes -->
+          <div class="category-box">
+            <div style="padding-bottom: 0.5rem;">Select Size ✔</div>
 
-      <button class="btn-add" onclick="openModal('addModal')">
-        + Add New Shoes
-      </button>
-    </header>
+            <div style="display: flex; justify-content: space-between;">
+              <label><input type="checkbox" name="sizes" value="6" style="padding-right: 0.5rem;" /> 6</label>
+              <label><input type="checkbox" name="sizes" value="7" /> 7</label>
+              <label><input type="checkbox" name="sizes" value="8" /> 8</label>
+              <label><input type="checkbox" name="sizes" value="9" /> 9</label>
+              <label><input type="checkbox" name="sizes" value="10" /> 10</label>
+              <label><input type="checkbox" name="sizes" value="11" /> 11</label>
+            </div>
+          </div>
 
-    <div class="product-grid">
-      <% products.forEach(product=> { %>
-        <div class="product-card">
-          <img src="<%= product.images[0] %>" class="product-img" />
+          <!-- Hidden -->
+          <input type="hidden" name="category" value="shoes" />
 
-          <div class="product-info">
-            <h3 class="shoe-name">
-              <%= product.title %>
-            </h3>
-            <p style="color:gray; font-size:13px;">
-              <%= product.description %>
-            </p>
-            <p class="shoe-price">₹<%= product.price %>
-            </p>
-
-            <% if(product.offerPercentage> 0){ %>
-              <p class="shoe-offer" style="color:red;">
-                Offer <%= product.offerPercentage %>%
-              </p>
-              <p class="shoe-offer-price" style="color:green;">
-                Offer Price ₹<%= product.offerPrice %>
-              </p>
-              <% } %>
-
-                <p class="shoe-stock" style="color:red;">
-                  Total Stock <%= product.totalStock %>
-                </p>
-
-                <p style="color:blue;">
-                  <%= product.gender %>
-                </p>
-                <p style="color:blue;">
-                  <%= product.brand %>
-                </p>
-                <p style="color:blue;">
-                  <%= product.sizes.join(", ") %></p>
-
-        <p style=" color:goldenrod;">
-                    <%= product.status==="active" ? "Show" : "Hide" %>
-                </p>
-
-                <button class="btn-edit" onclick='openEditModal(<%- JSON.stringify(product) %>)'>
-                  Edit Product
-                </button>
+          <div class="modal-btns">
+            <button type="button" class="btn-main btn-cancel" onclick="closeModal('addModal')">
+              Cancel
+            </button>
+            <button type="submit" class="btn-main btn-save">
+              Add Product
+            </button>
           </div>
         </div>
-        <% }) %>
-    </div>
+      </div>
+    </form>
+    <!-- ============================== Edit Shoes Modal ===================== -->
 
-  </main>
+    <form action="/admin-editshoesproducts" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="productId" id="editProductId" />
 
-  <!-- ============================== Add Soes Modal ===================== -->
+      <div class="modal-overlay" id="editModal" style="overflow-y: scroll;">
+        <div class="modal-box" style="overflow-y: scroll; position: relative; top: 4rem;">
+          <h2>Edit Product</h2>
 
-  <form action="/admin-howmanyshoesuploaded" method="POST" enctype="multipart/form-data">
-    <div class="modal-overlay" id="addModal">
-      <div class="modal-box">
-        <!-- <h2>Add New Shoes</h2> -->
+          <div class="form-group">
+            <input type="text" name="title" id="editName" placeholder="Shoe Name" required />
+          </div>
 
-        <div class="form-group">
-          <input type="text" name="title" placeholder="Shoes Name" required />
-        </div>
+          <div class="form-group">
+            <input type="number" name="price" id="editPrice" placeholder="Price (₹)" required />
+          </div>
 
-        <div class="form-group">
-          <input type="number" name="price" placeholder="Price (₹)" required />
-        </div>
+          <div class="form-group">
+            <textarea name="description" id="editDescription" rows="3" placeholder="Product Description"
+              style="width: 100%; border: 1px solid gray;" required></textarea>
+          </div>
 
-        <div class="form-group">
-          <textarea name="description" rows="3" placeholder="Enter product description"  style="width: 100%; border: 1px solid gray;" required></textarea>
-        </div>
+          <div class="form-group">
+            <label>Offer (%)</label>
+            <input type="number" name="offerPercentage" id="editOffer" />
+          </div>
 
-        <div class="form-group">
-          <label>Offer (%)</label>
-          <input type="number" name="offerPercentage" value="0" />
-        </div>
+          <div class="form-group">
+            <input type="number" name="totalStock" id="editStock" placeholder="Total Stock" />
+          </div>
 
-        <div class="form-group">
-          <input type="number" placeholder="Total Stock" name="totalStock" required />
-        </div>
+          <div style="display: flex; justify-content: space-around; padding-bottom: 1rem;">
+            <div>
+              <label>Gender</label>
+              <select name="gender" id="editGender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="unisex">Unisex</option>
+              </select>
+            </div>
 
-        <div style="display: flex; justify-content: space-around; padding-bottom: 1rem;">
-        <div>
-          <label>Gender</label>
-          <select name="gender" required>
-             <option value="male">Male</option>
-             <option value="female">Female</option>
-             <option value="unisex">Unisex</option>
-          </select>
-        </div>
+            <div>
+              <label>Brand</label>
+              <select name="brand" id="editBrand">
+                <option>ADIDAS</option>
+                <option>ASICS</option>
+                <option>NB</option>
+                <option>PUMA</option>
+                <option>REEBOK</option>
+                <option>HOKA</option>
+              </select>
+            </div>
+          </div>
 
-        <div>
-          <label>Brand</label>
-          <select name="brand" required>
-             <option>ADIDAS</option>
-             <option>ASICS</option>
-             <option>NB</option>
-             <option>PUMA</option>
-             <option>REEBOK</option>
-             <option>HOKA</option>
-          </select>
-        </div>
-        </div>
+          <div>
+            <label>Status</label>
+            <select name="status" id="editStatus">
+              <option value="active">Show</option>
+              <option value="inactive">Hide</option>
+            </select>
+          </div>
 
-        <!-- 🔥 Multiple Images -->
-        <div class="form-group">
-          <input type="file" name="images" placeholder="Product Images (3–4)" accept="image/*" multiple required />
-          <small style="color:gray">
-            Max 4 images • Each max 2MB
-          </small>
-        </div>
+          <!-- 🔥 EXISTING IMAGES -->
+          <div class="form-group">
+            <label>Current Images</label>
+            <div id="editImagePreview" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+          </div>
 
+          <!-- 🔥 UPDATE IMAGES -->
+          <div class="form-group">
+            <input type="file" name="images" accept="image/*" multiple />
+            <small style="color:gray">Leave empty to keep old images</small>
+          </div>
 
-        <!-- Sizes -->
-        <div class="category-box">
-          <div style="padding-bottom: 0.5rem;">Select Size ✔</div>
+          <!-- Sizes -->
+          <div class="category-box">
+            <div>Select Size ✔</div>
 
-        <div style="display: flex; justify-content: space-between;">
-          <label><input type="checkbox" name="sizes" value="6" style="padding-right: 0.5rem;"/> 6</label>
-          <label><input type="checkbox" name="sizes" value="7" /> 7</label>
-          <label><input type="checkbox" name="sizes" value="8" /> 8</label>
-          <label><input type="checkbox" name="sizes" value="9" /> 9</label>
-          <label><input type="checkbox" name="sizes" value="10" /> 10</label>
-          <label><input type="checkbox" name="sizes" value="11" /> 11</label>
-        </div>
-        </div>
+            <label><input type="checkbox" name="sizes" value="6" /> 6</label>
+            <label><input type="checkbox" name="sizes" value="7" /> 7</label>
+            <label><input type="checkbox" name="sizes" value="8" /> 8</label>
+            <label><input type="checkbox" name="sizes" value="9" /> 9</label>
+            <label><input type="checkbox" name="sizes" value="10" /> 10</label>
+            <label><input type="checkbox" name="sizes" value="11" /> 11</label>
+          </div>
 
-        <!-- Hidden -->
-        <input type="hidden" name="category" value="shoes" />
-
-        <div class="modal-btns">
-          <button type="button" class="btn-main btn-cancel" onclick="closeModal('addModal')">
-            Cancel
-          </button>
-          <button type="submit" class="btn-main btn-save">
-            Add Product
-          </button>
+          <div class="modal-btns">
+            <button type="button" class="btn-main btn-cancel" onclick="closeModal('editModal')">
+              Cancel
+            </button>
+            <button type="submit" class="btn-main btn-save">
+              Update Changes
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  </form>
-  <!-- ============================== Edit Shoes Modal ===================== -->
+    </form>
 
-  <form action="/admin-editshoesproducts" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="productId" id="editProductId" />
-
-    <div class="modal-overlay" id="editModal" style="overflow-y: scroll;">
-      <div class="modal-box" style="overflow-y: scroll; position: relative; top: 4rem;" >
-        <h2>Edit Product</h2>
-
-        <div class="form-group">
-          <input type="text" name="title" id="editName" placeholder="Shoe Name" required />
-        </div>
-
-        <div class="form-group">
-          <input type="number" name="price" id="editPrice" placeholder="Price (₹)" required />
-        </div>
-
-        <div class="form-group">
-          <textarea name="description" id="editDescription" rows="3" placeholder="Product Description" style="width: 100%; border: 1px solid gray;" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Offer (%)</label>
-          <input type="number" name="offerPercentage" id="editOffer" />
-        </div>
-
-        <div class="form-group">
-          <input type="number" name="totalStock" id="editStock" placeholder="Total Stock"/>
-        </div>
-
-        <div style="display: flex; justify-content: space-around; padding-bottom: 1rem;">
-        <div>
-          <label>Gender</label>
-          <select name="gender" id="editGender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="unisex">Unisex</option>
-         </select>
-        </div>
-
-        <div>
-          <label>Brand</label>
-          <select name="brand" id="editBrand">
-            <option>ADIDAS</option>
-            <option>ASICS</option>
-            <option>NB</option>
-            <option>PUMA</option>
-            <option>REEBOK</option>
-           <option>HOKA</option>
-        </select>
-        </div>
-        </div>
-
-        <div>
-        <label>Status</label>
-        <select name="status" id="editStatus">
-          <option value="active">Show</option>
-          <option value="inactive">Hide</option>
-        </select>
-        </div>
-
-        <!-- 🔥 EXISTING IMAGES -->
-        <div class="form-group">
-          <label>Current Images</label>
-          <div id="editImagePreview" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
-        </div>
-
-        <!-- 🔥 UPDATE IMAGES -->
-        <div class="form-group">
-          <input type="file" name="images" accept="image/*" multiple />
-          <small style="color:gray">Leave empty to keep old images</small>
-        </div>
-
-        <!-- Sizes -->
-        <div class="category-box">
-          <div>Select Size ✔</div>
-
-          <label><input type="checkbox" name="sizes" value="6" /> 6</label>
-          <label><input type="checkbox" name="sizes" value="7" /> 7</label>
-          <label><input type="checkbox" name="sizes" value="8" /> 8</label>
-          <label><input type="checkbox" name="sizes" value="9" /> 9</label>
-          <label><input type="checkbox" name="sizes" value="10" /> 10</label>
-          <label><input type="checkbox" name="sizes" value="11" /> 11</label>
-        </div>
-
-        <div class="modal-btns">
-          <button type="button" class="btn-main btn-cancel" onclick="closeModal('editModal')">
-            Cancel
-          </button>
-          <button type="submit" class="btn-main btn-save">
-            Update Changes
-          </button>
-        </div>
-      </div>
-    </div>
-  </form>
-
-  <script src="/js/shoesProduct.js"></script>
+    <script src="/js/shoesProduct.js"></script>
 </body>
 
 </html>
